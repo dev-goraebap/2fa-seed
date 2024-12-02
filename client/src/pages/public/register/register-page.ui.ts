@@ -7,7 +7,8 @@ import { MatInputModule } from "@angular/material/input";
 import { MatSelectModule } from "@angular/material/select";
 import { RouterLink } from "@angular/router";
 
-import { AuthService, RegisterDTO, UserService } from "src/entities/user";
+import { RegisterWithEmailDTO, USER_RULES } from 'domain-shared/user';
+import { AuthService, UserService } from "src/entities/user";
 import { ToFormGroup } from "src/shared/types";
 
 @Component({
@@ -70,14 +71,15 @@ export class RegisterPageUI {
     private readonly fb = inject(FormBuilder);
     private readonly userService = inject(UserService);
     private readonly authService = inject(AuthService);
-    readonly formGroup: FormGroup<ToFormGroup<RegisterDTO>>;
+    readonly formGroup: FormGroup<ToFormGroup<RegisterWithEmailDTO>>;
     readonly hide = signal(true);
 
     constructor() {
-        this.formGroup = this.fb.group<ToFormGroup<RegisterDTO>>({
-            username: this.fb.nonNullable.control<string>('', [Validators.required]),
+        this.formGroup = this.fb.group<ToFormGroup<RegisterWithEmailDTO>>({
+            username: this.fb.nonNullable.control<string>('', [Validators.required, Validators.minLength(USER_RULES.username.min)]),
             password: this.fb.nonNullable.control<string>('', [Validators.required]),
             email: this.fb.nonNullable.control<string>('', [Validators.required]),
+            nickname: this.fb.nonNullable.control<string>('', [Validators.required])
         });
     }
 
@@ -87,7 +89,7 @@ export class RegisterPageUI {
     }
 
     onSubmit() {
-        const result: RegisterDTO = this.formGroup.getRawValue();
+        const result: RegisterWithEmailDTO = this.formGroup.getRawValue();
         this.authService.register(result).subscribe();
     }
 }

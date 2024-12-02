@@ -1,7 +1,8 @@
 import { HttpClient } from "@angular/common/http";
 import { inject, Injectable, signal } from "@angular/core";
 import { delay, of, tap } from "rxjs";
-import { RegisterDTO } from "../dto";
+
+import { RegisterDTO } from "domain-shared/user";
 
 export type CommonState = {
     isFetching: boolean;
