@@ -1,0 +1,8 @@
+{
+  "name": "2fa-seed",
+  "version": "0.0.0",
+  "description": "2FA(Two-Factor Authentication) 기능을 제공하는 데모 프로젝트.",
+  "keywords": [],
+  "author": "dev.goraebap",
+  "license": "ISC"
+}
