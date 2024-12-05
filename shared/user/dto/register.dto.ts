@@ -9,5 +9,5 @@ export type RegisterWithEmailDTO = RegisterDTO & {
 }
 
 export type RegisterWithPhoneDTO = RegisterDTO & {
-    readonly phone: string;
+    readonly phoneNumber: string;
 }

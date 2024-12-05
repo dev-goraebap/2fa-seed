@@ -35,12 +35,12 @@ export class RegisterWithEmailDTO extends RegisterDTO implements TRegisterWithEm
 
 export class RegisterWithPhoneDTO extends RegisterDTO implements TRegisterWithPhoneDTO {
     @IsNotEmpty({ message: '휴대폰 번호는 필수 입력 항목입니다.' })
-    @Length(USER_RULES.phone.min, USER_RULES.phone.max, {
-        message: `휴대폰 번호는 ${USER_RULES.phone.min}자 이상 ${USER_RULES.phone.max}자 이하여야 합니다.`,
+    @Length(USER_RULES.phoneNumber.min, USER_RULES.phoneNumber.max, {
+        message: `휴대폰 번호는 ${USER_RULES.phoneNumber.min}자 이상 ${USER_RULES.phoneNumber.max}자 이하여야 합니다.`,
     })
-    @Matches(USER_RULES.phone.regex, {
+    @Matches(USER_RULES.phoneNumber.regex, {
         message: '휴대폰 번호는 "01012345678" 또는 "010-1234-5678" 형식이어야 합니다.',
     })
     @ApiProperty({ description: '휴대폰 번호', example: '01012345678' })
-    readonly phone: string;
+    readonly phoneNumber: string;
 }
