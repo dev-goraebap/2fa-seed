@@ -39,7 +39,7 @@ export const USER_RULES = {
         }
     },
     // 10자 또는 11자의 숫자 문자열 (01012345678 형식) 또는 13자의 하이픈(-) 포함 형식 (010-1234-5678)
-    phone: {
+    phoneNumber: {
         min: 10,
         max: 13,
         regex: /^(010-\d{4}-\d{4}|010\d{4}\d{4})$/, // 01012345678 또는 010-1234-5678 형식
@@ -51,5 +51,9 @@ export const USER_RULES = {
         }
     },
     // class-validator 기능 사용
-    email: {} // 이메일은 class-validator의 IsEmail 데코레이터를 사용하는 것으로 처리
+    email: {}, // 이메일은 class-validator의 IsEmail 데코레이터를 사용하는 것으로 처리
+    otpCode: {
+        min: 6,
+        max: 6
+    }
 };
