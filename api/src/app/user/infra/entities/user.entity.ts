@@ -1,5 +1,8 @@
-import { USER_RULES } from "domain-shared/user";
-import { Column, Entity, PrimaryColumn } from "typeorm";
+import { USER_RULES, UserStatus } from "domain-shared/user";
+import { BeforeInsert, BeforeUpdate, Column, Entity, PrimaryColumn } from "typeorm";
+
+import { plainToInstance } from "class-transformer";
+import { } from 'domain-shared/user';
 
 @Entity({ name: 'users', comment: '사용자 정보' })
 export class UserEntity {
@@ -19,6 +22,22 @@ export class UserEntity {
     @Column({ comment: '전화번호', length: USER_RULES.phoneNumber.max, unique: true })
     readonly phoneNumber: string;
 
-    @Column({ comment: '전화번호', length: USER_RULES.otpCode.max, nullable: true })
+    @Column({ comment: 'OTP코드', length: USER_RULES.otpCode.max, nullable: true })
     readonly otpCode: string;
+
+    @Column({ comment: '상태', length: 10 })
+    readonly status: UserStatus;
+
+    static create(param: Pick<UserEntity, 'id' | 'nickname' | 'username' | 'password' | 'phoneNumber' | 'otpCode'>): UserEntity {
+        return plainToInstance(UserEntity, {
+            ...param,
+            status: UserStatus.PENDING,
+        } as UserEntity);
+    }
+
+    @BeforeInsert()
+    @BeforeUpdate()
+    private beforeCreateOrUpdate() {
+        // TODO: 비밀번호 암호화 처리
+    }
 }
