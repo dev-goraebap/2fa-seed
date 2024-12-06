@@ -3,10 +3,8 @@ import { ApiOperation, ApiTags } from "@nestjs/swagger";
 import { LoginDTO, RegisterWithEmailDTO } from "src/app/user";
 
 /**
- * 일반 인증 관련 API 컨트롤러
- * 
  * @description 
- * - 로그인, 회원가입 시 2FA 인증 기능 활용
+ * 일반 인증 관련 API 컨트롤러
  */
 @Controller({ path: 'auth', version: '1' })
 @ApiTags('일반 인증')

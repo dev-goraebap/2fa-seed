@@ -1,9 +1,14 @@
-import { BadRequestException } from "@nestjs/common";
+import { BadRequestException, Injectable } from "@nestjs/common";
 import { nanoid } from "nanoid";
 
 import { RegisterWithPhoneDTO } from "../dto";
 import { UserEntity } from "../infra/entities";
 
+/**
+ * @description
+ * 일반 인증을 관리하는 서비스
+ */
+@Injectable()
 export class AuthService {
 
     constructor(
