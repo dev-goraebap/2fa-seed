@@ -2,7 +2,7 @@ import { Body, Controller, HttpStatus, Post, Res } from "@nestjs/common";
 import { ApiOperation, ApiTags } from "@nestjs/swagger";
 import { Response } from "express";
 
-import { AuthService, LoginDTO, RegisterWithPhoneDTO } from "src/app/user";
+import { AuthService, LoginDTO, RegisterDTO } from "src/app/user";
 
 /**
  * @description 
@@ -25,7 +25,7 @@ export class AuthController {
     @Post('register')
     @ApiOperation({ summary: '회원가입' })
     async register(
-        @Body() dto: RegisterWithPhoneDTO,
+        @Body() dto: RegisterDTO,
         @Res() res: Response
     ): Promise<Response> {
         await this.authService.register(dto);

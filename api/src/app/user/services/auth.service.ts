@@ -2,7 +2,7 @@ import { BadRequestException, Injectable } from "@nestjs/common";
 import { nanoid } from "nanoid";
 
 import { OtpService } from "src/shared/third-party";
-import { RegisterWithPhoneDTO } from "../dto";
+import { RegisterDTO } from "../dto";
 import { UserEntity } from "../infra/entities";
 import { UserRepository } from "../infra/repositories";
 
@@ -18,9 +18,9 @@ export class AuthService {
         private readonly otpService: OtpService
     ) { }
 
-    async register(dto: RegisterWithPhoneDTO): Promise<void> {
+    async register(dto: RegisterDTO): Promise<void> {
         // STEP: 중복 검사
-        const hasUser = await this.userRepository.findUserByUsername(dto.username);
+        const hasUser = await this.userRepository.findUserByEmail(dto.email);
         if (hasUser) {
             throw new BadRequestException('이미 존재하는 아이디입니다.');
         }
@@ -33,10 +33,9 @@ export class AuthService {
         // STEP: 회원 엔티티 생성
         const user = UserEntity.create({
             id: userId,
-            username: dto.username,
+            email: dto.email,
             nickname: randomNickname,
             password: dto.password,
-            phoneNumber: dto.phoneNumber,
             otpCode,
         });
 
@@ -44,6 +43,6 @@ export class AuthService {
         await this.userRepository.save(user);
 
         // STEP: OTP 발송
-        await this.otpService.send(dto.phoneNumber, otpCode);
+        await this.otpService.sendToEmail(dto.email, otpCode);
     }
 }
