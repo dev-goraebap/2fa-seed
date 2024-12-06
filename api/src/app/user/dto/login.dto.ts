@@ -5,7 +5,7 @@ import { USER_RULES } from 'domain-shared/user';
 
 export class LoginDTO {
     @IsNotEmpty({ message: '아이디는 필수 입력 항목입니다.' })
-    @Length(USER_RULES.username.min, USER_RULES.username.max, {
+    @Length(6, 50, {
         message: `잘못된 형식입니다.`,
     })
     @ApiProperty({ description: '아이디', example: 'user123' })
