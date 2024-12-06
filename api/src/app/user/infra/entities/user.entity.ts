@@ -13,8 +13,8 @@ export class UserEntity {
     @Column({ comment: '닉네임', length: USER_RULES.nickname.max })
     readonly nickname: string;
 
-    @Column({ comment: '아이디', length: USER_RULES.username.max, unique: true, nullable: true })
-    readonly username: string;
+    @Column({ comment: '이메일', length: 50, unique: true })
+    readonly email: string;
 
     @Column({ comment: '비밀번호', length: USER_RULES.password.max, nullable: true })
     readonly password: string;
@@ -28,7 +28,7 @@ export class UserEntity {
     @Column({ comment: '상태', length: 10 })
     readonly status: UserStatus;
 
-    static create(param: Pick<UserEntity, 'id' | 'nickname' | 'username' | 'password' | 'phoneNumber' | 'otpCode'>): UserEntity {
+    static create(param: Pick<UserEntity, 'id' | 'nickname' | 'email' | 'password' | 'otpCode'>): UserEntity {
         return plainToInstance(UserEntity, {
             ...param,
             status: UserStatus.PENDING,
