@@ -1,6 +1,8 @@
-import { Body, Controller, Post } from "@nestjs/common";
+import { Body, Controller, HttpStatus, Post, Res } from "@nestjs/common";
 import { ApiOperation, ApiTags } from "@nestjs/swagger";
-import { LoginDTO, RegisterWithEmailDTO } from "src/app/user";
+import { Response } from "express";
+
+import { AuthService, LoginDTO, RegisterWithPhoneDTO } from "src/app/user";
 
 /**
  * @description 
@@ -10,15 +12,23 @@ import { LoginDTO, RegisterWithEmailDTO } from "src/app/user";
 @ApiTags('일반 인증')
 export class AuthController {
 
+    constructor(
+        private readonly authService: AuthService
+    ) {}
+
     @Post('login')
-    @ApiOperation({ summary: '로그인(이메일 인증 연계)' })
+    @ApiOperation({ summary: '로그인' })
     async login(@Body() dto: LoginDTO) {
         console.log(dto);
     }
 
     @Post('register')
-    @ApiOperation({ summary: '회원가입(이메일 인증 연계)' })
-    async register(@Body() dto: RegisterWithEmailDTO) {
-        console.log(dto);
+    @ApiOperation({ summary: '회원가입' })
+    async register(
+        @Body() dto: RegisterWithPhoneDTO,
+        @Res() res: Response
+    ): Promise<Response> {
+        await this.authService.register(dto);
+        return res.sendStatus(HttpStatus.ACCEPTED);
     }
 }
