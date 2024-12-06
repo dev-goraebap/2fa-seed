@@ -7,7 +7,7 @@ import { MatInputModule } from "@angular/material/input";
 import { MatSelectModule } from "@angular/material/select";
 import { RouterLink } from "@angular/router";
 
-import { RegisterWithEmailDTO, USER_RULES } from 'domain-shared/user';
+import { RegisterDTO, USER_RULES } from 'domain-shared/user';
 import { AuthService, UserService } from "src/entities/user";
 import { ToFormGroup } from "src/shared/types";
 
@@ -25,8 +25,8 @@ import { ToFormGroup } from "src/shared/types";
     template: `
     <form class="flex flex-col p-4" [formGroup]="formGroup" (ngSubmit)="onSubmit()">
         <mat-form-field>
-            <mat-label>username</mat-label>
-            <input matInput type="text" formControlName="username" />
+            <mat-label>email</mat-label>
+            <input matInput type="email" formControlName="email" />
         </mat-form-field>
         <mat-form-field>
             <mat-label>password</mat-label>
@@ -40,10 +40,6 @@ import { ToFormGroup } from "src/shared/types";
             >
             <mat-icon class="mr-2">{{hide() ? 'visibility_off' : 'visibility'}}</mat-icon>
             </button>
-        </mat-form-field>
-        <mat-form-field>
-            <mat-label>email</mat-label>
-            <input matInput type="email" formControlName="email" />
         </mat-form-field>
 
         <button mat-flat-button>회원가입</button>
@@ -71,15 +67,21 @@ export class RegisterPageUI {
     private readonly fb = inject(FormBuilder);
     private readonly userService = inject(UserService);
     private readonly authService = inject(AuthService);
-    readonly formGroup: FormGroup<ToFormGroup<RegisterWithEmailDTO>>;
+    readonly formGroup: FormGroup<ToFormGroup<RegisterDTO>>;
     readonly hide = signal(true);
 
     constructor() {
-        this.formGroup = this.fb.group<ToFormGroup<RegisterWithEmailDTO>>({
-            username: this.fb.nonNullable.control<string>('', [Validators.required, Validators.minLength(USER_RULES.username.min)]),
-            password: this.fb.nonNullable.control<string>('', [Validators.required]),
-            email: this.fb.nonNullable.control<string>('', [Validators.required]),
-            nickname: this.fb.nonNullable.control<string>('', [Validators.required])
+        this.formGroup = this.fb.group<ToFormGroup<RegisterDTO>>({
+            email: this.fb.nonNullable.control<string>('', [
+                Validators.required,
+                Validators.email,
+            ]),
+            password: this.fb.nonNullable.control<string>('', [
+                Validators.required,
+                Validators.minLength(USER_RULES.password.min),
+                Validators.maxLength(USER_RULES.password.max),
+                Validators.pattern(USER_RULES.password.regex),
+            ]),
         });
     }
 
@@ -89,7 +91,7 @@ export class RegisterPageUI {
     }
 
     onSubmit() {
-        const result: RegisterWithEmailDTO = this.formGroup.getRawValue();
+        const result: RegisterDTO = this.formGroup.getRawValue();
         this.authService.register(result).subscribe();
     }
 }
