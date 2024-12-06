@@ -1,8 +1,10 @@
 import { BadRequestException, Injectable } from "@nestjs/common";
 import { nanoid } from "nanoid";
 
+import { OtpService } from "src/shared/third-party";
 import { RegisterWithPhoneDTO } from "../dto";
 import { UserEntity } from "../infra/entities";
+import { UserRepository } from "../infra/repositories";
 
 /**
  * @description
@@ -12,13 +14,13 @@ import { UserEntity } from "../infra/entities";
 export class AuthService {
 
     constructor(
-        private readonly userRepository: any,
-        private readonly otpService: any
+        private readonly userRepository: UserRepository,
+        private readonly otpService: OtpService
     ) { }
 
     async register(dto: RegisterWithPhoneDTO): Promise<void> {
         // STEP: 중복 검사
-        const hasUser = await this.userRepository.findByUsername(dto.username);
+        const hasUser = await this.userRepository.findUserByUsername(dto.username);
         if (hasUser) {
             throw new BadRequestException('이미 존재하는 아이디입니다.');
         }
