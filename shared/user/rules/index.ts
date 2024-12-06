@@ -2,18 +2,6 @@
  * @description 회원 데이터 생성, 수정 규칙
  */
 export const USER_RULES = {
-    // 최소 4자 이상 10자 이하, 영문 소문자, 숫자로 이루어진 문자열(모두 포함해야 함)
-    username: {
-        min: 4,
-        max: 10,
-        regex: /^(?=.*[a-z])(?=.*\d)[a-z\d]+$/i, // 영문 소문자와 숫자를 모두 포함
-        get lengthErrMsg() {
-            return `아이디는 ${this.min}자 이상 ${this.max}자 이하여야 합니다.`;
-        },
-        get regexErrMsg() {
-            return `아이디는 영문 소문자와 숫자를 모두 포함해야 합니다.`;
-        }
-    },
     // 최소 8자 이상 20자 이하, 영문 대소문자, 숫자, 특수문자로 이루어진 문자열(모두 포함해야 함)
     password: {
         min: 8,
