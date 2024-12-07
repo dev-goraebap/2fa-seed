@@ -9,8 +9,9 @@ import { RouterLink } from "@angular/router";
 import { tap } from "rxjs";
 
 import { RegisterDTO, USER_RULES } from 'domain-shared/user';
-import { AuthService, UserService } from "src/entities/user";
+import { AuthService } from "src/entities/user";
 import { ToFormGroup } from "src/shared/types";
+import { OtpVerifyService, OtpVerifyWidget } from "src/widgets/otp-verify";
 
 @Component({
     selector: 'register-page',
@@ -21,14 +22,20 @@ import { ToFormGroup } from "src/shared/types";
         MatIconModule,
         MatButtonModule,
         ReactiveFormsModule,
-        RouterLink
+        RouterLink,
+        OtpVerifyWidget
+    ],
+    providers: [
+        OtpVerifyService
     ],
     templateUrl: './register.page.primary.html'
 })
 export class RegisterPage {
     private readonly fb = inject(FormBuilder);
-    private readonly userService = inject(UserService);
     private readonly authService = inject(AuthService);
+    private readonly otpVerifyService = inject(OtpVerifyService);
+
+    readonly isOtpStep = this.otpVerifyService.isOtpStep;
     readonly formGroup: FormGroup<ToFormGroup<RegisterDTO>>;
     readonly hide = signal(true);
 
@@ -55,7 +62,7 @@ export class RegisterPage {
     onSubmit() {
         const result: RegisterDTO = this.formGroup.getRawValue();
         this.authService.register(result).pipe(
-            tap(console.log)
+            tap(_ => this.otpVerifyService.startOtpStep())
         ).subscribe();
     }
 }

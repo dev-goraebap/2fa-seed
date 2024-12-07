@@ -1,3 +1,4 @@
+@if (isOtpStep()) {
 <form class="flex flex-col p-4" [formGroup]="formGroup" (ngSubmit)="onSubmit()">
     <mat-form-field>
         <mat-label>email</mat-label>
@@ -31,3 +32,6 @@
         </a>
     </div>
 </form>
+} @else {
+<otp-verify-widget />
+}
