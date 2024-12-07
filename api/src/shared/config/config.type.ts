@@ -9,4 +9,10 @@ export type EnvConfig = {
     DB_USERNAME: string;
     DB_PASSWORD: string;
     DB_LOGGING: string;
+
+    // 메일 설정
+    MAIL_HOST: string;
+    MAIL_PORT: string;
+    MAIL_USERNAME: string;
+    MAIL_PASSWORD: string;
 }
