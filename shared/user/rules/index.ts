@@ -6,6 +6,7 @@ export const USER_RULES = {
     password: {
         min: 8,
         max: 20,
+        hashMax: 200,
         regex: /^(?=.*[a-z])(?=.*\d)(?=.*[!@#$%^&*()\-_=+{};:,<.>])[a-zA-Z\d!@#$%^&*()\-_=+{};:,<.>]{8,20}$/, // 영문 소문자, 숫자, 특수문자는 필수, 대문자는 선택
         get lengthErrMsg() {
             return `비밀번호는 ${this.min}자 이상 ${this.max}자 이하여야 합니다.`;
@@ -38,10 +39,26 @@ export const USER_RULES = {
             return `휴대폰 번호는 "01012345678" 또는 "010-1234-5678" 형식이어야 합니다.`;
         }
     },
-    // class-validator 기능 사용
-    email: {}, // 이메일은 class-validator의 IsEmail 데코레이터를 사용하는 것으로 처리
+    email: {
+        min: 6,
+        max: 50,
+        regex: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
+        get lengthErrMsg() {
+            return `이메일 주소는 ${this.min}자 이상 ${this.max}자 이하여야 합니다.`;
+        },
+        get regexErrMsg() {
+            return `이메일 형식이 올바르지 않습니다.`;
+        }
+    },
     otpCode: {
         min: 6,
-        max: 6
+        max: 6,
+        regex: /^[0-9]+$/,
+        get lengthErrMsg() {
+            return `OTP 코드는 ${this.min}자 입니다.`;
+        },
+        get regexErrMsg() {
+            return `OTP 코드는 숫자만 입력 가능합니다.`;
+        }
     }
 };
