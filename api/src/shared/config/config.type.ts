@@ -15,4 +15,9 @@ export type EnvConfig = {
     MAIL_PORT: string;
     MAIL_USERNAME: string;
     MAIL_PASSWORD: string;
+
+    // 보안토큰 설정
+    ACCESS_TOKEN_SECRET: string;
+    ACCESS_TOKEN_EXPIRES_IN: string;
+    REFRESH_TOKEN_EXPIRES_IN: string;
 }
