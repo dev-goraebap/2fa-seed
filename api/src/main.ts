@@ -10,6 +10,9 @@ import { EnvConfig } from './shared/config';
 async function bootstrap() {
   const app = await NestFactory.create(MainModule);
 
+  // cors 설정
+  app.enableCors();
+
   // 전역 접두사 설정
   app.setGlobalPrefix('api');
   app.enableVersioning();
