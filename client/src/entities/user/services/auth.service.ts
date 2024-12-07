@@ -28,7 +28,7 @@ export class AuthService {
             isFetching: true,
         }));
 
-        return of().pipe(
+        return this.httpClient.post('http://localhost:8000/api/v1/auth/register', dto).pipe(
             delay(1000),
             tap(() => {
                 this.state.update(state => ({
