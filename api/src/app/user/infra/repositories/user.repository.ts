@@ -20,6 +20,24 @@ export class UserRepository implements ActionRepository<UserEntity> {
         });
     }
 
+    findUserByOtpWithEmail(otp: string, email: string) {
+        return this.userRepository.findOne({
+            where: {
+                otp,
+                email
+            }
+        });
+    }
+
+    findUserByOtpWithPhoneNumber(otp: string, phoneNumber: string) {
+        return this.userRepository.findOne({
+            where: {
+                otp,
+                phoneNumber
+            }
+        });
+    }
+
     async save(entity: UserEntity): Promise<void> {
         await this.userRepository.save(entity);
     }
