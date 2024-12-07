@@ -1,6 +1,6 @@
-import { Body, Controller, HttpStatus, Post, Res } from "@nestjs/common";
+import { Body, Controller, HttpCode, HttpStatus, Post, Req } from "@nestjs/common";
 import { ApiOperation, ApiTags } from "@nestjs/swagger";
-import { Response } from "express";
+import { Request } from "express";
 
 import { AuthService, LoginDTO, RegisterDTO } from "src/app/user";
 
@@ -23,12 +23,13 @@ export class AuthController {
     }
 
     @Post('register')
+    @HttpCode(HttpStatus.ACCEPTED)
     @ApiOperation({ summary: '회원가입' })
     async register(
-        @Body() dto: RegisterDTO,
-        @Res() res: Response
-    ): Promise<Response> {
+        @Req() req: Request,
+        @Body() dto: RegisterDTO
+    ): Promise<void> {
+        console.log(req.headers);
         await this.authService.register(dto);
-        return res.sendStatus(HttpStatus.ACCEPTED);
     }
 }
