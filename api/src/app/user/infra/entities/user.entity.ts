@@ -22,17 +22,25 @@ export class UserEntity {
     @Column({ comment: '전화번호', length: USER_RULES.phoneNumber.max, unique: true, nullable: true })
     readonly phoneNumber: string;
 
-    @Column({ comment: 'OTP코드', length: USER_RULES.otpCode.max, nullable: true })
-    readonly otpCode: string;
+    @Column({ comment: 'OTP코드', length: USER_RULES.otp.max, nullable: true })
+    readonly otp: string;
 
     @Column({ comment: '상태', length: 10 })
     readonly status: UserStatus;
 
-    static create(param: Pick<UserEntity, 'id' | 'nickname' | 'email' | 'password' | 'otpCode'>): UserEntity {
+    static create(param: Pick<UserEntity, 'id' | 'nickname' | 'email' | 'password' | 'otp'>): UserEntity {
         return plainToInstance(UserEntity, {
             ...param,
             status: UserStatus.PENDING,
             password: hashPassword(param.password),
+        } as UserEntity);
+    }
+
+    withUpdateStatus(status: UserStatus) {
+        return plainToInstance(UserEntity, {
+            ...this,
+            status,
+            otp: null
         } as UserEntity);
     }
 }
