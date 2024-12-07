@@ -1,10 +1,11 @@
 import { BadRequestException, Injectable } from "@nestjs/common";
 import { nanoid } from "nanoid";
 
-import { OtpService } from "src/shared/third-party";
+import { MailService } from "src/shared/third-party";
 import { RegisterDTO } from "../dto";
 import { UserEntity } from "../infra/entities";
 import { UserRepository } from "../infra/repositories";
+import { generateOTP, generateRandomNickname } from "../utils";
 
 /**
  * @description
@@ -15,7 +16,7 @@ export class AuthService {
 
     constructor(
         private readonly userRepository: UserRepository,
-        private readonly otpService: OtpService
+        private readonly mailService: MailService
     ) { }
 
     async register(dto: RegisterDTO): Promise<void> {
@@ -26,9 +27,9 @@ export class AuthService {
         }
 
         // Given: 회원 엔티티 생성 필요 데이터 초기화 
-        let randomNickname = '랜덤닉네임';
         let userId = nanoid(30);
-        let otpCode = nanoid(6);
+        let randomNickname = generateRandomNickname();
+        let otpCode = generateOTP();
 
         // STEP: 회원 엔티티 생성
         const user = UserEntity.create({
@@ -43,6 +44,6 @@ export class AuthService {
         await this.userRepository.save(user);
 
         // STEP: OTP 발송
-        await this.otpService.sendToEmail(dto.email, otpCode);
+        this.mailService.send(dto.email, otpCode);
     }
 }
