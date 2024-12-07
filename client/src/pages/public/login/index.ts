@@ -1,1 +1,1 @@
-export * from './login-page.ui';
+export * from './login.page';
