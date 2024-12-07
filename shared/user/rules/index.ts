@@ -50,12 +50,12 @@ export const USER_RULES = {
             return `이메일 형식이 올바르지 않습니다.`;
         }
     },
-    otpCode: {
+    otp: {
         min: 6,
         max: 6,
         regex: /^[0-9]+$/,
         get lengthErrMsg() {
-            return `OTP 코드는 ${this.min}자 입니다.`;
+            return `OTP 코드는 ${this.min}자리만 입력이 가능합니다.`;
         },
         get regexErrMsg() {
             return `OTP 코드는 숫자만 입력 가능합니다.`;
