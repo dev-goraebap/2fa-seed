@@ -1,1 +1,1 @@
-export * from './register.page';
+export * from './ui/register.page';
