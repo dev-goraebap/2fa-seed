@@ -1,4 +1,4 @@
-import { Component, inject, output, OutputEmitterRef, signal, WritableSignal } from "@angular/core";
+import { Component, inject, input, InputSignal, output, OutputEmitterRef, signal, WritableSignal } from "@angular/core";
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from "@angular/forms";
 import { MatButtonModule } from "@angular/material/button";
 import { MatFormFieldModule } from "@angular/material/form-field";
@@ -58,9 +58,9 @@ import { ToFormGroup } from "src/shared/types";
 })
 export class LoginForm {
 
+    readonly isFetching: InputSignal<Boolean> = input.required();
     readonly notify: OutputEmitterRef<LoginDTO> = output();
 
-    protected readonly isFetching: WritableSignal<boolean> = signal(false);
     protected readonly hidePassword: WritableSignal<Boolean> = signal(true);
     protected readonly formGroup: FormGroup<ToFormGroup<LoginDTO>>;
 
@@ -90,7 +90,6 @@ export class LoginForm {
             this.formGroup.markAllAsTouched();
             return;
         }
-        this.isFetching.set(true);
 
         const formData: LoginDTO = this.formGroup.getRawValue();
         this.notify.emit(formData);
