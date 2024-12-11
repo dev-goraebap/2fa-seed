@@ -1,10 +1,10 @@
-import { afterNextRender, Component, inject, input, InputSignal, output, OutputEmitterRef, signal, WritableSignal } from "@angular/core";
+import { Component, inject, input, InputSignal, output, OutputEmitterRef } from "@angular/core";
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from "@angular/forms";
 import { MatButtonModule } from "@angular/material/button";
 import { MatFormFieldModule } from "@angular/material/form-field";
 import { MatInputModule } from "@angular/material/input";
 
-import { LoginDTO, USER_RULES, UsernameTypes, VerifyOtpDTO } from "domain-shared/user";
+import { USER_RULES } from "domain-shared/user";
 import { ToFormGroup } from "src/shared/types";
 
 @Component({
@@ -40,35 +40,20 @@ import { ToFormGroup } from "src/shared/types";
 })
 export class OtpVerifyForm {
 
-    readonly notify: OutputEmitterRef<VerifyOtpDTO> = output();
-    readonly loginFormData: InputSignal<LoginDTO | undefined> = input();
+    readonly isFetching: InputSignal<Boolean> = input.required();
+    readonly notify: OutputEmitterRef<string> = output();
 
-    protected readonly isFetching: WritableSignal<boolean> = signal(false);
-    protected readonly formGroup: FormGroup<ToFormGroup<VerifyOtpDTO>>;
+    protected readonly formGroup: FormGroup<ToFormGroup<{ otp: string }>>;
 
     private readonly fb = inject(FormBuilder);
 
     constructor() {
-        this.formGroup = this.fb.group<ToFormGroup<VerifyOtpDTO>>({
-            username: this.fb.nonNullable.control('', [
-                Validators.required,
-            ]),
+        this.formGroup = this.fb.group({
             otp: this.fb.nonNullable.control('', [
                 Validators.required,
                 Validators.minLength(USER_RULES.otp.min),
                 Validators.maxLength(USER_RULES.otp.max),
             ]),
-            type: this.fb.nonNullable.control<UsernameTypes>(UsernameTypes.EMAIL, [
-                Validators.required,
-            ]),
-        });
-
-        afterNextRender(() => {
-            console.log(this.loginFormData());
-            const data = this.loginFormData();
-            this.formGroup.patchValue({
-                username: data?.username,
-            });
         });
     }
 
@@ -78,8 +63,7 @@ export class OtpVerifyForm {
             return;
         }
 
-        this.isFetching.set(true);
-        const formData: VerifyOtpDTO = this.formGroup.getRawValue();
-        this.notify.emit(formData);
+        const formData = this.formGroup.getRawValue();
+        this.notify.emit(formData.otp);
     }
 }
