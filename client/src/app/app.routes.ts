@@ -14,4 +14,8 @@ export const routes: Routes = [
         path: 'register',
         loadComponent: () => import('../pages/public/register').then(m => m.RegisterPage)
     },
+    {
+        path: 'profile',
+        loadComponent: () => import('../pages/private/profile').then(m => m.ProfilePage)
+    },
 ];
