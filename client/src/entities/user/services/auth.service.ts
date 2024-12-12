@@ -44,16 +44,7 @@ export class AuthService {
 
     register(dto: RegisterDTO) {
         let result = null;
-
         const result01 = {
-            code: 'REGISTER_SUCCESS',
-            data: {
-                accessToken: 'ACCESS_TOKEN',
-                refreshToken: 'REFRESH_TOKEN',
-                expiresAt: Date.now() + 3600
-            }
-        };
-        const result02 = {
             code: 'NEED_OTP',
             data: null
         };
@@ -61,8 +52,6 @@ export class AuthService {
         const probability = Math.random();
         if (probability < 0.5) {
             result = result01;
-        } else if (probability < 0.8) {
-            result = result02;
         } else {
             return throwError(() => '이미 사용중인 아이디에요.');
         }
