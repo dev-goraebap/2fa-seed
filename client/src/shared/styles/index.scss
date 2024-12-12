@@ -1,0 +1,14 @@
+@import url('./fade-in.scss');
+@import url('./slide-up.scss');
+
+[data-anims="fadeIn"] {
+    animation: fadeIn 0.5s ease-in-out;
+}
+
+[data-anims="slideUp"] {
+    animation: slideUp 0.5s ease-in-out;
+}
+
+[data-anims="findIn_slideUp"] {
+    animation: fadeIn 0.5s ease-in-out, slideUp 0.5s ease-in-out;
+}
