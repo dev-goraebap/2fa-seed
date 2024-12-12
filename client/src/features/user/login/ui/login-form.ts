@@ -1,4 +1,4 @@
-import { Component, inject, input, InputSignal, output, OutputEmitterRef, signal, WritableSignal } from "@angular/core";
+import { Component, inject, output, OutputEmitterRef, signal, WritableSignal } from "@angular/core";
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from "@angular/forms";
 import { MatButtonModule } from "@angular/material/button";
 import { MatFormFieldModule } from "@angular/material/form-field";
@@ -7,6 +7,7 @@ import { MatInputModule } from "@angular/material/input";
 import { MatProgressSpinnerModule } from "@angular/material/progress-spinner";
 
 import { LoginDTO, USER_RULES } from "domain-shared/user";
+import { FormHelper } from "src/shared/services";
 import { ToFormGroup } from "src/shared/types";
 
 @Component({
@@ -24,6 +25,11 @@ import { ToFormGroup } from "src/shared/types";
         <mat-form-field class="w-full">
             <mat-label>username</mat-label>
             <input matInput type="email" formControlName="username" />
+            @if (hasError('username', 'required')) {
+                <mat-error>이메일을 입력해 주세요.</mat-error>
+            } @else if (hasError('username', 'pattern')) {
+                <mat-error>이메일 형식이 아닙니다.</mat-error>
+            }
         </mat-form-field>
         <mat-form-field class="w-full">
             <mat-label>password</mat-label>
@@ -38,8 +44,11 @@ import { ToFormGroup } from "src/shared/types";
             >
                 <mat-icon>{{hidePassword() ? 'visibility_off' : 'visibility'}}</mat-icon>
             </button>
+            @if (hasError('password', 'required')) {
+                <mat-error>비밀번호를 입력해 주세요.</mat-error>
+            }
         </mat-form-field>
-        <div class="w-full">
+        <div class="w-full mt-6">
             <button mat-flat-button class="w-full" disabled="{{isFetching()}}">
                 @if(isFetching())  {
                     <div role="status">
@@ -56,28 +65,33 @@ import { ToFormGroup } from "src/shared/types";
     </form>
     `
 })
-export class LoginForm {
+export class LoginForm extends FormHelper {
 
-    readonly isFetching: InputSignal<Boolean> = input.required();
     readonly notify: OutputEmitterRef<LoginDTO> = output();
 
+    protected readonly isFetching: WritableSignal<boolean> = signal(false);
     protected readonly hidePassword: WritableSignal<Boolean> = signal(true);
     protected readonly formGroup: FormGroup<ToFormGroup<LoginDTO>>;
 
     private readonly fb = inject(FormBuilder);
 
     constructor() {
+        super();
         this.formGroup = this.fb.group<ToFormGroup<LoginDTO>>({
             username: this.fb.nonNullable.control<string>('', [
                 Validators.required,
+                Validators.minLength(USER_RULES.email.min),
+                Validators.maxLength(USER_RULES.email.max),
+                Validators.pattern(USER_RULES.email.regex),
             ]),
             password: this.fb.nonNullable.control<string>('', [
-                Validators.required,
-                Validators.minLength(USER_RULES.password.min),
-                Validators.maxLength(USER_RULES.password.max),
-                Validators.pattern(USER_RULES.password.regex),
+                Validators.required
             ]),
         });
+    }
+
+    completeFetching() {
+        this.isFetching.set(false);
     }
 
     protected clickEvent(event: MouseEvent) {
@@ -90,6 +104,8 @@ export class LoginForm {
             this.formGroup.markAllAsTouched();
             return;
         }
+
+        this.isFetching.set(true);
 
         const formData: LoginDTO = this.formGroup.getRawValue();
         this.notify.emit(formData);
