@@ -1,10 +1,11 @@
-import { Component, inject, input, InputSignal, output, OutputEmitterRef } from "@angular/core";
+import { Component, inject, output, OutputEmitterRef, signal, WritableSignal } from "@angular/core";
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from "@angular/forms";
 import { MatButtonModule } from "@angular/material/button";
 import { MatFormFieldModule } from "@angular/material/form-field";
 import { MatInputModule } from "@angular/material/input";
 
 import { USER_RULES } from "domain-shared/user";
+import { FormHelper } from "src/shared/services";
 import { ToFormGroup } from "src/shared/types";
 
 @Component({
@@ -20,8 +21,15 @@ import { ToFormGroup } from "src/shared/types";
         <mat-form-field class="w-full">
             <mat-label>OTP 코드</mat-label>
             <input matInput type="email" formControlName="otp" />
+            @if (hasError('otp', 'required')) {
+                <mat-error>OTP 코드를 입력해 주세요.</mat-error>
+            } @else if (hasError('otp', 'minlength') || hasError('otp', 'maxlength')) {
+                <mat-error>OTP 코드는 6자리로 입력해 주세요.</mat-error>
+            } @else if (hasError('otp', 'pattern')) {
+                <mat-error>OTP 코드는 숫자만 입력해주세요.</mat-error>
+            }
         </mat-form-field>
-        <div class="w-full">
+        <div class="mt-10">
             <button mat-flat-button class="w-full" disabled="{{isFetching()}}">
                 @if(isFetching())  {
                     <div role="status">
@@ -38,23 +46,29 @@ import { ToFormGroup } from "src/shared/types";
     </form>
     `
 })
-export class OtpVerifyForm {
+export class OtpVerifyForm extends FormHelper {
 
-    readonly isFetching: InputSignal<Boolean> = input.required();
     readonly notify: OutputEmitterRef<string> = output();
 
+    protected readonly isFetching: WritableSignal<boolean> = signal(false);
     protected readonly formGroup: FormGroup<ToFormGroup<{ otp: string }>>;
 
     private readonly fb = inject(FormBuilder);
 
     constructor() {
+        super();
         this.formGroup = this.fb.group({
             otp: this.fb.nonNullable.control('', [
                 Validators.required,
                 Validators.minLength(USER_RULES.otp.min),
                 Validators.maxLength(USER_RULES.otp.max),
+                Validators.pattern(USER_RULES.otp.regex),
             ]),
         });
+    }
+
+    completeFetching() {
+        this.isFetching.set(false);
     }
 
     protected onSubmit() {
@@ -62,6 +76,8 @@ export class OtpVerifyForm {
             this.formGroup.markAllAsTouched();
             return;
         }
+
+        this.isFetching.set(true);
 
         const formData = this.formGroup.getRawValue();
         this.notify.emit(formData.otp);
