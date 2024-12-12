@@ -29,7 +29,7 @@ import { ToFormGroup } from "src/shared/types";
                 <mat-error>OTP 코드는 숫자만 입력해주세요.</mat-error>
             }
         </mat-form-field>
-        <div class="mt-10">
+        <div class="mt-6">
             <button mat-flat-button class="w-full" disabled="{{isFetching()}}">
                 @if(isFetching())  {
                     <div role="status">
