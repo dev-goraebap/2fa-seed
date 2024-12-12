@@ -49,11 +49,11 @@ export class LoginPage {
     /**
      * OTP 인증 페이지 전환시 로그인 폼 컴포넌트와 폼 데이터가 삭제되므로 임시로 저장해둠
      */
-    protected readonly tempLoginFormData: WritableSignal<LoginDTO | undefined> = signal(undefined);
+    private readonly tempLoginFormData: WritableSignal<LoginDTO | undefined> = signal(undefined);
 
+    private readonly router: Router = inject(Router);
     private readonly snackBar: MatSnackBar = inject(MatSnackBar);
     private readonly authService: AuthService = inject(AuthService);
-    private readonly router: Router = inject(Router);
 
     private readonly loginFormEl: Signal<LoginForm> = viewChild.required('loginForm');
     private readonly otpVerifyFormEl: Signal<OtpVerifyForm> = viewChild.required('otpVerifyForm');
