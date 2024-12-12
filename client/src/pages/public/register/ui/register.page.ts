@@ -16,7 +16,7 @@ import { OtpVerifyForm } from "src/features/user/verify-otp";
         RouterLink
     ],
     template: `
-    <div class="p-4">
+    <div data-anims="findIn_slideUp" class="p-4">
         @if (!needVerifyOtp()) {
             <div class="text-2xl font-semibold">
                 새로운 계정을 만들어보세요. 이메일과 비밀번호만 입력하면 됩니다.
