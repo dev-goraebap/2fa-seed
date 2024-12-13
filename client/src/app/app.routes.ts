@@ -18,4 +18,8 @@ export const routes: Routes = [
         path: 'profile',
         loadComponent: () => import('../pages/private/profile').then(m => m.ProfilePage)
     },
+    {
+        path: 'profile/edit',
+        loadComponent: () => import('../pages/private/edit-profile').then(m => m.EditProfilePage)
+    },
 ];
