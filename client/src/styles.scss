@@ -4,16 +4,7 @@
 @tailwind components;
 @tailwind utilities;
 
-@import url('./shared/styles/index.scss');
-
-input:-moz-autofill {
-    background-color: transparent !important;
-}
-
-html,
-body {
-    height: 100%;
-}
+@import url('./shared/anims/index.scss');
 
 body {
     margin: 0;
