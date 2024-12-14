@@ -1,8 +1,9 @@
 import { afterNextRender, Component, inject, Signal } from "@angular/core";
 import { MatButtonModule } from "@angular/material/button";
 import { Router, RouterLink } from "@angular/router";
-import { ProfileResultDTO } from "domain-shared/user";
 import { catchError, EMPTY } from "rxjs";
+
+import { ProfileResultDTO } from "domain-shared/user";
 import { ProfileCard, UserService } from "src/entities/user";
 import { FetchingScreen } from "src/shared/ui";
 
