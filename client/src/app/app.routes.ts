@@ -22,4 +22,8 @@ export const routes: Routes = [
         path: 'profile/edit',
         loadComponent: () => import('../pages/private/edit-profile').then(m => m.EditProfilePage)
     },
+    {
+        path: 'error',
+        loadComponent: () => import('../pages/public/error').then(m => m.ErrorPage)
+    }
 ];
