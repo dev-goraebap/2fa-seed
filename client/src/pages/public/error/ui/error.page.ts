@@ -10,7 +10,7 @@ import { Router } from "@angular/router";
     ],
     template: `
     @if (errMsg(); as errMsg) {
-    <div class="fixed inset-0 flex justify-center items-center">
+    <div class="motion-opacity-in-[0%] motion-duration-1000 fixed inset-0 flex justify-center items-center">
         <div class="flex flex-col items-center">
             <div>{{errMsg}}</div>
             <button mat-stroked-button class="mt-4" (click)="onClickRetry()">재시도</button>
