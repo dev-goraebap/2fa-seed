@@ -24,10 +24,10 @@ import { ToFormGroup } from "src/shared/types";
     <form [formGroup]="formGroup" (ngSubmit)="onSubmit()">
         <mat-form-field class="w-full">
             <mat-label>username</mat-label>
-            <input matInput type="email" formControlName="username" />
-            @if (hasError('username', 'required')) {
+            <input matInput type="email" formControlName="email" />
+            @if (hasError('email', 'required')) {
                 <mat-error>이메일을 입력해 주세요.</mat-error>
-            } @else if (hasError('username', 'pattern')) {
+            } @else if (hasError('email', 'pattern')) {
                 <mat-error>이메일 형식이 아닙니다.</mat-error>
             }
         </mat-form-field>
@@ -78,7 +78,7 @@ export class LoginForm extends FormHelper {
     constructor() {
         super();
         this.formGroup = this.fb.group<ToFormGroup<LoginDTO>>({
-            username: this.fb.nonNullable.control<string>('', [
+            email: this.fb.nonNullable.control<string>('', [
                 Validators.required,
                 Validators.minLength(USER_RULES.email.min),
                 Validators.maxLength(USER_RULES.email.max),

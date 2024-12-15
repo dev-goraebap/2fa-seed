@@ -3,6 +3,7 @@ import { MatSnackBar } from "@angular/material/snack-bar";
 import { Router, RouterLink } from "@angular/router";
 import { catchError, EMPTY, finalize, tap } from "rxjs";
 
+import { HttpErrorResponse } from "@angular/common/http";
 import { RegisterDTO, VerifyOtpDTO } from 'domain-shared/user';
 import { AuthService } from "src/entities/user";
 import { RegisterForm } from "src/features/user/register";
@@ -56,18 +57,14 @@ export class RegisterPage {
     private readonly registerFormEl: Signal<RegisterForm> = viewChild.required('registerForm');
     private readonly otpVerifyFormEl: Signal<OtpVerifyForm> = viewChild.required('otpVerifyForm');
 
-    protected register(dto: RegisterDTO) {
+    protected register(dto: RegisterDTO): void {
         this.authService.register(dto).pipe(
-            tap((res) => {
-                if (res.code === 'REGISTER_SUCCESS') {
-                    this.router.navigateByUrl('/profile');
-                } else if (res.code === 'NEED_OTP') {
-                    this.tempRegisterFormData.set(dto);
-                    this.needVerifyOtp.set(true);
-                }
+            tap((_) => {
+                this.tempRegisterFormData.set(dto);
+                this.needVerifyOtp.set(true);
             }),
-            catchError(err => {
-                this.snackBar.open(err, '닫기', {
+            catchError((res: HttpErrorResponse) => {
+                this.snackBar.open(res.error.message, '닫기', {
                     duration: 2000
                 });
                 return EMPTY;
@@ -76,7 +73,7 @@ export class RegisterPage {
         ).subscribe();
     }
 
-    protected verifyOtp(otp: string) {
+    protected verifyOtp(otp: string): void {
         const dto: VerifyOtpDTO = {
             email: this.tempRegisterFormData()!.email,
             otp
@@ -84,9 +81,8 @@ export class RegisterPage {
 
         this.authService.verifyOtp(dto).pipe(
             tap(_ => this.router.navigateByUrl('/profile')),
-            catchError(err => {
-                console.log(err);
-                this.snackBar.open(err, '닫기', {
+            catchError((res: HttpErrorResponse) => {
+                this.snackBar.open(res.error.message, '닫기', {
                     duration: 2000
                 });
                 return EMPTY;

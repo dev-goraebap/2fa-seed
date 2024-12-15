@@ -2,8 +2,9 @@ import { Component, inject, Signal, signal, viewChild, WritableSignal } from "@a
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { catchError, EMPTY, finalize, tap } from "rxjs";
 
+import { HttpErrorResponse } from "@angular/common/http";
 import { Router, RouterLink } from "@angular/router";
-import { LoginDTO, VerifyOtpDTO } from 'domain-shared/user';
+import { AuthStatus, LoginDTO, VerifyOtpDTO } from 'domain-shared/user';
 import { AuthService } from "src/entities/user";
 import { LoginForm } from "src/features/user/login";
 import { OtpVerifyForm } from "src/features/user/verify-otp";
@@ -61,16 +62,15 @@ export class LoginPage {
     protected login(dto: LoginDTO) {
         this.authService.login(dto).pipe(
             tap((res) => {
-                if (res.code === 'LOGIN_SUCCESS') {
+                if (res.status === AuthStatus.SUCCESS) {
                     this.router.navigateByUrl('/profile');
-                } else if (res.code === 'NEED_OTP') {
+                } else if (res.status === AuthStatus.NEED_OTP) {
                     this.tempLoginFormData.set(dto);
                     this.needVerifyOtp.set(true);
                 }
             }),
-            catchError(err => {
-                console.log(err);
-                this.snackBar.open(err, '닫기', {
+            catchError((res: HttpErrorResponse) => {
+                this.snackBar.open(res.error.message, '닫기', {
                     duration: 2000
                 });
                 return EMPTY;
@@ -81,7 +81,7 @@ export class LoginPage {
 
     protected verifyOtp(otp: string) {
         const dto: VerifyOtpDTO = {
-            email: this.tempLoginFormData()!.username,
+            email: this.tempLoginFormData()!.email,
             otp
         };
 
