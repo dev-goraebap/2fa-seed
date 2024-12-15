@@ -1,11 +1,12 @@
+import { plainToInstance } from "class-transformer";
 import { USER_RULES, UserStatus } from "domain-shared/user";
 import { Column, Entity, PrimaryColumn } from "typeorm";
 
-import { plainToInstance } from "class-transformer";
-import { hashPassword } from "src/shared/security";
+import { BaseOrmEntity } from "src/shared/database";
+import { comparePassword, hashPassword } from "src/shared/security";
 
 @Entity({ name: 'users', comment: '사용자 정보' })
-export class UserEntity {
+export class UserEntity extends BaseOrmEntity {
 
     @PrimaryColumn()
     readonly id: string;
@@ -34,6 +35,21 @@ export class UserEntity {
             status: UserStatus.PENDING,
             password: hashPassword(param.password),
         } as UserEntity);
+    }
+
+    isPending() {
+        return this.status === UserStatus.PENDING;
+    }
+
+    comparePassword(password: string) {
+        return comparePassword(password, this.password);
+    }
+
+    compareOtp(otp: string) {
+        if (!this.otp) {
+            return false;
+        }
+        return this.otp === otp;
     }
 
     withUpdateStatus(status: UserStatus) {
