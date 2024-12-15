@@ -78,7 +78,7 @@ export class RegisterPage {
 
     protected verifyOtp(otp: string) {
         const dto: VerifyOtpDTO = {
-            username: this.tempRegisterFormData()!.email,
+            email: this.tempRegisterFormData()!.email,
             otp
         };
 
