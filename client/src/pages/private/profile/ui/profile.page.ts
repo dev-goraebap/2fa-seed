@@ -17,7 +17,7 @@ import { FetchingScreen } from "src/shared/ui";
     ],
     template: `
     <fetching-screen [isFetched]="isFetched()">
-        <div data-anim="slideRight" class="p-4">
+        <div class="p-4 motion-opacity-in-[0] motion-translate-x-in-[-10%] motion-duration-[0.8s] motion-ease-in-out">
             <profile-card [profile]="profile()"/>
             <button mat-stroked-button class="w-full mt-4" routerLink="/profile/edit">프로필 수정</button>
         </div>
