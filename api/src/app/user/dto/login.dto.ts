@@ -4,12 +4,12 @@ import { IsNotEmpty, Length } from "class-validator";
 import { USER_RULES } from 'domain-shared/user';
 
 export class LoginDTO {
-    @IsNotEmpty({ message: '아이디는 필수 입력 항목입니다.' })
-    @Length(6, 50, {
+    @IsNotEmpty({ message: '이메일은 필수 입력 항목입니다.' })
+    @Length(USER_RULES.email.min, USER_RULES.email.max, {
         message: `잘못된 형식입니다.`,
     })
-    @ApiProperty({ description: '아이디', example: 'user123' })
-    readonly username: string;
+    @ApiProperty({ description: '이메일', example: 'test@gmail.com' })
+    readonly email: string;
 
     @IsNotEmpty({ message: '비밀번호는 필수 입력 항목입니다.' })
     @Length(USER_RULES.password.min, USER_RULES.password.max, {
