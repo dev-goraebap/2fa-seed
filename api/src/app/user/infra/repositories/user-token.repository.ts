@@ -14,11 +14,19 @@ export class UserTokenRepository implements ActionRepository<UserTokenEntity> {
         private readonly userTokenRepository: Repository<UserTokenEntity>,
     ) { }
 
-    save(entity: UserTokenEntity): Promise<void | UserTokenEntity> {
-        throw new Error("Method not implemented.");
+    findUserTokenByRefreshToken(refreshToken: string) {
+        return this.userTokenRepository.findOne({
+            where: {
+                refreshToken,
+            }
+        });
     }
 
-    remove(entity: UserTokenEntity): Promise<void> {
-        throw new Error("Method not implemented.");
+    save(entity: UserTokenEntity): Promise<void | UserTokenEntity> {
+        return this.userTokenRepository.save(entity);
+    }
+
+    async remove(entity: UserTokenEntity): Promise<void> {
+        await this.userTokenRepository.softRemove(entity);
     }
 }
