@@ -4,9 +4,5 @@
 @tailwind components;
 @tailwind utilities;
 
-@import url('./shared/anims/index.scss');
-
-body {
-    margin: 0;
-    font-family: Roboto, "Helvetica Neue", sans-serif;
-}
+html, body { height: 100%; }
+body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
