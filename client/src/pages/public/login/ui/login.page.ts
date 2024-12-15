@@ -81,7 +81,7 @@ export class LoginPage {
 
     protected verifyOtp(otp: string) {
         const dto: VerifyOtpDTO = {
-            username: this.tempLoginFormData()!.username,
+            email: this.tempLoginFormData()!.username,
             otp
         };
 
