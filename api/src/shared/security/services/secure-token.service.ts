@@ -2,7 +2,6 @@ import { Injectable, UnauthorizedException } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
 import * as jwt from 'jsonwebtoken';
 import { EnvConfig } from "src/shared/config";
-import { JwtResult } from "../types";
 
 /**
  * @description
@@ -28,16 +27,11 @@ export class SecureTokenService {
         return crypto.randomUUID();
     }
 
-    generateJwtToken(sub: string, payload?: Object): JwtResult {
-        const token = jwt.sign(payload ?? {}, this.secretKey, {
+    generateJwtToken(sub: string, payload?: Object): string {
+        return jwt.sign(payload ?? {}, this.secretKey, {
             expiresIn: this.expiresIn,
             subject: sub,
         });
-        const data = jwt.decode(token) as jwt.JwtPayload;
-        return {
-            token,
-            expiresIn: data.exp,
-        };
     }
 
     verifyJwtToken(token: string): jwt.JwtPayload {
