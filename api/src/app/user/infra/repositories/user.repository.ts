@@ -12,7 +12,15 @@ export class UserRepository implements ActionRepository<UserEntity> {
         private readonly userRepository: Repository<UserEntity>,
     ) { }
 
-    async findUserByEmail(username: string) {
+    findUserById(userId: string) {
+        return this.userRepository.findOne({
+            where: {
+                id: userId
+            }
+        });
+    }
+
+    findUserByEmail(username: string) {
         return this.userRepository.findOne({
             where: {
                 email: username
