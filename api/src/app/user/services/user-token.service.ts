@@ -1,5 +1,5 @@
-import { Injectable } from "@nestjs/common";
-import { UserEntity, UserTokenEntity } from "../infra/entities";
+import { Injectable, UnauthorizedException } from "@nestjs/common";
+import { UserTokenEntity } from "../infra/entities";
 import { UserTokenRepository } from "../infra/repositories/user-token.repository";
 
 /**
@@ -19,12 +19,21 @@ export class UserTokenService {
         private readonly userTokenRepository: UserTokenRepository
     ) { }
 
-    async createUserToken(user: UserEntity, refreshToken: string): Promise<void> {
+    async createUserToken(userId: string, refreshToken: string): Promise<void> {
         const userTokenEntity = UserTokenEntity.create({
+            userId,
             refreshToken,
-            userId: user.id
         });
 
         await this.userTokenRepository.save(userTokenEntity);
+    }
+
+    async getUserTokenOrThrow(refreshToken: string) {
+        const errMsg: string = '리프레시 토큰이 유효하지 않습니다.';
+        const userToken: UserTokenEntity = await this.userTokenRepository.findUserTokenByRefreshToken(refreshToken);
+        if (!userToken) {
+            throw new UnauthorizedException(errMsg);
+        }
+        return userToken;
     }
 }
