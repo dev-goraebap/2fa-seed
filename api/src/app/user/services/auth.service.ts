@@ -1,12 +1,13 @@
 import { BadRequestException, Injectable, UnauthorizedException } from "@nestjs/common";
+import { JwtPayload } from "jsonwebtoken";
 import { nanoid } from "nanoid";
 
+import { SecureTokenService } from "src/shared/security";
 import { MailService } from "src/shared/third-party";
 
-import { SecureTokenService } from "src/shared/security";
 import { LoginDTO, RegisterDTO, VerifyOtpDTO } from "../dto";
 import { AuthResultDTO } from "../dto/res/auth-result.dto";
-import { UserEntity } from "../infra/entities";
+import { UserEntity, UserTokenEntity } from "../infra/entities";
 import { UserRepository } from "../infra/repositories";
 import { generateOTP, generateRandomNickname } from "../utils";
 import { UserTokenService } from "./user-token.service";
@@ -30,6 +31,17 @@ export class AuthService {
         return user ? true : false;
     }
 
+    async getCredentialOrThrow(accessToken: string): Promise<UserEntity> {
+        const errMsg: string = '사용자를 찾을 수 없습니다.';
+        const payload: JwtPayload = this.secureTokenService.verifyJwtToken(accessToken);
+        const user: UserEntity = await this.userRepository.findUserById(payload.sub);
+
+        if (!user) {
+            throw new UnauthorizedException(errMsg);
+        }
+        return user;
+    }
+
     /**
      * @external
      * 사용자가 이메일 인증 대기중이면 토큰을 발급하지 않습니다.
@@ -51,7 +63,7 @@ export class AuthService {
         const accessToken: string = this.secureTokenService.generateJwtToken(user.id);
         const refreshToken: string = this.secureTokenService.generateOpaqueToken();
 
-        await this.userTokenService.createUserToken(user, refreshToken);
+        await this.userTokenService.createUserToken(user.id, refreshToken);
 
         return AuthResultDTO.fromSuccess(accessToken, refreshToken);
     }
@@ -63,7 +75,9 @@ export class AuthService {
      */
     async register(dto: RegisterDTO): Promise<void> {
         const duplicatedErrMsg = '이미 존재하는 아이디입니다.';
-        if (this.checkEmailDuplicate(dto.email)) {
+        const hasEmail: boolean = await this.checkEmailDuplicate(dto.email);
+        console.log(hasEmail);
+        if (hasEmail) {
             throw new BadRequestException(duplicatedErrMsg);
         }
 
@@ -96,7 +110,17 @@ export class AuthService {
         const accessToken: string = this.secureTokenService.generateJwtToken(user.id);
         const refreshToken: string = this.secureTokenService.generateOpaqueToken();
 
-        await this.userTokenService.createUserToken(user, refreshToken);
+        await this.userTokenService.createUserToken(user.id, refreshToken);
+
+        return AuthResultDTO.fromSuccess(accessToken, refreshToken);
+    }
+
+    async refreshTokens(_refreshToken: string): Promise<AuthResultDTO> {
+        const userToken: UserTokenEntity = await this.userTokenService.getUserTokenOrThrow(_refreshToken);
+        const accessToken: string = this.secureTokenService.generateJwtToken(userToken.userId);
+        const refreshToken: string = this.secureTokenService.generateOpaqueToken();
+
+        await this.userTokenService.createUserToken(userToken.userId, refreshToken);
 
         return AuthResultDTO.fromSuccess(accessToken, refreshToken);
     }
