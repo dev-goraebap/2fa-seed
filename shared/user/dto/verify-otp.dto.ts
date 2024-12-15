@@ -1,4 +1,4 @@
 export type VerifyOtpDTO = {
-    readonly username: string;
+    readonly email: string;
     readonly otp: string;
 }
