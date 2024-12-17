@@ -7,8 +7,8 @@ import { MailService } from "src/shared/third-party";
 
 import { LoginDTO, RegisterDTO, VerifyOtpDTO } from "../dto";
 import { AuthResultDTO } from "../dto/res/auth-result.dto";
-import { UserEntity, UserTokenEntity } from "../infra/entities";
 import { UserRepository } from "../infra/repositories";
+import { UserModel, UserTokenModel } from "../models";
 import { generateOTP, generateRandomNickname } from "../utils";
 import { UserTokenService } from "./user-token.service";
 
@@ -31,10 +31,10 @@ export class AuthService {
         return user ? true : false;
     }
 
-    async getCredentialOrThrow(accessToken: string): Promise<UserEntity> {
+    async getCredentialOrThrow(accessToken: string): Promise<UserModel> {
         const errMsg: string = '사용자를 찾을 수 없습니다.';
         const payload: JwtPayload = this.secureTokenService.verifyJwtToken(accessToken);
-        const user: UserEntity = await this.userRepository.findUserById(payload.sub);
+        const user: UserModel = await this.userRepository.findUserById(payload.sub);
 
         if (!user) {
             throw new UnauthorizedException(errMsg);
@@ -85,7 +85,7 @@ export class AuthService {
         let randomNickname = generateRandomNickname();
         let otp = generateOTP();
 
-        const user = UserEntity.create({
+        const user = UserModel.create({
             id: userId,
             email: dto.email,
             nickname: randomNickname,
@@ -116,7 +116,7 @@ export class AuthService {
     }
 
     async refreshTokens(_refreshToken: string): Promise<AuthResultDTO> {
-        const userToken: UserTokenEntity = await this.userTokenService.getUserTokenOrThrow(_refreshToken);
+        const userToken: UserTokenModel = await this.userTokenService.getUserTokenOrThrow(_refreshToken);
         const accessToken: string = this.secureTokenService.generateJwtToken(userToken.userId);
         const refreshToken: string = this.secureTokenService.generateOpaqueToken();
 
@@ -125,8 +125,8 @@ export class AuthService {
         return AuthResultDTO.fromSuccess(accessToken, refreshToken);
     }
 
-    private async getUserByEmailOrThrow(email: string, errMsg: string): Promise<UserEntity> {
-        const user: UserEntity = await this.userRepository.findUserByEmail(email);
+    private async getUserByEmailOrThrow(email: string, errMsg: string): Promise<UserModel> {
+        const user: UserModel = await this.userRepository.findUserByEmail(email);
         if (!user) {
             throw new UnauthorizedException(errMsg);
         }

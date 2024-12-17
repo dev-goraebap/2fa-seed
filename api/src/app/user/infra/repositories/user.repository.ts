@@ -1,56 +1,34 @@
 import { Injectable } from "@nestjs/common";
-import { InjectRepository } from "@nestjs/typeorm";
-import { ActionRepository } from "src/shared/database";
-import { Repository } from "typeorm";
-import { UserEntity } from "../entities";
+import { UserModel } from "../../models";
 
 @Injectable()
-export class UserRepository implements ActionRepository<UserEntity> {
+export class UserRepository {
 
     constructor(
-        @InjectRepository(UserEntity)
-        private readonly userRepository: Repository<UserEntity>,
+
     ) { }
 
-    findUserById(userId: string) {
-        return this.userRepository.findOne({
-            where: {
-                id: userId
-            }
-        });
+    async findUserById(userId: string): Promise<UserModel> {
+        return null;
     }
 
-    findUserByEmail(username: string) {
-        return this.userRepository.findOne({
-            where: {
-                email: username
-            }
-        });
+    async findUserByEmail(username: string): Promise<UserModel> {
+        return null;
     }
 
-    findUserByOtpWithEmail(otp: string, email: string) {
-        return this.userRepository.findOne({
-            where: {
-                otp,
-                email
-            }
-        });
+    async findUserByOtpWithEmail(otp: string, email: string): Promise<UserModel> {
+        return null;
     }
 
-    findUserByOtpWithPhoneNumber(otp: string, phoneNumber: string) {
-        return this.userRepository.findOne({
-            where: {
-                otp,
-                phoneNumber
-            }
-        });
+    async findUserByOtpWithPhoneNumber(otp: string, phoneNumber: string): Promise<UserModel> {
+        return null;
     }
 
-    async save(entity: UserEntity): Promise<void> {
-        await this.userRepository.save(entity);
+    async save(entity: UserModel): Promise<void> {
+
     }
 
-    async remove(entity: UserEntity): Promise<void> {
-        await this.userRepository.remove(entity);
+    async remove(entity: UserModel): Promise<void> {
+
     }
 }

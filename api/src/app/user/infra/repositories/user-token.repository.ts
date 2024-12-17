@@ -1,32 +1,19 @@
 import { Injectable } from "@nestjs/common";
-import { InjectRepository } from "@nestjs/typeorm";
-import { Repository } from "typeorm";
+import { UserTokenModel } from "../../models";
 
-import { ActionRepository } from "src/shared/database";
-
-import { UserTokenEntity } from "../entities";
 
 @Injectable()
-export class UserTokenRepository implements ActionRepository<UserTokenEntity> {
+export class UserTokenRepository {
 
-    constructor(
-        @InjectRepository(UserTokenEntity)
-        private readonly userTokenRepository: Repository<UserTokenEntity>,
-    ) { }
-
-    findUserTokenByRefreshToken(refreshToken: string) {
-        return this.userTokenRepository.findOne({
-            where: {
-                refreshToken,
-            }
-        });
+    async findUserTokenByRefreshToken(refreshToken: string): Promise<UserTokenModel> {
+        return null;
     }
 
-    save(entity: UserTokenEntity): Promise<void | UserTokenEntity> {
-        return this.userTokenRepository.save(entity);
+    async save(entity: UserTokenModel): Promise<void | UserTokenModel> {
+        return null;
     }
 
-    async remove(entity: UserTokenEntity): Promise<void> {
-        await this.userTokenRepository.softRemove(entity);
+    async remove(entity: UserTokenModel): Promise<void> {
+
     }
 }
