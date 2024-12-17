@@ -1,6 +1,6 @@
 import { Injectable } from "@nestjs/common";
-import * as firebaseAdmin from 'firebase-admin';
-import * as firebaseAdminSdk from './firebase-admin-sdk.json';
+import { cert, initializeApp, ServiceAccount } from 'firebase-admin/app';
+import { Firestore, getFirestore } from 'firebase-admin/firestore';
 
 /**
  * @description
@@ -13,11 +13,20 @@ import * as firebaseAdminSdk from './firebase-admin-sdk.json';
 @Injectable()
 export class FirebaseService {
 
+    private firestore: Firestore;
+
     constructor() {
-        firebaseAdmin.initializeApp({
-            credential: firebaseAdmin.credential.cert(
-                firebaseAdminSdk as firebaseAdmin.ServiceAccount
-            )
+        import('./firebase-admin-sdk.json').then((serviceAccount) => {
+            initializeApp({
+                credential: cert(serviceAccount as ServiceAccount),
+            });
+            this.firestore = getFirestore('twofa-seed');
+    
+            console.log('Init Firebase Admin SDK');
         });
+    }
+
+    getFireStore() {
+        return this.firestore;
     }
 }
