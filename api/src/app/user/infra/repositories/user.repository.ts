@@ -1,24 +1,19 @@
 import { Injectable } from "@nestjs/common";
 
-import { OnlyProps } from 'domain-shared/base';
-import { FirebaseService, fromFirebase } from "src/shared/third-party";
+import { FirebaseRepository, FirestoreService, fromFirebase } from "src/shared/third-party";
 
 import { UserModel } from "../../models";
 
 @Injectable()
-export class UserRepository {
-
-    private readonly userRef: FirebaseFirestore.CollectionReference<OnlyProps<UserModel>>;
-
+export class UserRepository extends FirebaseRepository<UserModel> {
     constructor(
-        private readonly firebaseService: FirebaseService
+        protected readonly firebaseManager: FirestoreService
     ) {
-        const firestore = this.firebaseService.getFireStore();
-        this.userRef = firestore.collection('users') as FirebaseFirestore.CollectionReference<UserModel>;
+        super(firebaseManager);
     }
 
     async findUserById(userId: string): Promise<UserModel> {
-        const snapshot = await this.userRef.doc(userId).get();
+        const snapshot = await this.ref.doc(userId).get();
         if (!snapshot.exists) {
             return null;
         }
@@ -32,7 +27,7 @@ export class UserRepository {
     }
 
     async findUserByEmail(email: string): Promise<UserModel> {
-        const snapshot = await this.userRef
+        const snapshot = await this.ref
             .where('email', '==', email)
             .get();
         if (snapshot.empty) {
@@ -48,7 +43,7 @@ export class UserRepository {
     }
 
     async findUserByOtpWithEmail(otp: string, email: string): Promise<UserModel> {
-        const snapshot = await this.userRef
+        const snapshot = await this.ref
             .where('email', '==', email)
             .where('otp', '==', otp)
             .limit(1)
@@ -67,7 +62,7 @@ export class UserRepository {
     }
 
     async findUserByOtpWithPhoneNumber(otp: string, phoneNumber: string): Promise<UserModel> {
-        const snapshot = await this.userRef
+        const snapshot = await this.ref
             .where('phoneNumber', '==', phoneNumber)
             .where('otp', '==', otp)
             .limit(1)
@@ -86,11 +81,18 @@ export class UserRepository {
     }
 
     async save(entity: UserModel): Promise<void> {
-        await this.userRef.doc(entity.id).set(entity.toPlainObject());
+        const docRef = this.ref.doc(entity.id);
+        const data = entity.toPlainObject();
+        const t = this.firebaseManager.getTransaction();
+        if (t) {
+            t.set(docRef, data);
+        } else {
+            await docRef.set(data);
+        }
     }
 
     async remove(entity: UserModel): Promise<void> {
-        await this.userRef.doc(entity.id).set({
+        await this.ref.doc(entity.id).set({
             ...entity,
             deletedAt: new Date(),
         });
