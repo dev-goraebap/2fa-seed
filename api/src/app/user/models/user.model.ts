@@ -1,10 +1,13 @@
 import { plainToInstance } from "class-transformer";
+import { nanoid } from "nanoid";
 
 import { UserStatus } from "domain-shared/user";
 import { comparePassword, hashPassword } from "src/shared/security";
-import { BaseFirebaseModel } from "src/shared/third-party";
+import { FirebaseModel } from "src/shared/third-party";
 
-export class UserModel extends BaseFirebaseModel {
+import { UserTokenModel } from "./user-token.model";
+
+export class UserModel extends FirebaseModel {
 
     readonly id: string;
     readonly nickname: string;
@@ -13,10 +16,12 @@ export class UserModel extends BaseFirebaseModel {
     readonly phoneNumber: string;
     readonly otp: string;
     readonly status: UserStatus;
+    readonly tokens: UserTokenModel[] = [];
 
-    static create(param: Pick<UserModel, 'id' | 'nickname' | 'email' | 'password' | 'otp'>): UserModel {
+    static create(param: Pick<UserModel, 'nickname' | 'email' | 'password' | 'otp'>): UserModel {
         return plainToInstance(UserModel, {
             ...param,
+            id: nanoid(30),
             status: UserStatus.PENDING,
             password: hashPassword(param.password),
         } as UserModel);
