@@ -24,7 +24,7 @@ export function fromFirebase<T>(modelType: Type<T>, param: any): T {
     return plainToInstance(modelType, param);
 }
 
-export class BaseFirebaseModel {
+export class FirebaseModel {
     readonly createdAt: Date;
     readonly updatedAt: Date;
     readonly deletedAt: Date;
