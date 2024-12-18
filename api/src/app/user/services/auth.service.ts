@@ -2,7 +2,7 @@ import { BadRequestException, Injectable, UnauthorizedException } from "@nestjs/
 import { JwtPayload } from "jsonwebtoken";
 
 import { SecureTokenService } from "src/shared/security";
-import { FirestoreService, MailService } from "src/shared/third-party";
+import { FirebaseService, MailService } from "src/shared/third-party";
 
 import { UserStatus } from "domain-shared/user";
 import { LoginDTO, RegisterDTO, VerifyOtpDTO } from "../dto";
@@ -20,7 +20,7 @@ import { UserTokenService } from "./user-token.service";
 export class AuthService {
 
     constructor(
-        private readonly firestore: FirestoreService,
+        private readonly firebaseService: FirebaseService,
         private readonly secureTokenService: SecureTokenService,
         private readonly mailService: MailService,
         private readonly userTokenService: UserTokenService,
@@ -98,8 +98,7 @@ export class AuthService {
     }
 
     async verifyOtp(dto: VerifyOtpDTO): Promise<AuthResultDTO> {
-        console.log('실행');
-        return await this.firestore.runInTransaction(async () => {
+        return await this.firebaseService.runInTransaction(async () => {
             const notFoundErrMsg = '이메일을 찾을 수 없습니다.';
             const notMatchedErrMsg = 'OTP 코드가 일치하지 않습니다.';
             let user = await this.getUserByEmailOrThrow(dto.email, notFoundErrMsg);
@@ -115,8 +114,6 @@ export class AuthService {
             const refreshToken: string = this.secureTokenService.generateOpaqueToken();
 
             await this.userTokenService.createUserToken(user.id, refreshToken);
-
-            throw new BadRequestException('에러 발생');
 
             return AuthResultDTO.fromSuccess(accessToken, refreshToken);
         });

@@ -1,15 +1,20 @@
 import { Injectable } from "@nestjs/common";
 
-import { FirebaseRepository, FirestoreService, fromFirebase } from "src/shared/third-party";
+import { FirebaseRepository, FirebaseService, fromFirebase } from "src/shared/third-party";
 
+import { OnlyProps } from "domain-shared/base";
+import { CollectionReference } from "firebase-admin/firestore";
 import { UserModel } from "../../models";
 
 @Injectable()
-export class UserRepository extends FirebaseRepository<UserModel> {
+export class UserRepository implements FirebaseRepository<UserModel> {
+
+    private readonly ref: FirebaseFirestore.CollectionReference<OnlyProps<UserModel>>;
+
     constructor(
-        protected readonly firebaseManager: FirestoreService
+        protected readonly firebaseService: FirebaseService
     ) {
-        super(firebaseManager);
+        this.ref = this.firebaseService.getFirestore().collection('users') as CollectionReference<UserModel>;
     }
 
     async findUserById(userId: string): Promise<UserModel> {
@@ -83,7 +88,7 @@ export class UserRepository extends FirebaseRepository<UserModel> {
     async save(entity: UserModel): Promise<void> {
         const docRef = this.ref.doc(entity.id);
         const data = entity.toPlainObject();
-        const t = this.firebaseManager.getTransaction();
+        const t = this.firebaseService.getTransaction();
         if (t) {
             t.set(docRef, data);
         } else {
@@ -92,9 +97,19 @@ export class UserRepository extends FirebaseRepository<UserModel> {
     }
 
     async remove(entity: UserModel): Promise<void> {
-        await this.ref.doc(entity.id).set({
-            ...entity,
-            deletedAt: new Date(),
-        });
+        const docRef = this.ref.doc(entity.id);
+        const data = entity.toPlainObject();
+        const t = this.firebaseService.getTransaction();
+        if (t) {
+            t.set(docRef, {
+                ...data,
+                deletedAt: new Date(),
+            });
+        } else {
+            await this.ref.doc(entity.id).set({
+                ...data,
+                deletedAt: new Date(),
+            });
+        }
     }
 }
