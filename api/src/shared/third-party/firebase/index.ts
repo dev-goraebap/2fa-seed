@@ -1,5 +1,5 @@
+export * from './firebase.model';
 export * from './firebase.module';
-export * from './models';
-export * from './repositories';
-export * from './services';
+export * from './firebase.repository';
+export * from './firebase.service';
 
