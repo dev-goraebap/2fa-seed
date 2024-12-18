@@ -1,9 +1,7 @@
 import { Module } from "@nestjs/common";
 
-import { UserRepository } from "./infra/repositories";
-import { UserTokenRepository } from "./infra/repositories/user-token.repository";
-import { AuthService } from "./services";
-import { UserTokenService } from "./services/user-token.service";
+import { UserRepository, UserTokenRepository } from "./infra/repositories";
+import { AuthService, UserTokenService } from "./services";
 
 @Module({
     imports: [],
