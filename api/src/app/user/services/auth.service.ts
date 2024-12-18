@@ -1,10 +1,10 @@
 import { BadRequestException, Injectable, UnauthorizedException } from "@nestjs/common";
 import { JwtPayload } from "jsonwebtoken";
-import { nanoid } from "nanoid";
 
 import { SecureTokenService } from "src/shared/security";
-import { MailService } from "src/shared/third-party";
+import { FirestoreService, MailService } from "src/shared/third-party";
 
+import { UserStatus } from "domain-shared/user";
 import { LoginDTO, RegisterDTO, VerifyOtpDTO } from "../dto";
 import { AuthResultDTO } from "../dto/res/auth-result.dto";
 import { UserRepository } from "../infra/repositories";
@@ -20,6 +20,7 @@ import { UserTokenService } from "./user-token.service";
 export class AuthService {
 
     constructor(
+        private readonly firestore: FirestoreService,
         private readonly secureTokenService: SecureTokenService,
         private readonly mailService: MailService,
         private readonly userTokenService: UserTokenService,
@@ -81,12 +82,10 @@ export class AuthService {
             throw new BadRequestException(duplicatedErrMsg);
         }
 
-        let userId = nanoid(30);
         let randomNickname = generateRandomNickname();
         let otp = generateOTP();
 
         const user = UserModel.create({
-            id: userId,
             email: dto.email,
             nickname: randomNickname,
             password: dto.password,
@@ -99,20 +98,28 @@ export class AuthService {
     }
 
     async verifyOtp(dto: VerifyOtpDTO): Promise<AuthResultDTO> {
-        const notFoundErrMsg = '이메일을 찾을 수 없습니다.';
-        const notMatchedErrMsg = 'OTP 코드가 일치하지 않습니다.';
-        const user = await this.getUserByEmailOrThrow(dto.email, notFoundErrMsg);
+        console.log('실행');
+        return await this.firestore.runInTransaction(async () => {
+            const notFoundErrMsg = '이메일을 찾을 수 없습니다.';
+            const notMatchedErrMsg = 'OTP 코드가 일치하지 않습니다.';
+            let user = await this.getUserByEmailOrThrow(dto.email, notFoundErrMsg);
 
-        if (!user.compareOtp(dto.otp)) {
-            throw new UnauthorizedException(notMatchedErrMsg);
-        }
+            if (!user.compareOtp(dto.otp)) {
+                throw new UnauthorizedException(notMatchedErrMsg);
+            }
 
-        const accessToken: string = this.secureTokenService.generateJwtToken(user.id);
-        const refreshToken: string = this.secureTokenService.generateOpaqueToken();
+            user = user.withUpdateStatus(UserStatus.ACTIVE);
+            await this.userRepository.save(user);
 
-        await this.userTokenService.createUserToken(user.id, refreshToken);
+            const accessToken: string = this.secureTokenService.generateJwtToken(user.id);
+            const refreshToken: string = this.secureTokenService.generateOpaqueToken();
 
-        return AuthResultDTO.fromSuccess(accessToken, refreshToken);
+            await this.userTokenService.createUserToken(user.id, refreshToken);
+
+            throw new BadRequestException('에러 발생');
+
+            return AuthResultDTO.fromSuccess(accessToken, refreshToken);
+        });
     }
 
     async refreshTokens(_refreshToken: string): Promise<AuthResultDTO> {
