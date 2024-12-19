@@ -1,5 +1,5 @@
 import { Body, Controller, Get, HttpStatus, Param, Post, Req } from "@nestjs/common";
-import { ApiOperation, ApiResponse, ApiTags } from "@nestjs/swagger";
+import { ApiBearerAuth, ApiOperation, ApiResponse, ApiTags } from "@nestjs/swagger";
 import { Request } from "express";
 
 import { AuthResultDTO, AuthService, EmailDuplicateCheckResultDTO, LoginDTO, RegisterDTO, RetryOtpDTO, VerifyOtpDTO } from "src/app/user";
@@ -72,6 +72,7 @@ export class AuthController {
 
     @Refresh()
     @Post('refresh-tokens')
+    @ApiBearerAuth()
     @ApiOperation({ summary: '토큰 재발급' })
     @ApiResponse({ status: HttpStatus.OK, type: AuthResultDTO, description: '토큰 재발급 성공' })
     refreshTokens(@AuthResultParam() dto: AuthResultDTO): AuthResultDTO {
