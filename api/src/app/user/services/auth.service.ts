@@ -5,7 +5,7 @@ import { SecureTokenService } from "src/shared/security";
 import { FirebaseService, MailService } from "src/shared/third-party";
 
 import { UserStatus } from "domain-shared/user";
-import { LoginDTO, RegisterDTO, VerifyOtpDTO } from "../dto";
+import { LoginDTO, RegisterDTO, RetryOtpDTO, VerifyOtpDTO } from "../dto";
 import { AuthResultDTO } from "../dto/res/auth-result.dto";
 import { UserRepository } from "../infra/repositories";
 import { UserModel, UserTokenModel } from "../models";
@@ -75,17 +75,16 @@ export class AuthService {
      * `verifyOtp` 프로세스와 연계합니다.
      */
     async register(dto: RegisterDTO): Promise<void> {
-        const duplicatedErrMsg = '이미 존재하는 아이디입니다.';
+        const duplicatedErrMsg: string = '이미 존재하는 아이디입니다.';
         const hasEmail: boolean = await this.checkEmailDuplicate(dto.email);
-        console.log(hasEmail);
         if (hasEmail) {
             throw new BadRequestException(duplicatedErrMsg);
         }
 
-        let randomNickname = generateRandomNickname();
-        let otp = generateOTP();
+        let randomNickname: string = generateRandomNickname();
+        let otp: string = generateOTP();
 
-        const user = UserModel.create({
+        const user: UserModel = UserModel.create({
             email: dto.email,
             nickname: randomNickname,
             password: dto.password,
@@ -99,10 +98,10 @@ export class AuthService {
 
     async verifyOtp(dto: VerifyOtpDTO): Promise<AuthResultDTO> {
         return await this.firebaseService.runInTransaction(async () => {
-            const notFoundErrMsg = '이메일을 찾을 수 없습니다.';
-            const expiresOtpErrMsg = 'OTP 코드가 만료되었습니다.';
-            const notMatchedErrMsg = 'OTP 코드가 일치하지 않습니다.';
-            let user = await this.getUserByEmailOrThrow(dto.email, notFoundErrMsg);
+            const notFoundErrMsg: string = '이메일을 찾을 수 없습니다.';
+            const expiresOtpErrMsg: string = 'OTP 코드가 만료되었습니다.';
+            const notMatchedErrMsg: string = 'OTP 코드가 일치하지 않습니다.';
+            let user: UserModel = await this.getUserByEmailOrThrow(dto.email, notFoundErrMsg);
 
             if (!user.checkOtpExpired()) {
                 throw new UnauthorizedException(expiresOtpErrMsg);
@@ -122,6 +121,17 @@ export class AuthService {
 
             return AuthResultDTO.fromSuccess(accessToken, refreshToken);
         });
+    }
+
+    async retryOtp(dto: RetryOtpDTO): Promise<void> {
+        const notFoundErrMsg = '이메일을 찾을 수 없습니다.';
+        let user = await this.getUserByEmailOrThrow(dto.email, notFoundErrMsg);
+        let otp = generateOTP();
+
+        user = user.withUpdateOtp(otp);
+        await this.userRepository.save(user);
+
+        await this.mailService.send(dto.email, otp);
     }
 
     async refreshTokens(_refreshToken: string): Promise<AuthResultDTO> {
