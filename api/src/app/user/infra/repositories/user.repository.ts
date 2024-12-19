@@ -1,6 +1,6 @@
 import { Injectable } from "@nestjs/common";
 
-import { FirebaseRepository, FirebaseService, fromFirebase } from "src/shared/third-party";
+import { FirebaseRepository, FirebaseService } from "src/shared/third-party";
 
 import { OnlyProps } from "domain-shared/base";
 import { CollectionReference } from "firebase-admin/firestore";
