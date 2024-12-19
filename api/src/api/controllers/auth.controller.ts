@@ -2,7 +2,7 @@ import { Body, Controller, Get, HttpStatus, Param, Post, Req } from "@nestjs/com
 import { ApiOperation, ApiResponse, ApiTags } from "@nestjs/swagger";
 import { Request } from "express";
 
-import { AuthResultDTO, AuthService, EmailDuplicateCheckResultDTO, LoginDTO, RegisterDTO, VerifyOtpDTO } from "src/app/user";
+import { AuthResultDTO, AuthService, EmailDuplicateCheckResultDTO, LoginDTO, RegisterDTO, RetryOtpDTO, VerifyOtpDTO } from "src/app/user";
 
 import { AuthResultParam, Public, Refresh } from "../decorators";
 
@@ -58,6 +58,16 @@ export class AuthController {
     @ApiResponse({ status: HttpStatus.UNAUTHORIZED, description: 'OTP 인증 실패' })
     async verifyOtp(@Body() dto: VerifyOtpDTO): Promise<AuthResultDTO> {
         return await this.authService.verifyOtp(dto);
+    }
+
+    @Public()
+    @Post('retry-otp')
+    @ApiOperation({ summary: 'OTP 재발급' })
+    @ApiResponse({ status: HttpStatus.OK })
+    @ApiResponse({ status: HttpStatus.BAD_REQUEST, description: '유효성 검사 실패' })
+    @ApiResponse({ status: HttpStatus.UNAUTHORIZED, description: '이메일 인증 실패' })
+    async retryOtp(@Body() dto: RetryOtpDTO): Promise<void> {
+        return await this.authService.retryOtp(dto);
     }
 
     @Refresh()
