@@ -2,7 +2,7 @@ import { Injectable } from "@nestjs/common";
 import { CollectionReference } from "firebase-admin/firestore";
 
 import { OnlyProps } from "domain-shared/base";
-import { FirebaseRepository, FirebaseService, fromFirebase } from "src/shared/third-party";
+import { FirebaseRepository, FirebaseService } from "src/shared/third-party";
 
 import { UserTokenModel } from "../../models";
 
@@ -30,7 +30,7 @@ export class UserTokenRepository implements FirebaseRepository<UserTokenModel> {
             return null;
         }
 
-        return fromFirebase(UserTokenModel, data);
+        return UserTokenModel.fromFirebase(data);
     }
 
     async save(entity: UserTokenModel): Promise<void | UserTokenModel> {

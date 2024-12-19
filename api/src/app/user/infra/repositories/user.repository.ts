@@ -28,7 +28,7 @@ export class UserRepository implements FirebaseRepository<UserModel> {
             return null;
         }
 
-        return fromFirebase(UserModel, data);
+        return UserModel.fromFirebase(data);
     }
 
     async findUserByEmail(email: string): Promise<UserModel> {
@@ -44,7 +44,7 @@ export class UserRepository implements FirebaseRepository<UserModel> {
             return null;
         }
 
-        return fromFirebase(UserModel, data);
+        return UserModel.fromFirebase(data);
     }
 
     async findUserByOtpWithEmail(otp: string, email: string): Promise<UserModel> {
@@ -63,7 +63,7 @@ export class UserRepository implements FirebaseRepository<UserModel> {
             return null;
         }
 
-        return fromFirebase(UserModel, data);
+        return UserModel.fromFirebase(data);
     }
 
     async findUserByOtpWithPhoneNumber(otp: string, phoneNumber: string): Promise<UserModel> {
@@ -82,7 +82,7 @@ export class UserRepository implements FirebaseRepository<UserModel> {
             return null;
         }
 
-        return fromFirebase(UserModel, data);
+        return UserModel.fromFirebase(data);
     }
 
     async save(entity: UserModel): Promise<void> {
