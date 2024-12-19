@@ -100,8 +100,13 @@ export class AuthService {
     async verifyOtp(dto: VerifyOtpDTO): Promise<AuthResultDTO> {
         return await this.firebaseService.runInTransaction(async () => {
             const notFoundErrMsg = '이메일을 찾을 수 없습니다.';
+            const expiresOtpErrMsg = 'OTP 코드가 만료되었습니다.';
             const notMatchedErrMsg = 'OTP 코드가 일치하지 않습니다.';
             let user = await this.getUserByEmailOrThrow(dto.email, notFoundErrMsg);
+
+            if (!user.checkOtpExpired()) {
+                throw new UnauthorizedException(expiresOtpErrMsg);
+            }
 
             if (!user.compareOtp(dto.otp)) {
                 throw new UnauthorizedException(notMatchedErrMsg);
