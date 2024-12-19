@@ -9,7 +9,11 @@ import { FirebaseModel } from "src/shared/third-party";
 
 export class UserModel extends FirebaseModel {
 
-    static readonly OTP_EXPIRES_TIME: number = 1000 * 60;
+    /**
+     * @description
+     * OTP 인증 만료시간 (30분) 
+     */
+    static readonly OTP_EXPIRES_TIME: number = 1000 * 60 * 30;
 
     readonly id: string;
     readonly nickname: string;
@@ -64,6 +68,14 @@ export class UserModel extends FirebaseModel {
         return plainToInstance(UserModel, {
             ...this,
             status,
+        } as UserModel);
+    }
+
+    withUpdateOtp(otp: string): UserModel {
+        return plainToInstance(UserModel, {
+            ...this,
+            otp,
+            otpExpiredAt: new Date(Date.now() + UserModel.OTP_EXPIRES_TIME)
         } as UserModel);
     }
 }
