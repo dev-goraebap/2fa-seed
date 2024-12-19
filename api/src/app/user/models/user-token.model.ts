@@ -31,6 +31,7 @@ export class UserTokenModel extends FirebaseModel {
             ...param,
             createdAt: (param.createdAt as unknown as Timestamp).toDate(),
             updatedAt: (param.updatedAt as unknown as Timestamp).toDate(),
+            expiresAt: (param.expiresAt as unknown as Timestamp).toDate(),
         });
     }
 }
