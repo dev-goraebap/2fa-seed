@@ -1,4 +1,6 @@
 import { plainToInstance } from "class-transformer";
+import { OnlyProps } from "domain-shared/base";
+import { Timestamp } from "firebase-admin/firestore";
 import { nanoid } from "nanoid";
 
 import { FirebaseModel } from "src/shared/third-party";
@@ -21,6 +23,14 @@ export class UserTokenModel extends FirebaseModel {
             userId: param.userId,
             refreshToken: param.refreshToken,
             expiresAt: new Date(Date.now() + UserTokenModel.EXPIRES_TIME)
+        });
+    }
+
+    static fromFirebase(param: OnlyProps<UserTokenModel>): UserTokenModel {
+        return plainToInstance(UserTokenModel, {
+            ...param,
+            createdAt: (param.createdAt as unknown as Timestamp).toDate(),
+            updatedAt: (param.updatedAt as unknown as Timestamp).toDate(),
         });
     }
 }
