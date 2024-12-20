@@ -1,5 +1,5 @@
 import { Body, Controller, Get, HttpStatus, Param, Post, Req } from "@nestjs/common";
-import { ApiBearerAuth, ApiOperation, ApiResponse, ApiTags } from "@nestjs/swagger";
+import { ApiBearerAuth, ApiHeader, ApiOperation, ApiResponse, ApiTags } from "@nestjs/swagger";
 import { Request } from "express";
 
 import { AuthResultDTO, AuthService, EmailDuplicateCheckResultDTO, LoginDTO, RegisterDTO, RetryOtpDTO, VerifyOtpDTO } from "src/app/user";
@@ -33,8 +33,8 @@ export class AuthController {
     @ApiResponse({ status: HttpStatus.OK, type: AuthResultDTO, description: '로그인 성공, status 타입 참고' })
     @ApiResponse({ status: HttpStatus.BAD_REQUEST, description: '유효성 검사 실패' })
     @ApiResponse({ status: HttpStatus.UNAUTHORIZED, description: '로그인 인증 실패' })
-    async login(@Body() dto: LoginDTO) {
-        return this.authService.login(dto);
+    async login(@Body() dto: LoginDTO): Promise<AuthResultDTO> {
+        return await this.authService.login(dto);
     }
 
     @Public()
@@ -71,11 +71,28 @@ export class AuthController {
     }
 
     @Refresh()
-    @Post('refresh-tokens')
-    @ApiBearerAuth()
+    @Post('refresh')
+    @ApiHeader({
+        name: 'x-refresh-token',
+        description: 'Refresh Token',
+        required: true,
+        schema: {
+            type: 'string',
+            format: 'Bearer YOUR_TOKEN_HERE',
+            example: 'Bearer YOUR_TOKEN_HERE',
+        },
+    })
     @ApiOperation({ summary: '토큰 재발급' })
     @ApiResponse({ status: HttpStatus.OK, type: AuthResultDTO, description: '토큰 재발급 성공' })
     refreshTokens(@AuthResultParam() dto: AuthResultDTO): AuthResultDTO {
         return dto;
+    }
+
+    @Post('logout')
+    @ApiBearerAuth()
+    @ApiOperation({ summary: '로그아웃' })
+    @ApiResponse({ status: HttpStatus.OK, description: '로그아웃 성공' })
+    async logout() {
+        return;
     }
 }
