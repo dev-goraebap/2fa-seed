@@ -17,11 +17,12 @@ export class AuthResultDTO implements TAuthResultDTO {
     @ApiProperty({ description: '리프레시토큰' })
     readonly refreshToken: string | null;
 
-    static fromSuccess(accessToken: string, refreshToken: string) {
+    static fromSuccess(accessToken: string, expiresIn: number, refreshToken: string) {
         return plainToInstance(AuthResultDTO, {
             status: AuthStatus.SUCCESS,
             accessToken,
-            refreshToken
+            refreshToken,
+            expiresIn,
         } as AuthResultDTO);
     }
 
@@ -29,7 +30,8 @@ export class AuthResultDTO implements TAuthResultDTO {
         return plainToInstance(AuthResultDTO, {
             status: AuthStatus.NEED_OTP,
             accessToken: null,
-            refreshToken: null
+            refreshToken: null,
+            expiresIn: null,
         } as AuthResultDTO);
     }
 }
