@@ -1,6 +1,6 @@
 import { HttpClient } from "@angular/common/http";
 import { inject, Injectable, Signal, signal, WritableSignal } from "@angular/core";
-import { finalize, Observable, tap } from "rxjs";
+import { delay, finalize, Observable, tap } from "rxjs";
 
 import { ProfileResultDTO } from "domain-shared/user";
 
@@ -18,8 +18,10 @@ export class UserService {
 
     initProfile(): Observable<ProfileResultDTO> {
         return this.httpClient.get<ProfileResultDTO>('http://localhost:8000/api/v1/users/me').pipe(
+            delay(1000),
             tap(res => {
-                console.log(res)
+                console.log(res);
+                this._data.set(res);
             }),
             finalize(() => this._isFetched.set(true))
         );
