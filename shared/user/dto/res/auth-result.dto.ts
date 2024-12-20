@@ -7,4 +7,5 @@ export type AuthResultDTO = {
     readonly status: AuthStatus;
     readonly accessToken: string | null;
     readonly expiresIn: number | null;
+    readonly refreshToken: string | null;
 };
