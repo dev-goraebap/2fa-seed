@@ -1,5 +1,6 @@
-import { Injectable, Signal, signal, WritableSignal } from "@angular/core";
-import { delay, Observable, of, tap } from "rxjs";
+import { HttpClient } from "@angular/common/http";
+import { inject, Injectable, Signal, signal, WritableSignal } from "@angular/core";
+import { finalize, Observable, tap } from "rxjs";
 
 import { ProfileResultDTO } from "domain-shared/user";
 
@@ -8,6 +9,7 @@ import { ProfileResultDTO } from "domain-shared/user";
 })
 export class UserService {
 
+    private readonly httpClient: HttpClient = inject(HttpClient);
     private readonly _isFetched: WritableSignal<boolean> = signal(false);
     private readonly _data: WritableSignal<ProfileResultDTO | undefined> = signal(undefined);
 
@@ -15,22 +17,11 @@ export class UserService {
     readonly data: Signal<ProfileResultDTO | undefined> = this._data.asReadonly();
 
     initProfile(): Observable<ProfileResultDTO> {
-        return of({
-            id: '1',
-            nickname: 'test',
-            email: 'test@test.com',
-            createdAt: new Date()
-        }).pipe(
-            delay(1000),
-            tap(profile => {
-                console.log(profile);
-                const probability = Math.random();
-                if (probability < 0.5) {
-                    throw new Error('프로필 조회에 실패하였어요.');
-                }
-                this._data.set(profile);
-                this._isFetched.set(true);
+        return this.httpClient.get<ProfileResultDTO>('http://localhost:8000/api/v1/users/me').pipe(
+            tap(res => {
+                console.log(res)
             }),
+            finalize(() => this._isFetched.set(true))
         );
     }
 }
