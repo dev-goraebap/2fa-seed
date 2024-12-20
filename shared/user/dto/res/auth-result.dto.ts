@@ -6,5 +6,5 @@ export enum AuthStatus {
 export type AuthResultDTO = {
     readonly status: AuthStatus;
     readonly accessToken: string | null;
-    readonly refreshToken: string | null;
+    readonly expiresIn: number | null;
 };
