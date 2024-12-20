@@ -1,8 +1,9 @@
-import { CanActivate, ExecutionContext, Injectable, UnauthorizedException } from "@nestjs/common";
+import { CanActivate, ExecutionContext, HttpStatus, Injectable, UnauthorizedException } from "@nestjs/common";
 import { Reflector } from "@nestjs/core";
 import { Request } from "express";
 
 import { AuthResultDTO, AuthService } from "src/app/user";
+import { CustomException, CustomExceptions } from "../errors";
 
 /**
  * @description
@@ -29,10 +30,14 @@ export class AuthGuard implements CanActivate {
 
         if (this.isRefresh(context)) {
             const errMsg: string = '리프레시토큰이 유효하지 않습니다.';
-            const token = this.getBearerTokenOrThrow(context, errMsg);
-            const dto: AuthResultDTO = await this.authService.refreshTokens(token);
-            req['authResult'] = dto;
-            return true;
+            try {
+                const token = this.getBearerTokenOrThrow(context, errMsg);
+                const dto: AuthResultDTO = await this.authService.refreshTokens(token);
+                req['authResult'] = dto;
+                return true;
+            } catch {
+                throw new CustomException(CustomExceptions.SESSION_EXPIRES, errMsg, HttpStatus.UNAUTHORIZED);
+            }
         }
 
         const errMsg: string = '액세스토큰이 유효하지 않습니다.';
