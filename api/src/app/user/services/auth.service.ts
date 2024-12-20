@@ -61,11 +61,12 @@ export class AuthService {
         }
 
         const accessToken: string = this.secureTokenService.generateJwtToken(user.id);
+        const expiresIn: number = this.secureTokenService.getJwtExpiresIn(accessToken);
         const refreshToken: string = this.secureTokenService.generateOpaqueToken();
 
         await this.userTokenService.createUserToken(user.id, refreshToken);
 
-        return AuthResultDTO.fromSuccess(accessToken, refreshToken);
+        return AuthResultDTO.fromSuccess(accessToken, expiresIn, refreshToken);
     }
 
     /**
@@ -114,11 +115,12 @@ export class AuthService {
             await this.userRepository.save(user);
 
             const accessToken: string = this.secureTokenService.generateJwtToken(user.id);
+            const expiresIn: number = this.secureTokenService.getJwtExpiresIn(accessToken);
             const refreshToken: string = this.secureTokenService.generateOpaqueToken();
 
             await this.userTokenService.createUserToken(user.id, refreshToken);
 
-            return AuthResultDTO.fromSuccess(accessToken, refreshToken);
+            return AuthResultDTO.fromSuccess(accessToken, expiresIn, refreshToken);
         });
     }
 
@@ -136,11 +138,12 @@ export class AuthService {
     async refreshTokens(_refreshToken: string): Promise<AuthResultDTO> {
         const userToken: UserTokenModel = await this.userTokenService.getUserTokenOrThrow(_refreshToken);
         const accessToken: string = this.secureTokenService.generateJwtToken(userToken.userId);
+        const expiresIn: number = this.secureTokenService.getJwtExpiresIn(accessToken);
         const refreshToken: string = this.secureTokenService.generateOpaqueToken();
 
         await this.userTokenService.createUserToken(userToken.userId, refreshToken);
 
-        return AuthResultDTO.fromSuccess(accessToken, refreshToken);
+        return AuthResultDTO.fromSuccess(accessToken, expiresIn, refreshToken);
     }
 
     private async getUserByEmailOrThrow(email: string, errMsg: string): Promise<UserModel> {
