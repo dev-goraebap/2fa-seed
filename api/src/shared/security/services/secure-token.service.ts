@@ -34,6 +34,11 @@ export class SecureTokenService {
         });
     }
 
+    getJwtExpiresIn(token: string): number {
+        const result = jwt.verify(token, this.secretKey) as jwt.JwtPayload;
+        return result.exp;
+    }
+
     verifyJwtToken(token: string): jwt.JwtPayload {
         try {
             return jwt.verify(token, this.secretKey) as jwt.JwtPayload;
