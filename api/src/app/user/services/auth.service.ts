@@ -5,8 +5,7 @@ import { SecureTokenService } from "src/shared/security";
 import { FirebaseService, MailService } from "src/shared/third-party";
 
 import { UserStatus } from "domain-shared/user";
-import { LoginDTO, RegisterDTO, RetryOtpDTO, VerifyOtpDTO } from "../dto";
-import { AuthResultDTO } from "../dto/res/auth-result.dto";
+import { AuthResultDTO, LoginDTO, RegisterDTO, RetryOtpDTO, VerifyOtpDTO } from "../dto";
 import { UserRepository } from "../infra/repositories";
 import { UserModel, UserTokenModel } from "../models";
 import { generateOTP, generateRandomNickname } from "../utils";
