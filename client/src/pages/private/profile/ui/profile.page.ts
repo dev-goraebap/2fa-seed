@@ -3,6 +3,7 @@ import { MatButtonModule } from "@angular/material/button";
 import { Router, RouterLink } from "@angular/router";
 import { catchError, EMPTY } from "rxjs";
 
+import { HttpErrorResponse } from "@angular/common/http";
 import { ProfileResultDTO } from "domain-shared/user";
 import { ProfileCard, UserService } from "src/entities/user";
 import { FetchingScreen } from "src/shared/ui";
@@ -36,11 +37,11 @@ export class ProfilePage {
     constructor() {
         afterNextRender(() => {
             this.userService.initProfile().pipe(
-                catchError(err => {
-                    console.error(err);
+                catchError((err: HttpErrorResponse) => {
+                    console.error(err.error.message);
                     this.router.navigateByUrl('/error', {
                         state: {
-                            message: err
+                            message: err.error.message
                         }
                     });
                     return EMPTY;
