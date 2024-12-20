@@ -11,7 +11,14 @@ async function bootstrap() {
   const app = await NestFactory.create(MainModule);
 
   // cors 설정
-  app.enableCors();
+  app.enableCors({
+    origin: [
+      'http://localhost:4200',  // 웹 개발 환경
+      'capacitor://localhost',  // Capacitor
+      'ionic://localhost',      // Ionic
+      'file://*'               // 안드로이드 WebView
+    ]
+  });
 
   // 전역 접두사 설정
   app.setGlobalPrefix('api');
