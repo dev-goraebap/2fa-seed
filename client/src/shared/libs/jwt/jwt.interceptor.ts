@@ -1,6 +1,6 @@
 import { HttpContext, HttpContextToken, HttpEvent, HttpHandlerFn, HttpRequest } from "@angular/common/http";
 import { Observable } from "rxjs";
-import { LocalTokenStorage } from "./plain-functions";
+import { LocalTokenStorage, RefreshTokenService } from "./plain-functions";
 
 const skipJwtContextToken = new HttpContextToken(() => false);
 
@@ -12,11 +12,6 @@ const skipJwtContextToken = new HttpContextToken(() => false);
  */
 export function skipAuth(): HttpContext {
     return new HttpContext().set(skipJwtContextToken, true);
-};
-
-const state = {
-    isRefreshing: false,
-    requestQueue: [] as any[]
 };
 
 /**
@@ -34,17 +29,21 @@ export function jwtInterceptor(req: HttpRequest<unknown>, next: HttpHandlerFn): 
         return next(req);
     }
 
-    const tokenStorage = LocalTokenStorage.getInstance();
+    const tokenStorage: LocalTokenStorage = LocalTokenStorage.getInstance();
+    const refreshService: RefreshTokenService = RefreshTokenService.getInstance();
 
     if (tokenStorage.isExpired()) {
-        return new Observable(observer => {
-            console.log(state.isRefreshing);
-            if (state.isRefreshing) {
-                state.requestQueue.push({ request: req, next, observer });
-            } else {
-                state.isRefreshing = true;
+        console.debug('access token is expired');
+        console.debug(`[${req.url}]`);
 
-                doRefreshTokens()
+        return new Observable(observer => {
+            console.log(refreshService.isRefreshing());
+            if (refreshService.isRefreshing()) {
+                refreshService.addPendingRequest({ request: req, next, observer });
+            } else {
+                refreshService.setRefreshing(true);
+
+                refreshService.doRefreshTokens()
                     .then(() => {
                         const accessToken = tokenStorage.getAccessToken();
                         console.log(accessToken);
@@ -53,17 +52,23 @@ export function jwtInterceptor(req: HttpRequest<unknown>, next: HttpHandlerFn): 
                         });
                         next(updatedReq).subscribe(observer);
 
-                        processQueue();
+                        refreshService.getPendingRequests().forEach(({ request, next, observer }) => {
+                            const updatedReq = request.clone({
+                                headers: request.headers.set('Authorization', `Bearer ${accessToken}`)
+                            });
+                            next(updatedReq).subscribe(observer);
+                        });
+                        refreshService.clearPendingRequests();
                     })
                     .catch((err) => {
                         observer.error(err);
-                        state.requestQueue.forEach(({ observer }) => {
+                        refreshService.getPendingRequests().forEach(({ observer }) => {
                             observer.error(err);
                         });
-                        state.requestQueue = [];
+                        refreshService.clearPendingRequests();
                     })
                     .finally(() => {
-                        state.isRefreshing = false;
+                        refreshService.setRefreshing(false);
                     });
             }
         });
@@ -74,45 +79,4 @@ export function jwtInterceptor(req: HttpRequest<unknown>, next: HttpHandlerFn): 
         headers: req.headers.set('Authorization', `Bearer ${accessToken}`)
     });
     return next(updatedReq);
-}
-
-async function doRefreshTokens() {
-    const tokenStorage = LocalTokenStorage.getInstance();
-
-    try {
-        const refreshToken = await tokenStorage.getRefreshToken();
-        if (!refreshToken) {
-            throw new Error('No Refresh Token 😢');
-        }
-
-        const res = await fetch('http://localhost:8000/api/v1/auth/refresh', {
-            method: 'POST',
-            headers: {
-                authorization: `Bearer ${refreshToken}`
-            }
-        });
-
-        if (!res.ok) throw new Error('Refresh Failed 😭');
-
-        const result: any /**프로젝트에서 약속한 타입 사용 */ = await res.json();
-        tokenStorage.setAccessToken(result.accessToken, result.expiresIn);
-        await tokenStorage.setRefreshToken(result.refreshToken);
-    } catch (err) {
-        await tokenStorage.clearTokens();
-        throw err;
-    }
-}
-
-function processQueue() {
-    const tokenStorage = LocalTokenStorage.getInstance();
-    const accessToken = tokenStorage.getAccessToken();
-
-    state.requestQueue.forEach(({ request, next, observer }) => {
-        const updatedReq = request.clone({
-            headers: request.headers.set('Authorization', `Bearer ${accessToken}`)
-        });
-        next(updatedReq).subscribe(observer);
-    });
-
-    state.requestQueue = [];
 }
