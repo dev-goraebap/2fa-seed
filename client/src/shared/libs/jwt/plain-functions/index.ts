@@ -1,2 +1,2 @@
-export * from './rotation-flow.service';
+export * from './refresh-token.service';
 export * from './storages/local-token.storage';
