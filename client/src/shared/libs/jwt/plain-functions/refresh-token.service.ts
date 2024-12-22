@@ -63,18 +63,4 @@ export class RefreshTokenService {
             throw err;
         }
     }
-
-    processQueue() {
-        const tokenStorage = LocalTokenStorage.getInstance();
-        const accessToken = tokenStorage.getAccessToken();
-
-        this.pendingRequests.forEach(({ request, next, observer }) => {
-            const updatedReq = request.clone({
-                headers: request.headers.set('Authorization', `Bearer ${accessToken}`)
-            });
-            next(updatedReq).subscribe(observer);
-        });
-
-        this.pendingRequests = [];
-    }
 }
