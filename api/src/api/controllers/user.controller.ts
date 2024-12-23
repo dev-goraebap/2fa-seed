@@ -18,4 +18,13 @@ export class UserController {
     getUserProfile(@Credential() user: UserModel): ProfileResultDTO {
         return ProfileResultDTO.from(user);
     }
+
+    @Get('withdrawal')
+    @ApiBearerAuth()
+    @ApiOperation({ summary: '회원 탈퇴' })
+    @ApiOkResponse()
+    @ApiUnauthorizedResponse({ description: '인증되지 않은 사용자' })
+    withdrawal(@Credential() user: UserModel): ProfileResultDTO {
+        return ProfileResultDTO.from(user);
+    }
 }
