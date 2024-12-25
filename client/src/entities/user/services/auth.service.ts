@@ -3,7 +3,7 @@ import { inject, Injectable } from "@angular/core";
 import { tap } from "rxjs";
 
 import { AuthResultDTO, LoginDTO, RegisterDTO, VerifyOtpDTO } from "domain-shared/user";
-import { LocalTokenStorage, skipAuth } from "src/shared/libs/jwt";
+import { skipAuth, TokenStorage } from "src/shared/libs/jwt";
 
 export type CommonState = {
     isFetching: boolean;
@@ -23,9 +23,12 @@ export class AuthService {
             tap(res => {
                 console.log(res);
                 if (res.accessToken && res.refreshToken && res.expiresIn) {
-                    const storage = LocalTokenStorage.getInstance();
-                    storage.setAccessToken(res.accessToken, res.expiresIn);
-                    storage.setRefreshToken(res.refreshToken);
+                    const storage = TokenStorage.getInstance();
+                    storage.store({
+                        accessToken: res.accessToken,
+                        refreshToken: res.refreshToken,
+                        expiresIn: res.expiresIn
+                    });
                 }
             })
         )
@@ -36,7 +39,9 @@ export class AuthService {
     }
 
     verifyOtp(otp: VerifyOtpDTO) {
-        return this.httpClient.post<AuthResultDTO>('http://localhost:8000/api/v1/auth/verify-otp', otp).pipe(
+        return this.httpClient.post<AuthResultDTO>('http://localhost:8000/api/v1/auth/verify-otp', otp, {
+            context: skipAuth()
+        }).pipe(
             tap(res => {
                 console.log(res);
             })

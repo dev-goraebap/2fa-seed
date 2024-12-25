@@ -14,6 +14,7 @@ async function bootstrap() {
   app.enableCors({
     origin: [
       'http://localhost:4200',  // 웹 개발 환경
+      'http://localhost:56979',  // 웹 개발 환경
       'capacitor://localhost',  // Capacitor
       'ionic://localhost',      // Ionic
       'file://*'               // 안드로이드 WebView

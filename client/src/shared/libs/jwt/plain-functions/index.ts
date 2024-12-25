@@ -1,2 +1,2 @@
-export * from './refresh-token.service';
-export * from './storages/local-token.storage';
+export * from './token-refresh.service';
+export * from './token.storage';

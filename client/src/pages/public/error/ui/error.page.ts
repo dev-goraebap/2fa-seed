@@ -1,5 +1,5 @@
 import { Location } from "@angular/common";
-import { afterNextRender, Component, inject, signal, WritableSignal } from "@angular/core";
+import { Component, inject, signal, WritableSignal } from "@angular/core";
 import { MatButtonModule } from "@angular/material/button";
 import { Router } from "@angular/router";
 
@@ -27,17 +27,15 @@ export class ErrorPage {
     private readonly location: Location = inject(Location);
 
     constructor() {
+        console.log('render error page');
         const state = this.router.getCurrentNavigation()?.extras.state;
+        if (!state || !state['message']) {
+            window.alert('잘못된 접근입니다.');
+            this.router.navigateByUrl('/');
+            return;
+        }
 
-        afterNextRender(() => {
-            if (!state || !state['message']) {
-                window.alert('잘못된 접근입니다.');
-                this.router.navigateByUrl('/');
-                return;
-            }
-    
-            this.errMsg.set(state['message']);
-        });
+        this.errMsg.set(state['message']);
     }
 
     onClickRetry() {

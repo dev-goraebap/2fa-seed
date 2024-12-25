@@ -1,4 +1,4 @@
-import { afterNextRender, Component, inject, Signal } from "@angular/core";
+import { Component, inject, Signal } from "@angular/core";
 import { MatButtonModule } from "@angular/material/button";
 import { Router, RouterLink } from "@angular/router";
 import { catchError, EMPTY } from "rxjs";
@@ -35,18 +35,16 @@ export class ProfilePage {
     protected readonly profile: Signal<ProfileResultDTO | undefined> = this.userService.data;
 
     constructor() {
-        afterNextRender(() => {
-            this.userService.initProfile().pipe(
-                catchError((err: HttpErrorResponse) => {
-                    console.error(err.error.message);
-                    this.router.navigateByUrl('/error', {
-                        state: {
-                            message: err.error.message
-                        }
-                    });
-                    return EMPTY;
-                })
-            ).subscribe();
-        });
+        this.userService.initProfile().pipe(
+            catchError((res: HttpErrorResponse) => {
+                // console.error(err.error.message);
+                this.router.navigateByUrl('/error', {
+                    state: {
+                        message: res?.error?.message
+                    }
+                });
+                return EMPTY;
+            })
+        ).subscribe();
     }
 }
