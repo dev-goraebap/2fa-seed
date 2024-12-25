@@ -1,6 +1,9 @@
-import { HttpContext, HttpContextToken, HttpEvent, HttpHandlerFn, HttpRequest } from "@angular/common/http";
+import { HttpContext, HttpContextToken, HttpErrorResponse, HttpEvent, HttpHandlerFn, HttpRequest } from "@angular/common/http";
+import { inject } from "@angular/core";
+import { Router } from "@angular/router";
 import { Observable } from "rxjs";
-import { LocalTokenStorage, RefreshTokenService } from "./plain-functions";
+import { TokenStorage } from "./plain-functions";
+import { TokenRefreshService } from "./plain-functions/token-refresh.service";
 
 const skipJwtContextToken = new HttpContextToken(() => false);
 
@@ -13,6 +16,11 @@ const skipJwtContextToken = new HttpContextToken(() => false);
 export function skipAuth(): HttpContext {
     return new HttpContext().set(skipJwtContextToken, true);
 };
+
+const tokenStorage: TokenStorage = TokenStorage.getInstance();
+const refreshService: TokenRefreshService = TokenRefreshService.getInstance();
+
+let isRefreshing: boolean = false;
 
 /**
  * @description
@@ -29,48 +37,43 @@ export function jwtInterceptor(req: HttpRequest<unknown>, next: HttpHandlerFn): 
         return next(req);
     }
 
-    const tokenStorage: LocalTokenStorage = LocalTokenStorage.getInstance();
-    const refreshService: RefreshTokenService = RefreshTokenService.getInstance();
+    const router: Router = inject(Router);
 
-    if (tokenStorage.isExpired()) {
+    if (tokenStorage.isExpiringSoon()) {
         console.debug('access token is expired');
         console.debug(`[${req.url}]`);
+        if (!isRefreshing) {
+            isRefreshing = true;
+
+            refreshService.refresh()
+                .catch(() => {
+                    window.alert('세션이 만료되었습니다.');
+                    router.navigateByUrl('/');
+                })
+                .finally(() => {
+                    isRefreshing = false;
+                });
+        }
 
         return new Observable(observer => {
-            console.log(refreshService.isRefreshing());
-            if (refreshService.isRefreshing()) {
-                refreshService.addPendingRequest({ request: req, next, observer });
-            } else {
-                refreshService.setRefreshing(true);
-
-                refreshService.doRefreshTokens()
-                    .then(() => {
-                        const accessToken = tokenStorage.getAccessToken();
-                        console.log(accessToken);
-                        const updatedReq = req.clone({
-                            headers: req.headers.set('Authorization', `Bearer ${accessToken}`)
-                        });
-                        next(updatedReq).subscribe(observer);
-
-                        refreshService.getPendingRequests().forEach(({ request, next, observer }) => {
-                            const updatedReq = request.clone({
-                                headers: request.headers.set('Authorization', `Bearer ${accessToken}`)
-                            });
-                            next(updatedReq).subscribe(observer);
-                        });
-                        refreshService.clearPendingRequests();
-                    })
-                    .catch((err) => {
-                        observer.error(err);
-                        refreshService.getPendingRequests().forEach(({ observer }) => {
-                            observer.error(err);
-                        });
-                        refreshService.clearPendingRequests();
-                    })
-                    .finally(() => {
-                        refreshService.setRefreshing(false);
+            console.log('push pending request');
+            refreshService.addPendingSubscriber(((token: string | null) => {
+                if (token) {
+                    console.log('성공');
+                    const updatedReq = req.clone({
+                        headers: req.headers.set('authorization', `Bearer ${token}`)
                     });
-            }
+                    next(updatedReq).subscribe(observer);
+                } else {
+                    console.log('실패');
+                    observer.error(async (err: HttpErrorResponse) => {
+                        console.error('인증이 필요한 API 재요청 실패:', err);
+                        window.alert('세션이 만료되었습니다.');
+                        await tokenStorage.clearTokens();
+                        router.navigateByUrl('/');
+                    });
+                }
+            }));
         });
     }
 
