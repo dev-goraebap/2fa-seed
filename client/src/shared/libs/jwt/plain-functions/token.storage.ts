@@ -1,3 +1,4 @@
+import { JwtResource } from "./types";
 
 /**
  * @description
@@ -10,27 +11,28 @@
  * singleton 패턴으로 인스턴스 제공
  * `getInstance` 를 통해 최초 생성자 초기화 또는 기존에 생성된 인스턴스 참조
  */
-export class LocalTokenStorage {
+export class TokenStorage {
 
     private accessToken: string | null = null;
     private expiresIn: number | null = null;
     private readonly refreshTokenKey: string = 'RT';
 
-    private static instance: LocalTokenStorage;
+    /** TokenStorage use only singleton */
+    private static instance: TokenStorage;
     private constructor() { }
-
-    static getInstance(): LocalTokenStorage {
+    static getInstance(): TokenStorage {
         if (!this.instance) {
-            this.instance = new LocalTokenStorage();
+            this.instance = new TokenStorage();
         }
         return this.instance;
     }
+    /** TokenStorage use only singleton */
 
-    isExpired(): boolean {
+    isExpiringSoon(): boolean {
         if (!this.expiresIn) {
             return true;
         }
-        
+
         const expiresIn = this.expiresIn * 1000;
         const fiveMinutes = 5 * 60 * 1000; // 5분을 밀리초로 변환
         const timeUntilExpiry = expiresIn - Date.now();
@@ -45,24 +47,21 @@ export class LocalTokenStorage {
         return this.accessToken;
     }
 
-    setAccessToken(token: string, expiresIn: number): void {
-        console.log(expiresIn);
-        this.accessToken = token;
-        this.expiresIn = expiresIn ?? null;
-    }
-
     getRefreshToken(): Promise<string | null> {
         const refreshToken = window.localStorage.getItem(this.refreshTokenKey);
         return Promise.resolve(refreshToken);
     }
 
-    setRefreshToken(token: string): Promise<void> {
-        window.localStorage.setItem(this.refreshTokenKey, token);
+    store(resource: JwtResource): Promise<void> {
+        this.accessToken = resource.accessToken;
+        this.expiresIn = resource.expiresIn;
+        window.localStorage.setItem(this.refreshTokenKey, resource.refreshToken);
         return Promise.resolve();
     }
 
     clearTokens(): Promise<void> {
         this.accessToken = null;
+        this.expiresIn = null;
         window.localStorage.removeItem(this.refreshTokenKey);
         return Promise.resolve();
     }
