@@ -4,20 +4,20 @@ import { CollectionReference } from "firebase-admin/firestore";
 import { OnlyProps } from "domain-shared/base";
 import { FirebaseRepository, FirebaseService } from "src/shared/third-party";
 
-import { UserTokenModel } from "../../models";
+import { UserSessionModel } from "../../models";
 
 @Injectable()
-export class UserTokenRepository implements FirebaseRepository<UserTokenModel> {
+export class UserTokenRepository implements FirebaseRepository<UserSessionModel> {
 
-    private readonly ref: FirebaseFirestore.CollectionReference<OnlyProps<UserTokenModel>>;
+    private readonly ref: FirebaseFirestore.CollectionReference<OnlyProps<UserSessionModel>>;
 
     constructor(
         protected readonly firebaseService: FirebaseService
     ) {
-        this.ref = this.firebaseService.getFirestore().collection('user_tokens') as CollectionReference<UserTokenModel>;
+        this.ref = this.firebaseService.getFirestore().collection('user_tokens') as CollectionReference<UserSessionModel>;
     }
 
-    async findUserTokenByRefreshToken(refreshToken: string): Promise<UserTokenModel> {
+    async findUserTokenByRefreshToken(refreshToken: string): Promise<UserSessionModel> {
         const snapshot = await this.ref
             .where('refreshToken', '==', refreshToken)
             .get();
@@ -30,10 +30,10 @@ export class UserTokenRepository implements FirebaseRepository<UserTokenModel> {
             return null;
         }
 
-        return UserTokenModel.fromFirebase(data);
+        return UserSessionModel.fromFirebase(data);
     }
 
-    async save(entity: UserTokenModel): Promise<void | UserTokenModel> {
+    async save(entity: UserSessionModel): Promise<void | UserSessionModel> {
         const docRef = this.ref.doc(entity.id);
         const data = entity.toPlainObject();
         const t = this.firebaseService.getTransaction();
@@ -44,7 +44,7 @@ export class UserTokenRepository implements FirebaseRepository<UserTokenModel> {
         }
     }
 
-    async remove(entity: UserTokenModel): Promise<void> {
+    async remove(entity: UserSessionModel): Promise<void> {
         const docRef = this.ref.doc(entity.id);
         const data = entity.toPlainObject();
         const t = this.firebaseService.getTransaction();

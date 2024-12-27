@@ -1,6 +1,6 @@
 import { Injectable, UnauthorizedException } from "@nestjs/common";
 import { UserTokenRepository } from "../infra/repositories/user-token.repository";
-import { UserTokenModel } from "../models";
+import { UserSessionModel } from "../models";
 
 /**
  * @description 사용자 토큰 관련 서비스
@@ -19,21 +19,21 @@ export class UserTokenService {
         private readonly userTokenRepository: UserTokenRepository
     ) { }
 
+    async getUserTokenOrThrow(refreshToken: string) {
+        const errMsg: string = '리프레시 토큰이 유효하지 않습니다.';
+        const userToken: UserSessionModel = await this.userTokenRepository.findUserTokenByRefreshToken(refreshToken);
+        if (!userToken) {
+            throw new UnauthorizedException(errMsg);
+        }
+        return userToken;
+    }
+
     async createUserToken(userId: string, refreshToken: string): Promise<void> {
-        const userTokenEntity = UserTokenModel.create({
+        const userTokenEntity = UserSessionModel.create({
             userId,
             refreshToken,
         });
 
         await this.userTokenRepository.save(userTokenEntity);
-    }
-
-    async getUserTokenOrThrow(refreshToken: string) {
-        const errMsg: string = '리프레시 토큰이 유효하지 않습니다.';
-        const userToken: UserTokenModel = await this.userTokenRepository.findUserTokenByRefreshToken(refreshToken);
-        if (!userToken) {
-            throw new UnauthorizedException(errMsg);
-        }
-        return userToken;
     }
 }

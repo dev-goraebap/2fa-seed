@@ -7,7 +7,7 @@ import { FirebaseService, MailService } from "src/shared/third-party";
 import { UserStatus } from "domain-shared/user";
 import { AuthResultDTO, LoginDTO, RegisterDTO, RetryOtpDTO, VerifyOtpDTO } from "../dto";
 import { UserRepository } from "../infra/repositories";
-import { UserModel, UserTokenModel } from "../models";
+import { UserModel, UserSessionModel } from "../models";
 import { generateOTP, generateRandomNickname } from "../utils";
 import { UserTokenService } from "./user-token.service";
 
@@ -136,7 +136,8 @@ export class AuthService {
     }
 
     async refreshTokens(_refreshToken: string): Promise<AuthResultDTO> {
-        const userToken: UserTokenModel = await this.userTokenService.getUserTokenOrThrow(_refreshToken);
+        const userToken: UserSessionModel = await this.userTokenService.getUserTokenOrThrow(_refreshToken);
+
         const accessToken: string = this.secureTokenService.generateJwtToken(userToken.userId);
         const expiresIn: number = this.secureTokenService.getJwtExpiresIn(accessToken);
         const refreshToken: string = this.secureTokenService.generateOpaqueToken();
