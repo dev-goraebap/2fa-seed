@@ -2,8 +2,8 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { Component, inject } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { catchError, EMPTY, tap } from 'rxjs';
+
 import { HealthCheckService } from 'src/entities/health-check';
-import { AuthService } from 'src/entities/user';
 import { environment } from 'src/shared/environments';
 import { TokenRefreshService } from 'src/shared/libs/jwt/plain-functions/token-refresh.service';
 
@@ -14,8 +14,6 @@ import { TokenRefreshService } from 'src/shared/libs/jwt/plain-functions/token-r
   styleUrl: './app.component.scss'
 })
 export class AppComponent {
-  title = '2fa-seed-client';
-  private readonly authService: AuthService = inject(AuthService);
   private readonly healthCheckService: HealthCheckService = inject(HealthCheckService);
 
   constructor() {
