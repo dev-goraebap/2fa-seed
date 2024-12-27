@@ -4,10 +4,14 @@ import { MatButtonModule } from "@angular/material/button";
 import { MatFormFieldModule } from "@angular/material/form-field";
 import { MatIconModule } from "@angular/material/icon";
 import { MatInputModule } from "@angular/material/input";
+import { Capacitor } from '@capacitor/core';
+import { Device, DeviceId, DeviceInfo } from '@capacitor/device';
 
 import { RegisterDTO, USER_RULES } from "domain-shared/user";
+import { Browser } from "src/shared/libs/browser";
 import { FormHelper } from "src/shared/services";
 import { ToFormGroup } from "src/shared/types";
+import { RegisterFormDTO } from "../types";
 
 @Component({
     selector: 'register-form',
@@ -69,14 +73,14 @@ export class RegisterForm extends FormHelper {
 
     protected readonly isFetching: WritableSignal<Boolean> = signal(false);
     protected readonly hide: WritableSignal<Boolean> = signal(true);
-    protected readonly formGroup: FormGroup<ToFormGroup<RegisterDTO>>;
+    protected readonly formGroup: FormGroup<ToFormGroup<RegisterFormDTO>>;
     protected readonly userRules = USER_RULES;
 
     private readonly fb = inject(FormBuilder);
 
     constructor() {
         super();
-        this.formGroup = this.fb.group<ToFormGroup<RegisterDTO>>({
+        this.formGroup = this.fb.group({
             email: this.fb.nonNullable.control<string>('', [
                 Validators.required,
                 Validators.email,
@@ -99,7 +103,7 @@ export class RegisterForm extends FormHelper {
         event.stopPropagation();
     }
 
-    protected onSubmit() {
+    protected async onSubmit() {
         if (!this.formGroup.valid) {
             this.formGroup.markAllAsTouched();
             return;
@@ -107,7 +111,30 @@ export class RegisterForm extends FormHelper {
 
         this.isFetching.set(true);
 
-        const formData: RegisterDTO = this.formGroup.getRawValue();
-        this.notify.emit(formData);
+        let deviceId: string;
+        let os: string;
+        let deviceModel: string;
+        if (Capacitor.isNativePlatform()) {
+            const deviceID: DeviceId = await Device.getId();
+            const deviceInfo: DeviceInfo = await Device.getInfo();
+            deviceId = deviceID.identifier;
+            os = deviceInfo.operatingSystem;
+            deviceModel = deviceInfo.model;
+        } else {
+            deviceId = Browser.getId();
+            deviceModel = Browser.getBrowserInfo();
+            os = Browser.getOSInfo();
+        }
+
+        const formData: RegisterFormDTO = this.formGroup.getRawValue();
+
+        const dto: RegisterDTO = {
+            ...formData,
+            deviceId,
+            deviceModel,
+            os
+        }
+        console.log(dto);
+        this.notify.emit(dto);
     }
 }
