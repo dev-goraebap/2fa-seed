@@ -1,9 +1,9 @@
+import { HttpErrorResponse } from "@angular/common/http";
 import { Component, inject, signal, Signal, viewChild, WritableSignal } from "@angular/core";
 import { MatSnackBar } from "@angular/material/snack-bar";
 import { Router, RouterLink } from "@angular/router";
 import { catchError, EMPTY, finalize, tap } from "rxjs";
 
-import { HttpErrorResponse } from "@angular/common/http";
 import { RegisterDTO, VerifyOtpDTO } from 'domain-shared/user';
 import { AuthService } from "src/entities/user";
 import { RegisterForm } from "src/features/user/register";
