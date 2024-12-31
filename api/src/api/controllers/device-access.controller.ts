@@ -17,9 +17,12 @@ export class DeviceAccessController {
     @ApiBearerAuth()
     @ApiOperation({ summary: '액세스된 디바이스 목록 조회' })
     @ApiResponse({ status: HttpStatus.OK, type: [DeviceResultDTO] })
-    async getDevices(@Credential() user: UserModel): Promise<DeviceResultDTO[]> {
-        const userSessions: UserSessionModel[] = await this.userSessionService.getUserSessions(user.id);
-        return userSessions.map(x => DeviceResultDTO.from(x));
+    async getDevices(@CurrentSession() userSession: UserSessionModel): Promise<DeviceResultDTO[]> {
+        const userSessions: UserSessionModel[] = await this.userSessionService.getUserSessions(userSession.userId);
+        return userSessions.map(x => {
+            const isCurrentDevice = x.id === userSession.id;
+            return DeviceResultDTO.from(x, isCurrentDevice);
+        });
     }
 
     @Public()
@@ -44,10 +47,19 @@ export class DeviceAccessController {
     @ApiBearerAuth()
     @ApiOperation({ summary: '다른 디바이스 로그아웃 <OTP 연계>' })
     @ApiResponse({ status: HttpStatus.NO_CONTENT })
-    async removeOther(@CurrentSession() userSession: UserSessionModel, @Body() dto: LogoutOtherDeviceDTO): Promise<void> {
+    async removeOther(
+        @Credential() user: UserModel,
+        @CurrentSession() userSession: UserSessionModel,
+        @Body() dto: LogoutOtherDeviceDTO
+    ): Promise<void> {
+        if (!user.verifyOtp(dto.otp)) { 
+            throw new BadRequestException('OTP가 유효하지 않습니다.');
+        }
+
         if (dto.deviceId === userSession.deviceId) {
             throw new BadRequestException('현재 액세스된 기기입니다.');
         }
+
         const otherUserSession = await this.userSessionService.getUserSessionOrThrow(userSession.userId, dto.deviceId);
         await this.userSessionService.remove(otherUserSession);
     }

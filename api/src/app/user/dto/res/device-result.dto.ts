@@ -16,12 +16,16 @@ export class DeviceResultDTO {
     @ApiProperty({ description: '마지막 로그인 일자' })
     readonly lastLoginDate: Date;
 
-    static from(s: UserSessionModel): DeviceResultDTO {
+    @ApiProperty({ description: '현재 디바이스 여부' })
+    readonly isCurrentDevice: boolean;
+
+    static from(s: UserSessionModel, isCurrentDevice: boolean): DeviceResultDTO {
         return plainToInstance(DeviceResultDTO, {
             id: s.deviceId,
             model: s.deviceModel,
             os: s.deviceOs,
-            lastLoginDate: s.lastRefreshingDate
+            lastLoginDate: s.lastRefreshingDate,
+            isCurrentDevice
         } as DeviceResultDTO);
     }
 }
