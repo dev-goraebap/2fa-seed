@@ -27,8 +27,8 @@ export class DeviceAccessController {
 
     @Public()
     @Post()
-    @ApiOperation({ summary: '새로운 디바이스 액세스 <OTP 연계>' })
-    @ApiResponse({ status: HttpStatus.OK, type: [DeviceResultDTO] })
+    @ApiOperation({ summary: '새로운 디바이스 액세스 <OTP 연계>', description: '디바이스 등록(액세스) 이후 JWT 토큰 리소스 발급' })
+    @ApiResponse({ status: HttpStatus.OK, type: AuthResultDTO })
     async create(@Body() dto: CreateDeviceDTO): Promise<AuthResultDTO> {
         return await this.userSessionService.create(dto);
     }
@@ -52,7 +52,7 @@ export class DeviceAccessController {
         @CurrentSession() userSession: UserSessionModel,
         @Body() dto: LogoutOtherDeviceDTO
     ): Promise<void> {
-        if (!user.verifyOtp(dto.otp)) { 
+        if (!user.verifyOtp(dto.otp)) {
             throw new BadRequestException('OTP가 유효하지 않습니다.');
         }
 
