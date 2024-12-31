@@ -1,5 +1,5 @@
 {
-  "name": "2fa-seed.client",
+  "name": "jwt-auth-seed.client",
   "version": "0.0.0",
   "scripts": {
     "ng": "ng",
