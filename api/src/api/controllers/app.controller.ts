@@ -4,7 +4,7 @@ import { Public } from "../decorators";
 
 @Public()
 @Controller()
-@ApiTags('Default')
+@ApiTags('애플리케이션')
 export class AppController {
     @Get('healthy')
     @ApiOperation({ summary: '헬스 체크' })

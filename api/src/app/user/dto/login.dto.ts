@@ -1,9 +1,9 @@
 import { ApiProperty } from "@nestjs/swagger";
 import { IsNotEmpty, Length } from "class-validator";
 
-import { USER_RULES } from 'domain-shared/user';
+import { USER_RULES, LoginDTO as TLoginDTO } from 'domain-shared/user';
 
-export class LoginDTO {
+export class LoginDTO implements TLoginDTO {
     @IsNotEmpty({ message: '이메일은 필수 입력 항목입니다.' })
     @Length(USER_RULES.email.min, USER_RULES.email.max, {
         message: `잘못된 형식입니다.`,

@@ -1,30 +1,35 @@
-import { Controller, Get } from "@nestjs/common";
-import { ApiBearerAuth, ApiOkResponse, ApiOperation, ApiTags, ApiUnauthorizedResponse } from "@nestjs/swagger";
+import { Controller, Delete, Get, HttpCode, HttpStatus } from "@nestjs/common";
+import { ApiBearerAuth, ApiOperation, ApiResponse, ApiTags } from "@nestjs/swagger";
 
-import { ProfileResultDTO } from "src/app/user";
-import { UserModel } from "src/app/user/models";
+import { ProfileResultDTO, UserModel, UserService, UserSessionModel, UserSessionService } from "src/app/user";
 
 import { Credential } from "../decorators";
 
 @Controller({ path: 'users', version: '1' })
-@ApiTags('사용자정보')
+@ApiTags('회원정보')
+@ApiBearerAuth()
 export class UserController {
 
+    constructor(
+        private readonly userService: UserService,
+        private readonly userSessionService: UserSessionService
+    ) { }
+
     @Get('me')
-    @ApiBearerAuth()
-    @ApiOperation({ summary: '내 정보 조회' })
-    @ApiOkResponse({ type: ProfileResultDTO })
-    @ApiUnauthorizedResponse({ description: '인증되지 않은 사용자' })
-    getUserProfile(@Credential() user: UserModel): ProfileResultDTO {
+    @ApiOperation({ summary: '프로필 조회' })
+    @ApiResponse({ status: HttpStatus.OK, type: ProfileResultDTO })
+    getProfile(@Credential() user: UserModel) {
         return ProfileResultDTO.from(user);
     }
 
-    @Get('withdrawal')
-    @ApiBearerAuth()
-    @ApiOperation({ summary: '회원 탈퇴' })
-    @ApiOkResponse()
-    @ApiUnauthorizedResponse({ description: '인증되지 않은 사용자' })
-    withdrawal(@Credential() user: UserModel): ProfileResultDTO {
-        return ProfileResultDTO.from(user);
+    @Delete()
+    @HttpCode(HttpStatus.NO_CONTENT)
+    @ApiOperation({ summary: '회원탈퇴' })
+    @ApiResponse({ status: HttpStatus.NO_CONTENT })
+    async withdraw(@Credential() user: UserModel) {
+        await this.userService.withdraw(user, async () => {
+            const userSessions: UserSessionModel[] = await this.userSessionService.getUserSessions(user.id);
+            await this.userSessionService.removes(userSessions);
+        });
     }
 }

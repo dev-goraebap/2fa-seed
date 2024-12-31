@@ -1,8 +1,8 @@
 import { Type } from "@nestjs/common";
 import { Timestamp } from "firebase-admin/firestore";
 
-import { OnlyProps } from "domain-shared/base";
 import { plainToInstance } from "class-transformer";
+import { OnlyProps } from "domain-shared/base";
 
 /**
  * @description
@@ -32,6 +32,7 @@ export class FirebaseModel {
     constructor() {
         this.createdAt = new Date();
         this.updatedAt = new Date();
+        this.deletedAt = null;
     }
 
     /**

@@ -1,18 +1,24 @@
 import { Module } from "@nestjs/common";
 
-import { UserRepository, UserTokenRepository } from "./infra/repositories";
-import { AuthService, UserTokenService } from "./services";
+import { UserSessionRepository } from "./infra/repositories/user-session.repository";
+import { UserRepository } from "./infra/repositories/user.repository";
+import { AuthService } from "./services/auth.service";
+import { UserSessionService } from "./services/user-session.service";
+import { UserService } from "./services/user.service";
 
 @Module({
     imports: [],
     providers: [
         UserRepository,
-        UserTokenRepository,
-        UserTokenService,
-        AuthService
+        UserSessionRepository,
+        AuthService,
+        UserService,
+        UserSessionService,
     ],
     exports: [
-        AuthService
+        AuthService,
+        UserService,
+        UserSessionService,
     ]
 })
 export class UserModule {}

@@ -4,7 +4,7 @@ import { FirebaseRepository, FirebaseService } from "src/shared/third-party";
 
 import { OnlyProps } from "domain-shared/base";
 import { CollectionReference } from "firebase-admin/firestore";
-import { UserModel } from "../../models";
+import { UserModel } from "../../models/user.model";
 
 @Injectable()
 export class UserRepository implements FirebaseRepository<UserModel> {
@@ -18,22 +18,9 @@ export class UserRepository implements FirebaseRepository<UserModel> {
     }
 
     async findUserById(userId: string): Promise<UserModel> {
-        const snapshot = await this.ref.doc(userId).get();
-        if (!snapshot.exists) {
-            return null;
-        }
-
-        const data = snapshot.data();
-        if (!data) {
-            return null;
-        }
-
-        return UserModel.fromFirebase(data);
-    }
-
-    async findUserByEmail(email: string): Promise<UserModel> {
         const snapshot = await this.ref
-            .where('email', '==', email)
+            .where('id', '==', userId)
+            .where('deletedAt', '==', null)
             .get();
         if (snapshot.empty) {
             return null;
@@ -47,37 +34,16 @@ export class UserRepository implements FirebaseRepository<UserModel> {
         return UserModel.fromFirebase(data);
     }
 
-    async findUserByOtpWithEmail(otp: string, email: string): Promise<UserModel> {
+    async findUserByEmail(email: string): Promise<UserModel> {
         const snapshot = await this.ref
             .where('email', '==', email)
-            .where('otp', '==', otp)
-            .limit(1)
+            .where('deletedAt', '==', null)
             .get();
-
         if (snapshot.empty) {
             return null;
         }
 
-        const data = snapshot.docs[0].data();
-        if (!data) {
-            return null;
-        }
-
-        return UserModel.fromFirebase(data);
-    }
-
-    async findUserByOtpWithPhoneNumber(otp: string, phoneNumber: string): Promise<UserModel> {
-        const snapshot = await this.ref
-            .where('phoneNumber', '==', phoneNumber)
-            .where('otp', '==', otp)
-            .limit(1)
-            .get();
-
-        if (snapshot.empty) {
-            return null;
-        }
-
-        const data = snapshot.docs[0].data();
+        const data = snapshot.docs.shift().data();
         if (!data) {
             return null;
         }

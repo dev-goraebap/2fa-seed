@@ -1,9 +1,8 @@
-import { CanActivate, ExecutionContext, HttpStatus, Injectable, UnauthorizedException } from "@nestjs/common";
+import { CanActivate, ExecutionContext, Injectable, UnauthorizedException } from "@nestjs/common";
 import { Reflector } from "@nestjs/core";
 import { Request } from "express";
 
-import { AuthResultDTO, AuthService } from "src/app/user";
-import { CustomException, CustomExceptions } from "../errors";
+import { AuthService } from "src/app/user";
 
 /**
  * @description
@@ -12,7 +11,6 @@ import { CustomException, CustomExceptions } from "../errors";
  * - 모든 요청에 대해 작동되며, 토큰이 유효하지 않으면 요청을 거부합니다.
  * - 요청 해더의 `Bearer` 토큰을 검증합니다.
  * - `Public` 데코레이터가 적용된 요청은 권한 검사를 건너뜁니다.
- * - `Refresh` 데코레이터가 적용된 요청은 리프레시 토큰을 검증합니다.
  */
 @Injectable()
 export class AuthGuard implements CanActivate {
@@ -26,18 +24,6 @@ export class AuthGuard implements CanActivate {
 
         if (this.isPublic(context)) {
             return true;
-        }
-
-        if (this.isRefresh(context)) {
-            const errMsg: string = '리프레시토큰이 유효하지 않습니다.';
-            try {
-                const token = this.getBearerTokenOrThrow(context, errMsg);
-                const dto: AuthResultDTO = await this.authService.refreshTokens(token);
-                req['authResult'] = dto;
-                return true;
-            } catch {
-                throw new CustomException(CustomExceptions.SESSION_EXPIRES, errMsg, HttpStatus.UNAUTHORIZED);
-            }
         }
 
         const errMsg: string = '액세스토큰이 유효하지 않습니다.';

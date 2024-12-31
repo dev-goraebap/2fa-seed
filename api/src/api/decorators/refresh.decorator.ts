@@ -1,4 +1,5 @@
-import { SetMetadata } from "@nestjs/common";
+import { applyDecorators, createParamDecorator, ExecutionContext, SetMetadata, UnauthorizedException } from "@nestjs/common";
+import { ApiHeader } from "@nestjs/swagger";
 
 /**
  * @description
@@ -7,3 +8,37 @@ import { SetMetadata } from "@nestjs/common";
 export function Refresh() {
     return SetMetadata('refresh', true);
 }
+
+export function ApiRefreshTokenHeader() {
+    return applyDecorators(
+        ApiHeader({
+            name: 'x-refresh-token',
+            description: '리프레시토큰',
+            required: true,
+            schema: {
+                type: 'string',
+                example: 'asdf-zxcv-qwer-fghg',
+            },
+        })
+    );
+}
+
+export const RefreshToken = createParamDecorator(
+    (data: unknown, ctx: ExecutionContext) => {
+        const request: Request = ctx.switchToHttp().getRequest();
+        const bearerToken: string = request.headers['x-refresh-token'];
+        const errMsg: string = '리프레시토큰이 유효하지 않습니다.';
+
+        console.log(bearerToken);
+        if (!bearerToken) {
+            throw new UnauthorizedException(errMsg);
+        }
+
+        const refreshToken = bearerToken.split('Bearer ')[1];
+        if (!refreshToken) {
+            throw new UnauthorizedException(errMsg);
+        }
+
+        return refreshToken;
+    },
+);

@@ -2,7 +2,7 @@ import { ApiProperty } from '@nestjs/swagger';
 import { plainToInstance } from 'class-transformer';
 
 import { ProfileResultDTO as TProfileResultDTO } from 'domain-shared/user';
-import { UserModel } from '../../models';
+import { UserModel } from '../../models/user.model';
 
 export class ProfileResultDTO implements TProfileResultDTO {
     @ApiProperty({ description: '사용자 ID' })
