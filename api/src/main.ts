@@ -38,8 +38,8 @@ async function bootstrap() {
 
   // Swagger 설정
   const config = new DocumentBuilder()
-    .setTitle('2FA SEED API')
-    .setDescription('Two Factor Authentication Seed API')
+    .setTitle('JWT AUTH SEED API')
+    .setDescription('JWT AUTH Authentication Seed API')
     .addBearerAuth()
     .setVersion('1.0')
     .build();
