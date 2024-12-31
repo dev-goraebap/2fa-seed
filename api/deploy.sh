@@ -8,3 +8,6 @@ npm run build
 
 # STEP: 도커 이미지 빌드
 docker build -f ./docker/Dockerfile -t gcr.io/fa-seed/api:${VERSION} .
+
+# STEP: gcr.io 도커 허브에 이미지 푸쉬
+docker push gcr.io/fa-seed/api:${VERSION}
