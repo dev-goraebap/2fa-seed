@@ -39,7 +39,7 @@ async function bootstrap() {
   // Swagger 설정
   const config = new DocumentBuilder()
     .setTitle('JWT AUTH SEED API')
-    .setDescription('JWT AUTH Authentication Seed API')
+    .setDescription('JWT Authentication Seed API')
     .addBearerAuth()
     .setVersion('1.0')
     .build();
