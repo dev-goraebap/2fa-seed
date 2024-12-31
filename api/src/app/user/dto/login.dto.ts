@@ -17,4 +17,8 @@ export class LoginDTO implements TLoginDTO {
     })
     @ApiProperty({ description: '비밀번호', example: '1q2w3e1!@' })
     readonly password: string;
+
+    @IsNotEmpty({ message: '디바이스ID가 필요합니다.' })
+    @ApiProperty({ description: '디바이스ID' })
+    readonly deviceId: string;
 }

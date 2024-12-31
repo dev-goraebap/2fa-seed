@@ -14,6 +14,7 @@ import { AuthService } from "src/app/user";
  */
 @Injectable()
 export class AuthGuard implements CanActivate {
+
     constructor(
         private readonly reflector: Reflector,
         private readonly authService: AuthService,
@@ -28,8 +29,9 @@ export class AuthGuard implements CanActivate {
 
         const errMsg: string = '액세스토큰이 유효하지 않습니다.';
         const token = this.getBearerTokenOrThrow(context, errMsg);
-        const user = await this.authService.getCredentialOrThrow(token);
+        const [user, userSession] = await this.authService.getCredentialOrThrow(token);
         req['user'] = user;
+        req['userSession'] = userSession;
         return true;
     }
 

@@ -1,5 +1,6 @@
-export * from './device.dto';
+export * from './create-device.dto';
 export * from './login.dto';
+export * from './logout-other-device.dto';
 export * from './register.dto';
 export * from './res/auth-result.dto';
 export * from './res/device-result.dto';
