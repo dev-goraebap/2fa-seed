@@ -5,6 +5,7 @@ import { nanoid } from "nanoid";
 
 import { comparePassword, hashPassword } from "src/shared/security";
 import { FirebaseModel } from "src/shared/third-party";
+
 import { generateOTP } from "../utils/generate-otp";
 
 export class UserModel extends FirebaseModel {
@@ -26,6 +27,8 @@ export class UserModel extends FirebaseModel {
             nickname: param.nickname,
             otp: generateOTP(),
             otpExpiryDate: new Date(Date.now() + UserModel.OTP_EXPIRES_TIME),
+            createdAt: new Date(),
+            updatedAt: new Date(),
         } as UserModel);
     }
 
@@ -60,6 +63,14 @@ export class UserModel extends FirebaseModel {
             ...this,
             otp,
             otpExpiryDate: new Date(Date.now() + UserModel.OTP_EXPIRES_TIME),
+            updatedAt: new Date()
+        } as UserModel);
+    }
+
+    withUpdateNickname(nickname: string): UserModel {
+        return plainToInstance(UserModel, {
+            ...this,
+            nickname,
             updatedAt: new Date()
         } as UserModel);
     }
