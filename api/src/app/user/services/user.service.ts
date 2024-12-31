@@ -13,6 +13,12 @@ export class UserService {
         private readonly userRepository: UserRepository,
     ) { }
 
+    async updateNickname(user: UserModel, nickname: string): Promise<UserModel> {
+        user = user.withUpdateNickname(nickname);
+        await this.userRepository.save(user);
+        return user;
+    }
+
     async withdraw(user: UserModel, callback: () => Promise<void>): Promise<void> {
         this.firebaseService.runInTransaction(async () => {
             await this.userRepository.remove(user);

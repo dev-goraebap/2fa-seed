@@ -7,4 +7,5 @@ export * from './res/device-result.dto';
 export * from './res/email-duplicate-check-result.dto';
 export * from './res/profile-result.dto';
 export * from './retry-otp.dto';
+export * from './update-nickname.dto';
 export * from './verify-otp.dto';
