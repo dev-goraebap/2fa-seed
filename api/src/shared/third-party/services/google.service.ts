@@ -60,7 +60,7 @@ export class GoogleService implements OAuthProvider {
             },
         }).then(res => {
             const { access_token, expires_in, id_token } = res.data;
-            console.log(access_token);
+            console.log(id_token);
             return {
                 provider: OAuthProviders.GOOGLE,
                 accessToken: access_token,
