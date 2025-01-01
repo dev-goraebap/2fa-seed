@@ -1,7 +1,6 @@
 import { plainToInstance } from "class-transformer";
 import { OnlyProps } from "domain-shared/base";
 import { Timestamp } from "firebase-admin/firestore";
-import { nanoid } from "nanoid";
 import { FirebaseModel } from "src/shared/third-party";
 
 export class UserSessionModel extends FirebaseModel {
@@ -19,7 +18,7 @@ export class UserSessionModel extends FirebaseModel {
 
     static create(param: Pick<UserSessionModel, 'userId' | 'deviceId' | 'deviceModel' | 'deviceOs' | 'refreshToken'>): UserSessionModel {
         return plainToInstance(UserSessionModel, {
-            id: nanoid(30),
+            id: `${param.userId}:${param.deviceId}`,
             userId: param.userId,
             deviceId: param.deviceId,
             deviceModel: param.deviceModel,
