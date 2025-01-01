@@ -2,7 +2,7 @@ import { CanActivate, ExecutionContext, Injectable, UnauthorizedException } from
 import { Reflector } from "@nestjs/core";
 import { Request } from "express";
 
-import { AuthService } from "src/app/user";
+import { LocalAuthService } from "src/app/user";
 
 /**
  * @description
@@ -17,7 +17,7 @@ export class AuthGuard implements CanActivate {
 
     constructor(
         private readonly reflector: Reflector,
-        private readonly authService: AuthService,
+        private readonly authService: LocalAuthService,
     ) { }
 
     async canActivate(context: ExecutionContext): Promise<boolean> {
