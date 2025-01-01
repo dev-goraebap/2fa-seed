@@ -27,7 +27,7 @@ export class FirebaseService {
             initializeApp({
                 credential: cert(serviceAccount as ServiceAccount),
             });
-            this.firestore = getFirestore('twofa-seed');
+            this.firestore = getFirestore();
             console.log('Init Firebase Admin SDK');
         });
     }
