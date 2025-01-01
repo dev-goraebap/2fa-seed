@@ -12,7 +12,7 @@ import { UserModel } from "../models/user.model";
 import { generateRandomNickname } from "../utils/generate-random-nickname";
 
 @Injectable()
-export class AuthService {
+export class LocalAuthService {
 
     constructor(
         private readonly mailService: MailService,
