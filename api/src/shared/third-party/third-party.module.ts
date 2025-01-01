@@ -1,22 +1,23 @@
 import { Global, Module } from "@nestjs/common";
 
-import { FirebaseModule } from "./firebase";
-import { MailService } from "./services";
-import { OtpService } from "./services/otp.service";
+import { FirebaseService } from "./services/firebase.service";
+import { GoogleService } from "./services/google.service";
+import { KakaoService } from "./services/kakao.service";
+import { MailService } from "./services/mail.service";
 
 @Global()
 @Module({
-    imports: [
-        FirebaseModule
-    ],
     providers: [
+        FirebaseService,
         MailService,
-        OtpService
+        KakaoService,
+        GoogleService,
     ],
     exports: [
-        FirebaseModule,
+        FirebaseService,
         MailService,
-        OtpService
+        KakaoService,
+        GoogleService
     ]
 })
 export class ThirdPartyModule {}
