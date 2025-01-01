@@ -16,6 +16,15 @@ export type EnvConfig = {
     MAIL_USERNAME: string;
     MAIL_PASSWORD: string;
 
+    // 카카오 설정
+    KAKAO_CLIENT_ID: string;
+    KAKAO_REDIRECT_URI: string;
+
+    // 구글 설정
+    GOOGLE_CLIENT_ID: string;
+    GOOGLE_CLIENT_SECRET: string;
+    GOOGLE_REDIRECT_URI: string;
+
     // 보안토큰 설정
     ACCESS_TOKEN_SECRET: string;
     ACCESS_TOKEN_EXPIRES_IN: string;
