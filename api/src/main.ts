@@ -1,14 +1,16 @@
 import { ValidationPipe } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { NestFactory } from '@nestjs/core';
+import { NestExpressApplication } from '@nestjs/platform-express';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 
+import { join } from 'path';
 import { validationExceptionFactory } from './api';
 import { MainModule } from './main.module';
 import { EnvConfig } from './shared/config';
 
 async function bootstrap() {
-  const app = await NestFactory.create(MainModule);
+  const app = await NestFactory.create<NestExpressApplication>(MainModule);
 
   // cors 설정
   app.enableCors({
@@ -20,6 +22,9 @@ async function bootstrap() {
       'file://*'               // 안드로이드 WebView
     ]
   });
+
+  app.setViewEngine('ejs');
+  app.setBaseViewsDir(join(__dirname, '../../..', 'public'));
 
   // 전역 접두사 설정
   app.setGlobalPrefix('api');
