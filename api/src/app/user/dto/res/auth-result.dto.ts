@@ -34,4 +34,13 @@ export class AuthResultDTO implements TAuthResultDTO {
             expiresIn: null,
         } as AuthResultDTO);
     }
+
+    static fromNeedSocialRegister(): AuthResultDTO | PromiseLike<AuthResultDTO> {
+        return plainToInstance(AuthResultDTO, {
+            status: AuthStatus.NEED_SOCIAL_REGISTER,
+            accessToken: null,
+            refreshToken: null,
+            expiresIn: null,
+        } as AuthResultDTO);
+    }
 }
