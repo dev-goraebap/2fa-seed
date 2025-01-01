@@ -23,7 +23,7 @@ export class UserModel extends FirebaseModel {
         return plainToInstance(UserModel, {
             id: nanoid(30),
             email: param.email,
-            password: hashPassword(param.password),
+            password: param.password ? hashPassword(param.password) : null,
             nickname: param.nickname,
             otp: generateOTP(),
             otpExpiryDate: new Date(Date.now() + UserModel.OTP_EXPIRES_TIME),
