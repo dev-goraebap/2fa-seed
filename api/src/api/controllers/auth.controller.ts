@@ -1,7 +1,7 @@
 import { Body, Controller, Get, HttpStatus, Param, Post } from "@nestjs/common";
 import { ApiOperation, ApiResponse, ApiTags } from "@nestjs/swagger";
 
-import { AuthResultDTO, AuthService, EmailDuplicateCheckResultDTO, LoginDTO, RegisterDTO, RetryOtpDTO } from "src/app/user";
+import { AuthResultDTO, LocalAuthService, EmailDuplicateCheckResultDTO, LoginDTO, RegisterDTO, RetryOtpDTO } from "src/app/user";
 
 import { ApiRefreshTokenHeader, Public, RefreshToken } from "../decorators";
 import { EmailValidationPipe } from "../pipes";
@@ -15,7 +15,7 @@ import { EmailValidationPipe } from "../pipes";
 export class AuthController {
 
     constructor(
-        private readonly authService: AuthService
+        private readonly authService: LocalAuthService
     ) { }
 
     @Public()
