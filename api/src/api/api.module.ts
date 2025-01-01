@@ -3,7 +3,7 @@ import { APP_FILTER, APP_GUARD } from "@nestjs/core";
 
 import { UserModule } from "src/app/user";
 
-import { AppController, AuthController, DeviceAccessController, UserController } from "./controllers";
+import { AppController, AuthController, DeviceAccessController, SocialController, UserController } from "./controllers";
 import { GlobalExceptionFilter } from "./errors";
 import { AuthGuard } from "./guards";
 
@@ -14,6 +14,7 @@ import { AuthGuard } from "./guards";
     controllers: [
         AppController,
         AuthController,
+        SocialController,
         DeviceAccessController,
         UserController,
     ],
