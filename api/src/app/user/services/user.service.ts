@@ -1,7 +1,8 @@
-import { Injectable } from "@nestjs/common";
+import { Injectable, UnauthorizedException } from "@nestjs/common";
 
 import { FirebaseService } from "src/shared/third-party";
 
+import { WithdrawDTO } from "../dto";
 import { UserRepository } from "../infra/repositories/user.repository";
 import { UserModel } from "../models/user.model";
 
@@ -19,7 +20,11 @@ export class UserService {
         return user;
     }
 
-    async withdraw(user: UserModel, callback: () => Promise<void>): Promise<void> {
+    async withdraw(user: UserModel, dto: WithdrawDTO, callback: () => Promise<void>): Promise<void> {
+        if (!user.verifyOtp(dto.otp)) {
+            throw new UnauthorizedException('OTP 코드가 유효하지 않습니다.');
+        }
+
         this.firebaseService.runInTransaction(async () => {
             await this.userRepository.remove(user);
             await callback();
