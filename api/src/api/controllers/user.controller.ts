@@ -3,7 +3,7 @@ import { ApiBearerAuth, ApiOperation, ApiResponse, ApiTags } from "@nestjs/swagg
 
 import { ProfileResultDTO, UpdateNicknameDTO, UserModel, UserService, UserSessionModel, UserSessionService, WithdrawDTO } from "src/app/user";
 
-import { Credential } from "../decorators";
+import { Credential, Public } from "../decorators";
 
 @Controller({ path: 'users', version: '1' })
 @ApiTags('회원정보')
@@ -30,16 +30,21 @@ export class UserController {
         return ProfileResultDTO.from(updatedUser);
     }
 
+    @Public()
+    @Patch('password')
+    @ApiOperation({ summary: '비밀번호 변경' })
+    @ApiResponse({ status: HttpStatus.OK, type: ProfileResultDTO })
+    async updatePassword(@Credential() user: UserModel, @Body() dto: UpdateNicknameDTO): Promise<ProfileResultDTO> {
+        const updatedUser = await this.userService.updateNickname(user, dto.nickname);
+        return ProfileResultDTO.from(updatedUser);
+    }
+
     @Delete()
     @HttpCode(HttpStatus.NO_CONTENT)
     @ApiOperation({ summary: '회원탈퇴 <OTP 연계>' })
     @ApiResponse({ status: HttpStatus.NO_CONTENT })
     async withdraw(@Credential() user: UserModel, @Body() dto: WithdrawDTO): Promise<void> {
-        if (!user.verifyOtp(dto.otp)) {
-            throw new Error('OTP 코드가 유효하지 않습니다.');
-        }
-
-        await this.userService.withdraw(user, async () => {
+        await this.userService.withdraw(user, dto, async () => {
             const userSessions: UserSessionModel[] = await this.userSessionService.getUserSessions(user.id);
             await this.userSessionService.removes(userSessions);
         });
