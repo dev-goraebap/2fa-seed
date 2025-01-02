@@ -1,1 +1,32 @@
-<div class="text-3xl font-bold">로그인 페이지 Login Page</div>
+<div class="p-4 motion-opacity-in-[0] motion-translate-y-in-[5%] motion-duration-[0.7s] motion-ease-in-out sm:mt-10">
+    <div class="text-3xl font-extrabold">JWT Auth Seed</div>
+    <div class="mt-1 text-xl">안녕하세요! JWT 인증 데모 앱입니다 👋</div>
+    <br />
+    <login-form #loginForm (loginEvent)="onLogin($event)"></login-form>
+
+    <div class="flex justify-between px-4 my-6">
+        <div>
+            @if (showPasswordFindButton) {
+            <a routerLink="/router" class="mr-1 text-secondary motion-preset-focus-lg">비밀번호 찾기</a>
+            }
+        </div>
+        <div>
+            <a routerLink="/router" class="mr-1 text-secondary">회원가입</a>
+        </div>
+    </div>
+
+    <div class="my-10 divider">다른 방법으로 로그인</div>
+
+    <div class="flex justify-center w-full">
+        <div class="flex flex-wrap gap-4">
+            <button class="btn btn-square btn-outline text-[#1877F2] hover:border-[#1877F2] hover:bg-[#1877F2]/10"
+                aria-label="Facebook Outline Icon Button">
+                <span class="icon-[tabler--brand-facebook]"></span>
+            </button>
+            <button class="btn btn-circle btn-outline text-[#2b3137] hover:border-[#2b3137] hover:bg-[#2b3137]/10"
+                aria-label="Github Outline Icon Button">
+                <span class="icon-[tabler--brand-github]"></span>
+            </button>
+        </div>
+    </div>
+</div>
