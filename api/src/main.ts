@@ -15,6 +15,7 @@ async function bootstrap() {
   // cors 설정
   app.enableCors({
     origin: [
+      'https://jwt-auth-seed-926d8.web.app', // 웹 배포 환경
       'http://localhost:4200',  // 웹 개발 환경
       'http://localhost:56979',  // 웹 개발 환경
       'capacitor://localhost',  // Capacitor
