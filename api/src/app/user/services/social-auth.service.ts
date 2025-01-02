@@ -31,10 +31,10 @@ export class SocialAuthService {
             return AuthResultDTO.fromNeedSocialRegister();
         }
 
-        // 2. 인증세션이 없으면 OTP 인증 필요
+        // 2. 이메일 인증이 되지 않았거나, 인증세션이 없으면 이메일로 OTP 발송, OTP 추가 인증 요구
+        let user: UserModel = await this.userRepository.findUserById(social.userId);
         let userSession: UserSessionModel = await this.userSessionRepository.findSessionByUserIdWithDeviceId(social.userId, deviceId);
-        if (!userSession) {
-            let user: UserModel = await this.userRepository.findUserById(social.userId);
+        if (!user.isEmailVerified || !userSession) {
             user = user.withUpdateOtp();
             await this.userRepository.save(user);
             await this.mailService.send(user.email, user.otp);
@@ -70,15 +70,14 @@ export class SocialAuthService {
 
             // 3. 회원 모델 생성 및 저장
             const randomNickname: string = generateRandomNickname();
-            user = UserModel.create({
+            user = UserModel.fromSocial({
                 email: dto.email,
                 nickname: randomNickname,
             });
-            console.log(user);
             await this.userRepository.save(user);
 
             // 4. 소셜 회원 모델 생성 및 저장
-            social = UserSocialModel.create({
+            social = UserSocialModel.from({
                 provider: dto.provider,
                 socialId: socialId,
                 userId: user.id,
