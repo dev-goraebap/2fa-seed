@@ -13,7 +13,7 @@ export class UserSocialModel extends FirebaseModel {
 
     private static readonly REFRESH_EXPIRES_TIME: number = 7 * 24 * 60 * 60 * 1000; //7일
 
-    static create(param: Pick<UserSocialModel, 'userId' | 'socialId' | 'provider'>): UserSocialModel {
+    static from(param: Pick<UserSocialModel, 'userId' | 'socialId' | 'provider'>): UserSocialModel {
         return plainToInstance(UserSocialModel, {
             id: `${param.userId}:${param.socialId}`,
             userId: param.userId,
