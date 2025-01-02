@@ -7,6 +7,9 @@ module.exports = {
   theme: {
     extend: {},
   },
+  flyonui: {
+    themes: ["light", "dark", "gourmet"]
+  },
   plugins: [
     require('tailwindcss-motion'),
     require("flyonui"),
