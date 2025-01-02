@@ -70,6 +70,9 @@ export class UserModel extends FirebaseModel {
     }
 
     verifyPassword(password: string): boolean {
+        if (!this.password) {
+            return false;
+        }
         return comparePassword(password, this.password);
     }
 
