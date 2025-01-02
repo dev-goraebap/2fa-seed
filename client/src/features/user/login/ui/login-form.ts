@@ -48,8 +48,8 @@ import { ToFormGroup } from "src/shared/types";
                 <mat-error>비밀번호를 입력해 주세요.</mat-error>
             }
         </mat-form-field>
-        <div class="w-full mt-6">
-            <button mat-flat-button class="w-full" disabled="{{isFetching()}}">
+        <div class="w-full mt-6 ">
+            <button mat-flat-button class="w-full h-[100px] !border !border-red-500" disabled="{{isFetching()}}">
                 @if(isFetching())  {
                     <div role="status">
                         <svg aria-hidden="true" class="w-8 h-8 text-gray-200 animate-spin fill-blue-500" viewBox="0 0 100 101" fill="none" xmlns="http://www.w3.org/2000/svg">
