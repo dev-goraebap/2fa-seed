@@ -24,6 +24,7 @@
     "@capacitor/angular": "^2.0.3",
     "@capacitor/core": "latest",
     "@capacitor/device": "^6.0.2",
+    "flyonui": "^1.2.0",
     "jwt-decode": "^4.0.0",
     "rxjs": "~7.8.0",
     "tailwindcss-motion": "^1.0.0",
