@@ -9,4 +9,4 @@ export * from './retry-otp.dto';
 export * from './social-register.dto';
 export * from './update-nickname.dto';
 export * from './verify-otp.dto';
-
+export * from './withdraw.dto';
