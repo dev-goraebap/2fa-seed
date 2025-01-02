@@ -101,4 +101,12 @@ export class UserModel extends FirebaseModel {
             updatedAt: new Date()
         } as UserModel);
     }
+
+    withUpdatePassword(password: string): UserModel {
+        return plainToInstance(UserModel, {
+            ...this,
+            password: hashPassword(password),
+            updatedAt: new Date()
+        } as UserModel);
+    }
 }
