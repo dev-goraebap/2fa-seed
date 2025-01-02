@@ -1,0 +1,37 @@
+<form class="w-full" [formGroup]="formGroup" (ngSubmit)="onLogin()">
+    <div class="relative">
+        <input type="text" placeholder="banana@gmail.com" class="input input-filled peer" id="emailInput"
+            formControlName="email" />
+        <label class="input-filled-label" for="emailInput">이메일</label>
+        <span class="input-filled-focused"></span>
+    </div>
+    <span class="label">
+        @if (hasError('email', 'required')) {
+        <span class="label-text-alt text-primary motion-preset-focus" value="motion-preset-blur-right">이메일을 입력해
+            주세요.</span>
+        } @else if (hasError('email', 'pattern')){
+        <span class="label-text-alt text-primary motion-preset-focus" value="motion-preset-blur-right">이메일 형식이
+            아닙니다.</span>
+        }
+    </span>
+    <div class="mt-4"></div>
+    <div class="relative">
+        <input type="password" placeholder="" class="input input-filled peer" id="passwordInput"
+            formControlName="password" />
+        <label class="input-filled-label" for="passwordInput">비밀번호</label>
+        <span class="input-filled-focused"></span>
+    </div>
+    <span class="label">
+        @if (hasError('password', 'required')) {
+        <span class="label-text-alt text-primary motion-preset-focus" value="motion-preset-blur-right">비밀번호를 입력해
+            주세요.</span>
+        }
+    </span>
+    <br />
+    <button class="w-full btn btn-soft btn-primary h-[3rem] font-bold text-xl" [disabled]="isFetching || !formGroup.valid">
+        @if (isFetching) {
+        <span class="loading loading-spinner motion-preset-focus"></span>
+        }
+        로그인
+    </button>
+</form>
