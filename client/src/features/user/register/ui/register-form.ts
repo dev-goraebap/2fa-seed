@@ -11,7 +11,6 @@ import { RegisterDTO, USER_RULES } from "domain-shared/user";
 import { Browser } from "src/shared/libs/browser";
 import { FormHelper } from "src/shared/services";
 import { ToFormGroup } from "src/shared/types";
-import { RegisterFormDTO } from "../types";
 
 @Component({
     selector: 'register-form',
@@ -73,7 +72,7 @@ export class RegisterForm extends FormHelper {
 
     protected readonly isFetching: WritableSignal<Boolean> = signal(false);
     protected readonly hide: WritableSignal<Boolean> = signal(true);
-    protected readonly formGroup: FormGroup<ToFormGroup<RegisterFormDTO>>;
+    protected readonly formGroup: FormGroup<ToFormGroup<RegisterDTO>>;
     protected readonly userRules = USER_RULES;
 
     private readonly fb = inject(FormBuilder);
@@ -126,15 +125,7 @@ export class RegisterForm extends FormHelper {
             os = Browser.getOSInfo();
         }
 
-        const formData: RegisterFormDTO = this.formGroup.getRawValue();
-
-        const dto: RegisterDTO = {
-            ...formData,
-            deviceId,
-            deviceModel,
-            os
-        }
-        console.log(dto);
-        this.notify.emit(dto);
+        const formData: RegisterDTO = this.formGroup.getRawValue();
+        this.notify.emit(formData);
     }
 }
