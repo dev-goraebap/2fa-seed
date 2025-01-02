@@ -3,7 +3,7 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "2fa-seed-client": {
+    "jwt-auth-seed": {
       "projectType": "application",
       "schematics": {
         "@schematics/angular:component": {
@@ -17,7 +17,7 @@
         "build": {
           "builder": "@angular-devkit/build-angular:application",
           "options": {
-            "outputPath": "dist/2fa-seed-client",
+            "outputPath": "dist/jwt-auth-seed",
             "index": "src/index.html",
             "browser": "src/main.ts",
             "polyfills": [
@@ -65,10 +65,10 @@
           "builder": "@angular-devkit/build-angular:dev-server",
           "configurations": {
             "production": {
-              "buildTarget": "2fa-seed-client:build:production"
+              "buildTarget": "jwt-auth-seed:build:production"
             },
             "development": {
-              "buildTarget": "2fa-seed-client:build:development"
+              "buildTarget": "jwt-auth-seed:build:development"
             }
           },
           "defaultConfiguration": "development"
