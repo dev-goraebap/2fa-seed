@@ -1,0 +1,11 @@
+{
+    "hosting": {
+        "public": "dist/jwt-auth-seed/browser"
+    },
+    "rewrites": [
+        {
+            "source": "**",
+            "destination": "/index.html"
+        }
+    ]
+}
