@@ -17,7 +17,7 @@ import { OtpVerifyForm } from "src/features/user/verify-otp";
         RouterLink
     ],
     template: `
-    <div class="p-4 motion-opacity-in-[0] motion-translate-x-in-[-10%] motion-duration-[0.8s] motion-ease-in-out">
+    <div class="p-4 motion-opacity-in-[0] motion-translate-y-in-[10%] motion-duration-[0.7s] motion-ease-in-out">
         @if(!needVerifyOtp()) {
             <div class="text-2xl font-semibold">
                 데모앱이에요오.<br/>
