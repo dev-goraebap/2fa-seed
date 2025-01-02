@@ -55,9 +55,9 @@ export class LocalAuthService {
             throw new BadRequestException(errMsg);
         }
 
-        // 3. 인증세션이 없으면 이메일로 OTP 발송, OTP 추가 인증 요구
+        // 3. 이메일 인증이 되지 않았거나, 인증세션이 없으면 이메일로 OTP 발송, OTP 추가 인증 요구
         let userSession: UserSessionModel = await this.userSessionRepository.findSessionByUserIdWithDeviceId(user.id, dto.deviceId);
-        if (!userSession) {
+        if (!user.isEmailVerified || !userSession) {
             user = user.withUpdateOtp();
             await this.userRepository.save(user);
             await this.mailService.send(dto.email, user.otp);
@@ -86,7 +86,7 @@ export class LocalAuthService {
 
         // 2. 회원 모델 생성 및 저장
         const randomNickname: string = generateRandomNickname();
-        user = UserModel.create({
+        user = UserModel.fromLocal({
             email: dto.email,
             password: dto.password,
             nickname: randomNickname,
