@@ -13,17 +13,33 @@ export class UserModel extends FirebaseModel {
     readonly id: string;
     readonly nickname: string;
     readonly email: string;
-    readonly password?: string;
+    readonly isEmailVerified: boolean;
+    readonly password: string;
 
-    readonly otp?: string;
-    readonly otpExpiryDate?: Date;
+    readonly otp: string | null;
+    readonly otpExpiryDate: Date | null;
     private static readonly OTP_EXPIRES_TIME: number = 60 * 5 * 1000; // 5분
 
-    static create(param: Pick<UserModel, 'nickname' | 'email' | 'password'>): UserModel {
+    static fromLocal(param: Pick<UserModel, 'nickname' | 'email' | 'password'>): UserModel {
         return plainToInstance(UserModel, {
             id: nanoid(30),
             email: param.email,
-            password: param.password ? hashPassword(param.password) : null,
+            isEmailVerified: false,
+            password: hashPassword(param.password),
+            nickname: param.nickname,
+            otp: generateOTP(),
+            otpExpiryDate: new Date(Date.now() + UserModel.OTP_EXPIRES_TIME),
+            createdAt: new Date(),
+            updatedAt: new Date(),
+        } as UserModel);
+    }
+
+    static fromSocial(param: Pick<UserModel, 'nickname' | 'email'>): UserModel {
+        return plainToInstance(UserModel, {
+            id: nanoid(30),
+            email: param.email,
+            isEmailVerified: false,
+            password: null,
             nickname: param.nickname,
             otp: generateOTP(),
             otpExpiryDate: new Date(Date.now() + UserModel.OTP_EXPIRES_TIME),
@@ -71,6 +87,14 @@ export class UserModel extends FirebaseModel {
         return plainToInstance(UserModel, {
             ...this,
             nickname,
+            updatedAt: new Date()
+        } as UserModel);
+    }
+
+    withUpdateEmailVerified(): UserModel {
+        return plainToInstance(UserModel, {
+            ...this,
+            isEmailVerified: true,
             updatedAt: new Date()
         } as UserModel);
     }
