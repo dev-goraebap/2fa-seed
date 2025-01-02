@@ -16,7 +16,7 @@ export class UserSessionModel extends FirebaseModel {
 
     private static readonly REFRESH_EXPIRES_TIME: number = 7 * 24 * 60 * 60 * 1000; //7일
 
-    static create(param: Pick<UserSessionModel, 'userId' | 'deviceId' | 'deviceModel' | 'deviceOs' | 'refreshToken'>): UserSessionModel {
+    static from(param: Pick<UserSessionModel, 'userId' | 'deviceId' | 'deviceModel' | 'deviceOs' | 'refreshToken'>): UserSessionModel {
         return plainToInstance(UserSessionModel, {
             id: `${param.userId}:${param.deviceId}`,
             userId: param.userId,
