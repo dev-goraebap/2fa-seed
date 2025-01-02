@@ -1,3 +1,3 @@
 export const environment = {
-    apiUrl: 'http://localhost:8000/api'
+    apiUrl: 'https://api-hglniv2h3a-du.a.run.app/api'
 }
