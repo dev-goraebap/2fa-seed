@@ -2,6 +2,7 @@
 
 JWT 인증 기능을 제공하는 데모 프로젝트.
 
+데모 웹사이트: https://jwt-auth-seed-926d8.web.app
 API 데모 문서: https://api-hglniv2h3a-du.a.run.app/api
 
 1. JWT 기반 로그인
