@@ -1,7 +1,7 @@
 import { Body, Controller, Delete, Get, HttpCode, HttpStatus, Patch } from "@nestjs/common";
 import { ApiBearerAuth, ApiOperation, ApiResponse, ApiTags } from "@nestjs/swagger";
 
-import { ProfileResultDTO, UpdateNicknameDTO, UserModel, UserService, UserSessionModel, UserSessionService } from "src/app/user";
+import { ProfileResultDTO, UpdateNicknameDTO, UserModel, UserService, UserSessionModel, UserSessionService, WithdrawDTO } from "src/app/user";
 
 import { Credential } from "../decorators";
 
@@ -32,9 +32,13 @@ export class UserController {
 
     @Delete()
     @HttpCode(HttpStatus.NO_CONTENT)
-    @ApiOperation({ summary: '회원탈퇴' })
+    @ApiOperation({ summary: '회원탈퇴 <OTP 연계>' })
     @ApiResponse({ status: HttpStatus.NO_CONTENT })
-    async withdraw(@Credential() user: UserModel): Promise<void> {
+    async withdraw(@Credential() user: UserModel, @Body() dto: WithdrawDTO): Promise<void> {
+        if (!user.verifyOtp(dto.otp)) {
+            throw new Error('OTP 코드가 유효하지 않습니다.');
+        }
+
         await this.userService.withdraw(user, async () => {
             const userSessions: UserSessionModel[] = await this.userSessionService.getUserSessions(user.id);
             await this.userSessionService.removes(userSessions);
