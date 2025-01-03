@@ -23,7 +23,7 @@ export abstract class FormHelper {
      * - 부모 컴포넌트에서 viewChild를 통해 호출 가능.
      * 요청이 끝난 이후 fetching 상태를 완료상태로 변경
      */
-    changeToFetched() {
+    changeToFetched(): void {
         this._isFetching.set(false);
     }
 
@@ -31,11 +31,11 @@ export abstract class FormHelper {
      * @todo isFetching 상태값을 실행상태로 변경
      * - 상속 받는 컴포넌트에서 이벤트 핸들러 정의 시 사용 
      */
-    protected changeToFetching() {
+    protected changeToFetching(): void {
         this._isFetching.set(true);
     }
 
-    protected hasError(formControlName: string, errorName: 'required' | 'minlength' | 'maxlength' | 'pattern' | string) {
+    protected hasError(formControlName: string, errorName: 'required' | 'minlength' | 'maxlength' | 'pattern' | string): boolean {
         if (!this.formGroup) {
             throw new Error('formGroup 없음');
         }
@@ -45,7 +45,7 @@ export abstract class FormHelper {
         return control.errors![errorName];
     }
 
-    protected hasAsyncError(formControlName: string, errorName: string) {
+    protected hasAsyncError(formControlName: string, errorName: string): boolean {
         if (!this.formGroup) {
             throw new Error('formGroup 없음');
         }
@@ -55,7 +55,7 @@ export abstract class FormHelper {
         return control.errors![errorName];
     }
 
-    protected isPending(formControlName: string) {
+    protected isPending(formControlName: string): boolean {
         if (!this.formGroup) {
             throw new Error('formGroup 없음');
         }
@@ -70,7 +70,7 @@ export abstract class FormHelper {
      * @description 패스워드 확인 유효성 검사 함수
      * - html에서 `passwordMismatch` 키 사용
      */
-    confirmPasswordValidator(): ValidatorFn {
+    protected confirmPasswordValidator(): ValidatorFn {
         return (control: AbstractControl): ValidationErrors | null => {
             if (!control.parent) {
                 return null;
