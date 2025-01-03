@@ -21,11 +21,6 @@ export class LocalAuthService {
         private readonly userSessionRepository: UserSessionRepository,
     ) { }
 
-    async checkEmailDuplicate(email: string): Promise<boolean> {
-        const user = await this.userRepository.findUserByEmail(email);
-        return user ? true : false;
-    }
-
     async getCredentialOrThrow(accessToken: string): Promise<[UserModel, UserSessionModel]> {
         const payload: JwtPayload = this.secureTokenService.verifyJwtToken(accessToken);
         const user: UserModel = await this.userRepository.findUserById(payload.sub);
