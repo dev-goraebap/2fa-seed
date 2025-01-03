@@ -47,8 +47,6 @@ export class RegisterForm extends FormHelper {
                 Validators.required,
                 this.confirmPasswordValidator()
             ]),
-        }, {
-            validators: []
         });
     }
 

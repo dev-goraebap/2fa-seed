@@ -8,19 +8,19 @@
     <span class="label">
         @if (isPending('email')) {
         <div class="flex items-center gap-2">
-            <span class="loading loading-spinner loading-xs text-warning"></span>
-            <span class="label-text-alt text-warning motion-preset-focus">사용중인 이메일인지 확인 중..</span>
+            <span class="loading loading-spinner loading-xs text-primary"></span>
+            <span class="label-text-alt text-primary motion-preset-focus">사용중인 이메일인지 확인 중..</span>
         </div>
         }
         @if (hasError('email', 'required')) {
-        <span class="label-text-alt text-warning motion-preset-focus">이메일을 입력해
+        <span class="label-text-alt text-primary motion-preset-focus">이메일을 입력해
             주세요.</span>
         } @else if (hasError('email', 'pattern')){
-        <span class="label-text-alt text-warning motion-preset-focus">이메일 형식이
+        <span class="label-text-alt text-primary motion-preset-focus">이메일 형식이
             아닙니다.</span>
         }
         @if (hasAsyncError('email', 'isDuplicate')) {
-        <span class="label-text-alt text-warning motion-preset-focus">사용중인 이메일 입니다.</span>
+        <span class="label-text-alt text-primary motion-preset-focus">사용중인 이메일 입니다.</span>
         }
     </span>
 
@@ -33,16 +33,16 @@
     </div>
     <span class="label">
         @if (hasError('password', 'required')) {
-        <span class="label-text-alt text-warning motion-preset-focus">비밀번호를 입력해
+        <span class="label-text-alt text-primary motion-preset-focus">비밀번호를 입력해
             주세요.</span>
         }@else if (hasError('password', 'minlength')) {
-        <span class="label-text-alt text-warning motion-preset-focus">비밀번호는 {{userRules.password.min}}자 이상
+        <span class="label-text-alt text-primary motion-preset-focus">비밀번호는 {{userRules.password.min}}자 이상
             입력해야해요.</span>
         } @else if (hasError('password', 'maxlength')) {
-        <span class="label-text-alt text-warning motion-preset-focus">비밀번호는 {{userRules.password.max}}자 까지 입력
+        <span class="label-text-alt text-primary motion-preset-focus">비밀번호는 {{userRules.password.max}}자 까지 입력
             가능해요.</span>
         } @else if (hasError('password', 'pattern')) {
-        <span class="label-text-alt text-warning motion-preset-focus">비밀번호는 영문, 숫자, 특수문자 조합으로
+        <span class="label-text-alt text-primary motion-preset-focus">비밀번호는 영문, 숫자, 특수문자 조합으로
             입력해주세요.</span>
         }
     </span>
@@ -56,10 +56,10 @@
     </div>
     <span class="label">
         @if (hasError('confirmPassword', 'required')) {
-        <span class="label-text-alt text-warning motion-preset-focus">비밀번호를 입력해
+        <span class="label-text-alt text-primary motion-preset-focus">비밀번호를 입력해
             주세요.</span>
         }@else if (hasError('confirmPassword', 'passwordMismatch')) {
-        <span class="label-text-alt text-warning motion-preset-focus">비밀번호가 일치하지 않습니다.</span>
+        <span class="label-text-alt text-primary motion-preset-focus">비밀번호가 일치하지 않습니다.</span>
         }
     </span>
 
