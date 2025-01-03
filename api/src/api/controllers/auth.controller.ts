@@ -1,10 +1,9 @@
-import { Body, Controller, Get, HttpStatus, Param, Post } from "@nestjs/common";
+import { Body, Controller, HttpStatus, Post } from "@nestjs/common";
 import { ApiOperation, ApiResponse, ApiTags } from "@nestjs/swagger";
 
-import { AuthResultDTO, LocalAuthService, EmailDuplicateCheckResultDTO, LoginDTO, RegisterDTO, RetryOtpDTO } from "src/app/user";
+import { AuthResultDTO, LocalAuthService, LoginDTO, RegisterDTO, RetryOtpDTO } from "src/app/user";
 
 import { ApiRefreshTokenHeader, Public, RefreshToken } from "../decorators";
-import { EmailValidationPipe } from "../pipes";
 
 /**
  * @description 
@@ -17,15 +16,6 @@ export class AuthController {
     constructor(
         private readonly authService: LocalAuthService
     ) { }
-
-    @Public()
-    @Get('check-email-duplicate/:email')
-    @ApiOperation({ summary: '이메일 중복 검증' })
-    @ApiResponse({ status: HttpStatus.OK, type: EmailDuplicateCheckResultDTO, description: '이메일 중복 여부' })
-    async checkEmailDuplicate(@Param('email', EmailValidationPipe) email: string): Promise<EmailDuplicateCheckResultDTO> {
-        const isDuplicate = await this.authService.checkEmailDuplicate(email);
-        return EmailDuplicateCheckResultDTO.from(isDuplicate);
-    }
 
     @Public()
     @Post('login')
