@@ -25,4 +25,10 @@ export class AuthService {
             context: skipAuth()
         });
     }
+
+    sendOtp(email: string): Observable<void> {
+        return this.httpClient.post<void>(`${this.apiUrl}/otp`, { email }, {
+            context: skipAuth()
+        });
+    }
 }
