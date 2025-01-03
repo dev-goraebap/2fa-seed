@@ -13,6 +13,11 @@ export class UserService {
         private readonly userRepository: UserRepository,
     ) { }
 
+    async checkEmailDuplicate(email: string): Promise<boolean> {
+        const user = await this.userRepository.findUserByEmail(email);
+        return user ? true : false;
+    }
+
     async getUserByEmailOrThrow(email: string): Promise<UserModel> {
         const user: UserModel = await this.userRepository.findUserByEmail(email);
         if (!user) {
