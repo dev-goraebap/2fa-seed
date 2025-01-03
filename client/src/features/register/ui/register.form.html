@@ -1,0 +1,75 @@
+<form class="w-full" [formGroup]="formGroup" (ngSubmit)="onRegister()">
+    <div class="relative">
+        <input type="email" placeholder="banana@gmail.com" class="input input-filled peer" id="emailInput"
+            formControlName="email" />
+        <label class="input-filled-label" for="emailInput">이메일</label>
+        <span class="input-filled-focused"></span>
+    </div>
+    <span class="label">
+        @if (isPending('email')) {
+        <div class="flex items-center gap-2">
+            <span class="loading loading-spinner loading-xs text-warning"></span>
+            <span class="label-text-alt text-warning motion-preset-focus">사용중인 이메일인지 확인 중..</span>
+        </div>
+        }
+        @if (hasError('email', 'required')) {
+        <span class="label-text-alt text-warning motion-preset-focus">이메일을 입력해
+            주세요.</span>
+        } @else if (hasError('email', 'pattern')){
+        <span class="label-text-alt text-warning motion-preset-focus">이메일 형식이
+            아닙니다.</span>
+        }
+        @if (hasAsyncError('email', 'isDuplicate')) {
+        <span class="label-text-alt text-warning motion-preset-focus">사용중인 이메일 입니다.</span>
+        }
+    </span>
+
+    <div class="mt-4"></div>
+    <div class="relative">
+        <input type="password" placeholder="" class="input input-filled peer" id="passwordInput"
+            formControlName="password" />
+        <label class="input-filled-label" for="passwordInput">비밀번호</label>
+        <span class="input-filled-focused"></span>
+    </div>
+    <span class="label">
+        @if (hasError('password', 'required')) {
+        <span class="label-text-alt text-warning motion-preset-focus">비밀번호를 입력해
+            주세요.</span>
+        }@else if (hasError('password', 'minlength')) {
+        <span class="label-text-alt text-warning motion-preset-focus">비밀번호는 {{userRules.password.min}}자 이상
+            입력해야해요.</span>
+        } @else if (hasError('password', 'maxlength')) {
+        <span class="label-text-alt text-warning motion-preset-focus">비밀번호는 {{userRules.password.max}}자 까지 입력
+            가능해요.</span>
+        } @else if (hasError('password', 'pattern')) {
+        <span class="label-text-alt text-warning motion-preset-focus">비밀번호는 영문, 숫자, 특수문자 조합으로
+            입력해주세요.</span>
+        }
+    </span>
+
+    <div class="mt-4"></div>
+    <div class="relative">
+        <input type="password" placeholder="" class="input input-filled peer" id="confirmPasswordInput"
+            formControlName="confirmPassword" />
+        <label class="input-filled-label" for="confirmPasswordInput">비밀번호 확인</label>
+        <span class="input-filled-focused"></span>
+    </div>
+    <span class="label">
+        @if (hasError('confirmPassword', 'required')) {
+        <span class="label-text-alt text-warning motion-preset-focus">비밀번호를 입력해
+            주세요.</span>
+        }@else if (hasError('confirmPassword', 'passwordMismatch')) {
+        <span class="label-text-alt text-warning motion-preset-focus">비밀번호가 일치하지 않습니다.</span>
+        }
+    </span>
+
+    <br />
+    <button class="w-full btn btn-soft btn-primary h-[3rem] font-bold text-xl"
+        [disabled]="isFetching() || !formGroup.valid">
+        @if (isFetching()) {
+        <span class="loading loading-spinner motion-preset-focus"></span>
+        } @else {
+        회원가입
+        }
+    </button>
+</form>
