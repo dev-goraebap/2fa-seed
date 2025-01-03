@@ -1,9 +1,10 @@
-import { Body, Controller, Delete, Get, HttpCode, HttpStatus, Patch, UnauthorizedException } from "@nestjs/common";
+import { Body, Controller, Delete, Get, HttpCode, HttpStatus, Param, Patch, UnauthorizedException } from "@nestjs/common";
 import { ApiBearerAuth, ApiOperation, ApiResponse, ApiTags } from "@nestjs/swagger";
 
-import { ProfileResultDTO, UpdateNicknameDTO, UpdatePasswordDTO, UserModel, UserService, UserSessionModel, UserSessionService, WithdrawDTO } from "src/app/user";
+import { EmailDuplicateCheckResultDTO, ProfileResultDTO, UpdateNicknameDTO, UpdatePasswordDTO, UserModel, UserService, UserSessionModel, UserSessionService, WithdrawDTO } from "src/app/user";
 
 import { Credential, Public } from "../decorators";
+import { EmailValidationPipe } from "../pipes";
 
 @Controller({ path: 'users', version: '1' })
 @ApiTags('회원정보')
@@ -13,6 +14,15 @@ export class UserController {
         private readonly userService: UserService,
         private readonly userSessionService: UserSessionService
     ) { }
+
+    @Public()
+    @Get('emails/:email/duplicated')
+    @ApiOperation({ summary: '이메일 중복 검증' })
+    @ApiResponse({ status: HttpStatus.OK, type: EmailDuplicateCheckResultDTO, description: '이메일 중복 여부' })
+    async checkEmailDuplicate(@Param('email', EmailValidationPipe) email: string): Promise<EmailDuplicateCheckResultDTO> {
+        const isDuplicate = await this.userService.checkEmailDuplicate(email);
+        return EmailDuplicateCheckResultDTO.from(isDuplicate);
+    }
 
     @Get('me')
     @ApiBearerAuth()
