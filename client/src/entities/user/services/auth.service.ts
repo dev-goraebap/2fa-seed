@@ -2,7 +2,7 @@ import { HttpClient } from "@angular/common/http";
 import { inject, Injectable } from "@angular/core";
 import { Observable } from "rxjs";
 
-import { AuthResultDTO, LoginDTO } from "domain-shared/user";
+import { AuthResultDTO, LoginDTO, RegisterDTO } from "domain-shared/user";
 import { environment } from "src/shared/environments";
 import { skipAuth } from "src/shared/libs/jwt";
 
@@ -16,6 +16,12 @@ export class AuthService {
 
     login(dto: LoginDTO): Observable<AuthResultDTO> {
         return this.httpClient.post<AuthResultDTO>(`${this.apiUrl}/login`, dto, {
+            context: skipAuth()
+        });
+    }
+
+    register(dto: RegisterDTO): Observable<void> {
+        return this.httpClient.post<void>(`${this.apiUrl}/register`, dto, {
             context: skipAuth()
         });
     }
