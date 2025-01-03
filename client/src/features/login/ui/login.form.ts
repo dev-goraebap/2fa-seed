@@ -19,7 +19,6 @@ export class LoginForm extends FormHelper {
     readonly loginEvent: OutputEmitterRef<LoginFormDTO> = output();
 
     protected readonly formGroup: FormGroup<ToFormGroup<LoginFormDTO>>;
-    protected isFetching: boolean = false;
 
     private readonly fb: FormBuilder = inject(FormBuilder);
 
@@ -31,17 +30,12 @@ export class LoginForm extends FormHelper {
         });
     }
 
-    /** @description 부모 컴포넌트에서 API 호출 완료 시 사용 */
-    updateFetched() {
-        this.isFetching = false;
-    }
-
     protected onLogin() {
         if (!this.formGroup.valid) {
             this.formGroup.markAllAsTouched();
             return;
         }
-        this.isFetching = true;
+        this.changeToFetching();
         const formData: LoginFormDTO = this.formGroup.getRawValue();
         console.log(formData);
         this.loginEvent.emit(formData);
