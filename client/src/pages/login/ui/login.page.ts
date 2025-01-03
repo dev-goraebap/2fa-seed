@@ -42,7 +42,7 @@ export class LoginPage {
                 });
                 return EMPTY;
             }),
-            finalize(() => this.loginFormEl().updateFetched()),
+            finalize(() => this.loginFormEl().changeToFetched()),
         ).subscribe();
     }
 }
