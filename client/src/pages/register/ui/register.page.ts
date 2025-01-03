@@ -1,9 +1,9 @@
 import { HttpErrorResponse } from "@angular/common/http";
 import { Component, inject, Signal, viewChild } from "@angular/core";
-import { RouterLink } from "@angular/router";
+import { Router, RouterLink } from "@angular/router";
 import { RegisterDTO } from "domain-shared/user";
 import { Notyf } from "notyf";
-import { catchError, EMPTY, finalize } from "rxjs";
+import { catchError, EMPTY, finalize, tap } from "rxjs";
 
 import { AuthService } from "src/entities/user";
 import { RegisterForm } from "src/features/register";
@@ -18,11 +18,19 @@ import { RegisterForm } from "src/features/register";
 })
 export class RegisterPage {
 
-    private readonly authService: AuthService = inject(AuthService);
+    private readonly router: Router = inject(Router);
     private readonly registerFormEl: Signal<RegisterForm> = viewChild.required('registerForm');
+    private readonly authService: AuthService = inject(AuthService);
 
     protected onRegister(dto: RegisterDTO) {
         this.authService.register(dto).pipe(
+            tap(() => {
+                this.router.navigateByUrl('/verify-otp', {
+                    state: {
+                        email: dto.email
+                    }
+                });
+            }),
             catchError((res: HttpErrorResponse) => {
                 const notify = new Notyf();
                 notify.error({
