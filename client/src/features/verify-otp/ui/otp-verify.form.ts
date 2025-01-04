@@ -1,9 +1,11 @@
-import { Component, inject, output, OutputEmitterRef } from "@angular/core";
+import { Component, inject, input, InputSignal, Signal } from "@angular/core";
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from "@angular/forms";
 
-import { USER_RULES } from "domain-shared/user";
+import { CreateDeviceDTO, USER_RULES } from "domain-shared/user";
+import { Browser } from "src/shared/libs/browser";
 import { FormHelper } from "src/shared/services";
 import { ToFormGroup } from "src/shared/types";
+import { OtpVerifyState } from "../states/otp-verify.state";
 
 @Component({
     selector: 'otp-verify-form',
@@ -14,12 +16,14 @@ import { ToFormGroup } from "src/shared/types";
 })
 export class OtpVerifyForm extends FormHelper {
 
-    readonly verifyOtpEvent: OutputEmitterRef<string> = output();
-
-    protected override formGroup: FormGroup<ToFormGroup<{ otp: string }>>;
-    protected readonly userRules = USER_RULES;
-
     private readonly fb: FormBuilder = inject(FormBuilder);
+    private readonly otpVerifyState: OtpVerifyState = inject(OtpVerifyState);
+    
+    protected readonly userRules = USER_RULES;
+    protected readonly isPending: Signal<boolean> = this.otpVerifyState.isPending;
+    protected override formGroup: FormGroup<ToFormGroup<{ otp: string }>>;
+
+    readonly email: InputSignal<string> = input.required();
 
     constructor() {
         super();
@@ -38,8 +42,17 @@ export class OtpVerifyForm extends FormHelper {
             this.formGroup.markAllAsTouched();
             return;
         }
-        this.changeToFetching();
         const { otp } = this.formGroup.getRawValue();
-        this.verifyOtpEvent.emit(otp);
+        const deviceId: string = Browser.getId();
+        const deviceModel: string = Browser.getBrowserInfo();
+        const deviceOs: string = Browser.getOSInfo();
+        const dto: CreateDeviceDTO = {
+            email: this.email(),
+            otp,
+            deviceId,
+            deviceModel,
+            deviceOs
+        };
+        this.otpVerifyState.verifyOtp(dto).subscribe();
     }
 }

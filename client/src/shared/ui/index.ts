@@ -1,1 +1,1 @@
-export * from './fetching-screen';
+export * from './pending-screen';

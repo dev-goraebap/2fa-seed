@@ -6,7 +6,7 @@ import { catchError, EMPTY } from "rxjs";
 import { HttpErrorResponse } from "@angular/common/http";
 import { ProfileResultDTO } from "domain-shared/user";
 import { ProfileCard, UserService } from "src/entities/user";
-import { FetchingScreen } from "src/shared/ui";
+import { PendingScreen } from "src/shared/ui";
 
 @Component({
     selector: 'profile-page',
@@ -14,7 +14,7 @@ import { FetchingScreen } from "src/shared/ui";
         MatButtonModule,
         RouterLink,
         ProfileCard,
-        FetchingScreen,
+        PendingScreen,
     ],
     template: `
     <fetching-screen [isFetched]="isFetched()">
@@ -35,7 +35,7 @@ export class ProfilePage {
     protected readonly profile: Signal<ProfileResultDTO | undefined> = this.userService.data;
 
     constructor() {
-        this.userService.initProfile().pipe(
+        this.userService.getProfile().pipe(
             catchError((res: HttpErrorResponse) => {
                 // console.error(err.error.message);
                 this.router.navigateByUrl('/error', {

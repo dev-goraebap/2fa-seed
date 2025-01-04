@@ -1,14 +1,11 @@
 import { NgClass } from "@angular/common";
-import { HttpErrorResponse } from "@angular/common/http";
-import { Component, inject, Signal, viewChild } from "@angular/core";
+import { Component, effect, inject, signal, WritableSignal } from "@angular/core";
 import { Router } from "@angular/router";
-import { CreateDeviceDTO } from "domain-shared/user";
 import { Notyf } from "notyf";
-import { catchError, EMPTY, finalize, interval, tap } from "rxjs";
+import { interval, tap } from "rxjs";
 
-import { AuthService, DeviceService } from "src/entities/user";
-import { OtpVerifyForm } from "src/features/verify-otp";
-import { Browser } from "src/shared/libs/browser";
+import { OtpVerifyForm, OtpVerifyState } from "src/features/verify-otp";
+import { CustomError } from "src/shared/services";
 
 @Component({
     selector: 'otp-verify-page',
@@ -17,16 +14,17 @@ import { Browser } from "src/shared/libs/browser";
         OtpVerifyForm,
         NgClass
     ],
+    providers: [
+        OtpVerifyState
+    ]
 })
 export class OtpVerifyPage {
 
-    protected canRetryTime: number = 30;
-
-    private readonly otpVerifyFormEl: Signal<OtpVerifyForm> = viewChild.required('otpVerifyForm');
     private readonly router: Router = inject(Router);
-    private readonly authService: AuthService = inject(AuthService);
-    private readonly deviceService: DeviceService = inject(DeviceService);
-    private readonly email!: string;
+    private readonly otpVerifyState: OtpVerifyState = inject(OtpVerifyState);
+
+    protected readonly email: WritableSignal<string | null> = signal(null);
+    protected canRetryTime: number = 30;
 
     constructor() {
         const state = this.router.getCurrentNavigation()?.extras.state;
@@ -36,7 +34,25 @@ export class OtpVerifyPage {
             return;
         }
 
-        this.email = state['email'];
+        this.email.set(state['email']);
+
+        effect(() => {
+            const isCompleted: boolean = this.otpVerifyState.isCompleted();
+            if (isCompleted) {
+                this.router.navigateByUrl('/users/me');
+            }
+        });
+
+        effect(() => {
+            const error: CustomError | null = this.otpVerifyState.error();
+            if (error) {
+                const notify = new Notyf();
+                notify.error({
+                    message: error.message,
+                    dismissible: true
+                });
+            }
+        });
 
         interval(1000).pipe(
             tap(() => {
@@ -47,52 +63,24 @@ export class OtpVerifyPage {
         ).subscribe();
     }
 
-    onVerifyOtp(otp: string): void {
-        const deviceId: string = Browser.getId();
-        const deviceModel: string = Browser.getBrowserInfo();
-        const deviceOs: string = Browser.getOSInfo();
-        const dto: CreateDeviceDTO = {
-            email: this.email,
-            otp,
-            deviceId,
-            deviceModel,
-            deviceOs
-        };
-        console.log(dto);
-        this.deviceService.createDevice(dto).pipe(
-            tap(() => {
-                this.router.navigateByUrl('/users/me');
-            }),
-            catchError((res: HttpErrorResponse) => {
-                const notify = new Notyf();
-                notify.error({
-                    message: res.error.message,
-                    dismissible: true
-                });
-                return EMPTY;
-            }),
-            finalize(() => this.otpVerifyFormEl().changeToFetched())
-        ).subscribe();
-    }
-
     onResendOtp(): void {
-        this.authService.sendOtp(this.email).pipe(
-            tap(() => {
-                const notify = new Notyf();
-                notify.success({
-                    message: '인증번호를 재전송하였습니다.',
-                    dismissible: true
-                });
-            }),
-            catchError((res: HttpErrorResponse) => {
-                const notify = new Notyf();
-                notify.error({
-                    message: res.error.message,
-                    dismissible: true
-                });
-                return EMPTY;
-            }),
-            finalize(() => this.canRetryTime = 30),
-        ).subscribe();
+        // this.authService.sendOtp(this.email).pipe(
+        //     tap(() => {
+        //         const notify = new Notyf();
+        //         notify.success({
+        //             message: '인증번호를 재전송하였습니다.',
+        //             dismissible: true
+        //         });
+        //     }),
+        //     catchError((res: HttpErrorResponse) => {
+        //         const notify = new Notyf();
+        //         notify.error({
+        //             message: res.error.message,
+        //             dismissible: true
+        //         });
+        //         return EMPTY;
+        //     }),
+        //     finalize(() => this.canRetryTime = 30),
+        // ).subscribe();
     }
 }

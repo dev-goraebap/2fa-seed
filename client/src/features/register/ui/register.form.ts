@@ -1,12 +1,13 @@
-import { Component, inject, output, OutputEmitterRef } from "@angular/core";
-import { AbstractControl, AsyncValidatorFn, FormBuilder, FormGroup, ReactiveFormsModule, ValidationErrors, Validators } from "@angular/forms";
+import { Component, inject, Signal } from "@angular/core";
+import { AbstractControl, AsyncValidatorFn, FormBuilder, FormGroup, ReactiveFormsModule, ValidationErrors, ValidatorFn, Validators } from "@angular/forms";
 import { catchError, debounceTime, delay, distinctUntilChanged, map, Observable, of } from "rxjs";
 
-import { RegisterDTO, USER_RULES } from "domain-shared/user";
+import { USER_RULES } from "domain-shared/user";
 import { UserService } from "src/entities/user";
 import { FormHelper } from "src/shared/services";
 import { ToFormGroup } from "src/shared/types";
 
+import { RegisterState } from "../states/register.state";
 import { RegisterFormDTO } from "../types/register-form.dto";
 
 @Component({
@@ -16,13 +17,13 @@ import { RegisterFormDTO } from "../types/register-form.dto";
 })
 export class RegisterForm extends FormHelper {
 
-    readonly registerEvent: OutputEmitterRef<RegisterDTO> = output();
-
-    protected override formGroup: FormGroup<ToFormGroup<RegisterFormDTO>>;
-    protected readonly userRules = USER_RULES;
-
     private readonly fb: FormBuilder = inject(FormBuilder);
     private readonly userService: UserService = inject(UserService);
+    private readonly registerState: RegisterState = inject(RegisterState);
+
+    protected override readonly formGroup: FormGroup<ToFormGroup<RegisterFormDTO>>;
+    protected readonly isPending: Signal<boolean> = this.registerState.isPending;
+    protected readonly userRules = USER_RULES;
 
     constructor() {
         super();
@@ -55,12 +56,10 @@ export class RegisterForm extends FormHelper {
             this.formGroup.markAllAsTouched();
             return;
         }
-        this.changeToFetching();
         const formData: RegisterFormDTO = this.formGroup.getRawValue();
         const { confirmPassword, ...registerDTO } = formData;
-        setTimeout(() => {
-            this.registerEvent.emit(registerDTO);
-        }, 2000);
+
+        this.registerState.register(registerDTO).subscribe();
     }
 
     private checkDuplicateEmail(): AsyncValidatorFn {
@@ -72,6 +71,25 @@ export class RegisterForm extends FormHelper {
                 map(res => res.isDuplicate ? { isDuplicate: true } : null),
                 catchError(() => of(null))
             );
+        };
+    }
+
+    private confirmPasswordValidator(): ValidatorFn {
+        return (control: AbstractControl): ValidationErrors | null => {
+            if (!control.parent) {
+                return null;
+            }
+
+            const password = control.parent.get('password');
+            if (!password) {
+                return null;
+            }
+
+            if (control.value !== password.value) {
+                return { passwordMismatch: true };
+            }
+
+            return null;
         };
     }
 }

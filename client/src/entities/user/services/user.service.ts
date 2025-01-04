@@ -2,7 +2,7 @@ import { HttpClient } from "@angular/common/http";
 import { inject, Injectable } from "@angular/core";
 import { Observable } from "rxjs";
 
-import { EmailDuplicateCheckResultDTO } from "domain-shared/user";
+import { EmailDuplicateCheckResultDTO, ProfileResultDTO } from "domain-shared/user";
 import { environment } from "src/shared/environments";
 import { skipAuth } from "src/shared/libs/jwt";
 
@@ -19,5 +19,9 @@ export class UserService {
             `${this.apiUrl}/emails/${email}/duplicated`, {
             context: skipAuth()
         });
+    }
+
+    getProfile(): Observable<ProfileResultDTO> {
+        return this.httpClient.get<ProfileResultDTO>(`${this.apiUrl}/me`);
     }
 }

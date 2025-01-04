@@ -69,7 +69,7 @@ export class TokenRefreshService {
                 method: 'post',
                 headers: {
                     'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${refreshToken}`
+                    'x-refresh-token': refreshToken
                 }
             });
 

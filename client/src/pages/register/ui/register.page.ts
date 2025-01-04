@@ -1,12 +1,9 @@
-import { HttpErrorResponse } from "@angular/common/http";
-import { Component, inject, Signal, viewChild } from "@angular/core";
+import { Component, effect, inject } from "@angular/core";
 import { Router, RouterLink } from "@angular/router";
-import { RegisterDTO } from "domain-shared/user";
 import { Notyf } from "notyf";
-import { catchError, EMPTY, finalize, tap } from "rxjs";
 
-import { AuthService } from "src/entities/user";
-import { RegisterForm } from "src/features/register";
+import { RegisterForm, RegisterState } from "src/features/register";
+import { CustomError } from "src/shared/services";
 
 @Component({
     selector: 'register-page',
@@ -15,31 +12,37 @@ import { RegisterForm } from "src/features/register";
         RegisterForm,
         RouterLink
     ],
+    providers: [
+        RegisterState
+    ]
 })
 export class RegisterPage {
 
     private readonly router: Router = inject(Router);
-    private readonly registerFormEl: Signal<RegisterForm> = viewChild.required('registerForm');
-    private readonly authService: AuthService = inject(AuthService);
+    private readonly registerState: RegisterState = inject(RegisterState);
 
-    protected onRegister(dto: RegisterDTO) {
-        this.authService.register(dto).pipe(
-            tap(() => {
+    constructor() {
+        effect(() => {
+            const isRegistered: boolean = this.registerState.isRegistered();
+            const tempEmail: string | null = this.registerState.tempEmail();
+            if (isRegistered && tempEmail) {
                 this.router.navigateByUrl('/verify-otp', {
                     state: {
-                        email: dto.email
+                        email: tempEmail
                     }
                 });
-            }),
-            catchError((res: HttpErrorResponse) => {
+            }
+        });
+
+        effect(() => {
+            const error: CustomError | null = this.registerState.error();
+            if (error) {
                 const notify = new Notyf();
                 notify.error({
-                    message: res.error.message,
+                    message: error.message,
                     dismissible: true
                 });
-                return EMPTY;
-            }),
-            finalize(() => this.registerFormEl().changeToFetched()),
-        ).subscribe();
+            }
+        });
     }
 }

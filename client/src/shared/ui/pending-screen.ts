@@ -1,17 +1,17 @@
 import { Component, input, InputSignal } from "@angular/core";
 
 @Component({
-    selector: 'fetching-screen',
+    selector: 'pending-screen',
     template: `
-    @if (!isFetched()) {
+    @if (isPending(); as isPending) {
     <div class="motion-preset-fade-lg flex justify-center items-center h-full bg-white fixed inset-0 z-50">
-        <div class="text-xs motion-preset-oscillate">프로필 정보를 불러오는 중입니다.</div>
+        <div class="loading loading-spinner"></div>
     </div>
     } @else {
     <ng-content></ng-content>
     }
     `
 })
-export class FetchingScreen {
-    readonly isFetched: InputSignal<boolean> = input.required();
+export class PendingScreen {
+    readonly isPending: InputSignal<boolean> = input.required();
 }
