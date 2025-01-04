@@ -40,8 +40,4 @@ export class ProfilePage {
             }
         });
     }
-
-    onLogoutComplete(): void {
-        this.router.navigateByUrl('/');
-    }
 }
