@@ -1,7 +1,7 @@
 <form class="w-full" [formGroup]="formGroup" (ngSubmit)="onUpdateNickname()">
     <div class="relative">
-        <input type="text" placeholder="nickname" [maxlength]="userRules.otp.max" class="input input-filled peer"
-            id="nicknameInput" formControlName="nickname" />
+        <input type="text" placeholder="nickname" class="input input-filled peer" id="nicknameInput"
+            formControlName="nickname" />
         <label class="input-filled-label" for="nicknameInput">닉네임</label>
         <span class="input-filled-focused"></span>
     </div>
@@ -12,7 +12,7 @@
         } @else if(hasError('nickname', 'minlength') || hasError('nickname', 'maxlength')){
         <span class="label-text-alt text-primary motion-preset-focus"
             value="motion-preset-blur-right">{{userRules.nickname.lengthErrMsg}}</span>
-        }@else if (hasError('nickname', 'pattern')){
+        } @else if (hasError('nickname', 'pattern')){
         <span class="label-text-alt text-primary motion-preset-focus"
             value="motion-preset-blur-right">{{userRules.nickname.regexErrMsg}}</span>
         }
