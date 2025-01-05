@@ -1,0 +1,37 @@
+@if (profile(); as profile) {
+<div class="flex items-center justify-start gap-2">
+    <div class="avatar placeholder">
+        <div class="w-12 text-3xl rounded-full bg-primary/20 text-primary">
+            <span class="uppercase text-md">cl</span>
+        </div>
+    </div>
+    <div class="text-xl">{{profile.nickname}}</div>
+</div>
+<br />
+<div class="flex flex-col gap-2">
+    <div class="flex items-center justify-between p-3 rounded-md bg-primary-content">
+        <div class="flex flex-col">
+            <div class="text-xs font-semibold">닉네임</div>
+            <div class="text-sm sm:text-base">{{profile.nickname}}</div>
+        </div>
+        <div>
+            <button class="text-sm rounded-md btn btn-soft btn-primary" (click)="onClick('nickname')">수정</button>
+        </div>
+    </div>
+    <div class="flex items-center justify-between p-3 rounded-md bg-primary-content">
+        <div class="flex flex-col">
+            <div class="text-xs font-semibold">이메일</div>
+            <div class="text-sm sm:text-base">{{profile.email}}</div>
+        </div>
+        <div>
+            <button class="text-sm rounded-md btn btn-soft btn-primary" (click)="onClick('email')">수정</button>
+        </div>
+    </div>
+    <div class="flex items-center justify-between p-3 rounded-md bg-primary-content">
+        <div class="flex flex-col">
+            <div class="text-xs font-semibold">생성일</div>
+            <div class="text-sm sm:text-base">{{profile.createdAt|date}}</div>
+        </div>
+    </div>
+</div>
+}
