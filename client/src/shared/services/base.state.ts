@@ -16,7 +16,7 @@ export abstract class BaseState<T> {
     readonly isPending: Signal<boolean> = this._isPending.asReadonly();
     readonly error: Signal<CustomError | null> = this._error.asReadonly();
 
-    protected setData(data: T) {
+    setData(data: T) {
         this._data.set(data);
     }
 
