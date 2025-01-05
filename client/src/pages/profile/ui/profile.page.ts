@@ -7,6 +7,7 @@ import { LogoutButton, LogoutState } from "src/features/logout";
 import { CustomError } from "src/shared/services";
 import { ModalControl, PendingScreen } from "src/shared/ui";
 import { NicknameEditModal } from "src/widgets/nickname-edit-modal";
+import { OtpVerifyModal } from "src/widgets/otp-verify-modal";
 
 @Component({
     selector: 'profile-page',
@@ -43,12 +44,16 @@ export class ProfilePage {
     }
 
     protected onEditNavigate(target: 'nickname' | 'email' | 'password'): void {
-        /**
-         * target에 따라 분기 처리 필요
-         * - 현재는 닉네임 수정만 처리
-         */
-        const modalRef: ComponentRef<any> = this.modalControl.open(NicknameEditModal);
-        const instance = modalRef.instance;
+        let modalRef: ComponentRef<any>;
+        if (target === 'nickname') {
+            modalRef = this.modalControl.open(NicknameEditModal);
+        } else if (target === 'email') {
+            // TODO: 이메일 수정 모달 연결
+        } else if (target === 'password') {
+            modalRef = this.modalControl.open(OtpVerifyModal);
+        }
+
+        const instance = modalRef!.instance;
         instance.afterClosed = (result: any) => {
             console.log('Modal closed with result:', result);
         };
