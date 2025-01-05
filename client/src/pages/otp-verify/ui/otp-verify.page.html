@@ -2,19 +2,5 @@
     <div class="text-3xl font-bold">6자리 OTP를 입력해 주세요.</div>
     <br/>
     <otp-verify-form [email]="email()!"></otp-verify-form>
-
-    <div class="flex justify-center w-full px-10 mt-6">
-        <div class="">OTP 코드가 오지 않았나요? 
-            <span class="text-primary">{{canRetryTime}}</span>초 후
-            <br/><button 
-            class="transition-all"
-            [disabled]="canRetryTime !== 0"
-            [ngClass]="{
-                'text-primary': canRetryTime === 0,
-            }"
-            (click)="onResendOtp()"
-            >재요청</button> 할 수 있어요.
-        </div>
-    </div>
-
+    <otp-retry-timer [email]="email()!"></otp-retry-timer>
 </div>
