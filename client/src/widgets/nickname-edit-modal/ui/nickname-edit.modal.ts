@@ -1,5 +1,4 @@
 import { Component, effect, inject } from "@angular/core";
-import { ReactiveFormsModule } from "@angular/forms";
 import { Notyf } from "notyf";
 
 import { ProfileResultDTO } from "domain-shared/user";
@@ -12,7 +11,6 @@ import { BaseModal, ModalOverlay } from "src/shared/ui";
     selector: 'nickname-edit-modal',
     templateUrl: './nickname-edit.modal.html',
     imports: [
-        ReactiveFormsModule,
         ModalOverlay,
         NicknameEditForm
     ],
