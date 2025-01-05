@@ -2,7 +2,7 @@ import { Component, effect, inject, signal, WritableSignal } from "@angular/core
 import { Router } from "@angular/router";
 import { Notyf } from "notyf";
 
-import { OtpRetryTimer, OtpVerifyForm, OtpVerifyState } from "src/features/verify-otp";
+import { OtpRetryTimer, OtpVerifyForm, OtpVerifyState } from "src/features/otp";
 import { CustomError } from "src/shared/services";
 
 @Component({
