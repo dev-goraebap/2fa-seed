@@ -2,7 +2,7 @@ import { HttpClient } from "@angular/common/http";
 import { inject, Injectable } from "@angular/core";
 import { Observable } from "rxjs";
 
-import { EmailDuplicateCheckResultDTO, ProfileResultDTO } from "domain-shared/user";
+import { EmailDuplicateCheckResultDTO, ProfileResultDTO, UpdatePasswordDTO } from "domain-shared/user";
 import { environment } from "src/shared/environments";
 import { skipAuth } from "src/shared/libs/jwt";
 
@@ -27,5 +27,9 @@ export class UserService {
 
     updateNickname(nickname: string): Observable<ProfileResultDTO> {
         return this.httpClient.patch<ProfileResultDTO>(`${this.apiUrl}/nickname`, { nickname });
+    }
+
+    updatePassword(dto: UpdatePasswordDTO): Observable<void> {
+        return this.httpClient.patch<void>(`${this.apiUrl}/password`, dto);
     }
 }
