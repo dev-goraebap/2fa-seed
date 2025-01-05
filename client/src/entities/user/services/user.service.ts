@@ -24,4 +24,8 @@ export class UserService {
     getProfile(): Observable<ProfileResultDTO> {
         return this.httpClient.get<ProfileResultDTO>(`${this.apiUrl}/me`);
     }
+
+    updateNickname(nickname: string): Observable<ProfileResultDTO> {
+        return this.httpClient.patch<ProfileResultDTO>(`${this.apiUrl}/nickname`, { nickname });
+    }
 }
