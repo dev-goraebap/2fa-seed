@@ -1,0 +1,24 @@
+<form class="w-full" [formGroup]="formGroup" (ngSubmit)="onSubmit()">
+    <div class="relative">
+        <input type="text" placeholder="123456" [maxlength]="userRules.otp.max" class="input input-filled peer"
+            id="otpInput" formControlName="otp" />
+        <label class="input-filled-label" for="otpInput">OTP</label>
+        <span class="input-filled-focused"></span>
+    </div>
+    <span class="label">
+        @if (hasError('otp', 'required')) {
+        <span class="label-text-alt text-primary motion-preset-focus" value="motion-preset-blur-right">OTP를 입력해
+            주세요.</span>
+        } @else if(hasError('otp', 'minlength') || hasError('otp', 'maxlength')){
+        <span class="label-text-alt text-primary motion-preset-focus"
+            value="motion-preset-blur-right">{{userRules.otp.lengthErrMsg}}</span>
+        }
+        @else if (hasError('otp', 'pattern')){
+        <span class="label-text-alt text-primary motion-preset-focus"
+            value="motion-preset-blur-right">{{userRules.otp.regexErrMsg}}</span>
+        }
+    </span>
+
+    <br />
+    <button class="w-full btn btn-soft btn-primary h-[3rem] text-xl">다음</button>
+</form>
