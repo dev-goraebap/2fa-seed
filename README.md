@@ -10,3 +10,4 @@ API 데모 문서: https://api-hglniv2h3a-du.a.run.app/api
 2. 토큰 재발급 프로세스 (Refresh Token Rotation)
 3. 디바이스별 인증 세션 관리
 4. OTP 인증
+5. 일반, 소셜 통합인증
