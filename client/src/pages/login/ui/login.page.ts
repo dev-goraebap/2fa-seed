@@ -48,6 +48,7 @@ export class LoginPage {
         const error: CustomError | null = this.loginState.error();
         if (!error) return;
 
+        // Easter Eggggggggggggggg :D
         this.showPasswordFindButton = true;
 
         const notyf = new Notyf();
