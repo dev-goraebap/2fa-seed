@@ -8,7 +8,7 @@ import { LogoutButton, LogoutState } from "src/features/logout";
 import { CustomError } from "src/shared/services";
 import { ModalControl, PendingScreen } from "src/shared/ui";
 import { NicknameEditModal } from "src/widgets/nickname-edit-modal";
-import { OtpVerifyModal } from "src/widgets/otp-verify-modal";
+import { PasswordEditModal } from "src/widgets/password-edit-modal";
 
 @Component({
     selector: 'profile-page',
@@ -47,7 +47,7 @@ export class ProfilePage {
         } else if (target === 'email') {
             // TODO: 이메일 수정 모달 연결
         } else if (target === 'password') {
-            modalRef = this.modalControl.open(OtpVerifyModal);
+            modalRef = this.modalControl.open(PasswordEditModal);
         }
 
         const instance = modalRef!.instance;
