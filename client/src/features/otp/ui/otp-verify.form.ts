@@ -37,7 +37,7 @@ export class OtpVerifyForm extends FormHelper {
         });
     }
 
-    protected onVerifyOtp(): void {
+    onSubmit(): void {
         if (!this.formGroup.valid) {
             this.formGroup.markAllAsTouched();
             return;

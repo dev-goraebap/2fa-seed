@@ -27,7 +27,7 @@ export class LoginForm extends FormHelper {
         password: this.fb.nonNullable.control('', [Validators.required])
     });
 
-    protected onLogin() {
+    override onSubmit(): void {
         if (!this.formGroup.valid) {
             this.formGroup.markAllAsTouched();
             return;

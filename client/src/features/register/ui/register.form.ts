@@ -51,7 +51,7 @@ export class RegisterForm extends FormHelper {
         });
     }
 
-    protected onRegister(): void {
+    onSubmit(): void {
         if (!this.formGroup.valid) {
             this.formGroup.markAllAsTouched();
             return;

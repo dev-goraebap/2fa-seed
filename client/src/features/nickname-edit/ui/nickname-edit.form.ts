@@ -35,7 +35,7 @@ export class NicknameEditForm extends FormHelper {
         });
     }
 
-    onUpdateNickname() {
+    onSubmit(): void {
         if (!this.formGroup.valid) {
             this.formGroup.markAllAsTouched();
             return;

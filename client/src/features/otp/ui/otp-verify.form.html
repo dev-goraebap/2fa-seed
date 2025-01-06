@@ -1,4 +1,4 @@
-<form class="w-full" [formGroup]="formGroup" (ngSubmit)="onVerifyOtp()">
+<form class="w-full" [formGroup]="formGroup" (ngSubmit)="onSubmit()">
     <div class="relative">
         <input type="text" placeholder="123456" [maxlength]="userRules.otp.max" class="input input-filled peer" id="otpInput" formControlName="otp" />
         <label class="input-filled-label" for="otpInput">OTP</label>

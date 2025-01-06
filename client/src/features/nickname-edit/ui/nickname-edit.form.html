@@ -1,4 +1,4 @@
-<form class="w-full" [formGroup]="formGroup" (ngSubmit)="onUpdateNickname()">
+<form class="w-full" [formGroup]="formGroup" (ngSubmit)="onSubmit()">
     <div class="relative">
         <input type="text" placeholder="nickname" class="input input-filled peer" id="nicknameInput"
             formControlName="nickname" />
@@ -7,14 +7,12 @@
     </div>
     <span class="label">
         @if (hasError('nickname', 'required')) {
-        <span class="label-text-alt text-primary motion-preset-focus" value="motion-preset-blur-right">닉네임을 입력해
+        <span class="label-text-alt text-primary motion-preset-focus">닉네임을 입력해
             주세요.</span>
         } @else if(hasError('nickname', 'minlength') || hasError('nickname', 'maxlength')){
-        <span class="label-text-alt text-primary motion-preset-focus"
-            value="motion-preset-blur-right">{{userRules.nickname.lengthErrMsg}}</span>
+        <span class="label-text-alt text-primary motion-preset-focus">{{userRules.nickname.lengthErrMsg}}</span>
         } @else if (hasError('nickname', 'pattern')){
-        <span class="label-text-alt text-primary motion-preset-focus"
-            value="motion-preset-blur-right">{{userRules.nickname.regexErrMsg}}</span>
+        <span class="label-text-alt text-primary motion-preset-focus">{{userRules.nickname.regexErrMsg}}</span>
         }
     </span>
 
