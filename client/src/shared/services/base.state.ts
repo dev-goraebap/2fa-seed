@@ -3,7 +3,7 @@ import { signal, Signal, WritableSignal } from "@angular/core";
 export type CustomError = {
     readonly message: string;
     readonly signature: string;
-    readonly statusCode: string;
+    readonly statusCode: number;
 }
 
 export abstract class BaseState<T> {
@@ -20,15 +20,15 @@ export abstract class BaseState<T> {
         this._data.set(data);
     }
 
-    protected setPending() {
+    setPending() {
         this._isPending.set(true);
     }
 
-    protected clearPending() {
+    clearPending() {
         this._isPending.set(false);
     }
 
-    protected setError(error: CustomError) {
+    setError(error: CustomError) {
         this._error.set(error);
     }
 }
