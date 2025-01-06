@@ -39,4 +39,6 @@ export abstract class FormHelper {
         if (!control.pending) return false;
         return true;
     }
+
+    abstract onSubmit(): void;
 }
