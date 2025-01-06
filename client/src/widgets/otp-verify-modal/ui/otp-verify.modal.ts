@@ -29,26 +29,27 @@ export class OtpVerifyModal extends BaseModal {
 
     constructor() {
         super();
-        // OTP 전송 완료시 폼 화면으로 전환
-        effect(() => {
-            const isCompleted: boolean = this.otpSendState.isCompleted();
-            if (isCompleted) {
-                this.step = 'form';
-            }
-        });
+        effect(() => this.handleOtpSendSuccess());
     }
 
-    onCancel() {
+    protected onCancel(): void {
         const result = window.confirm('정말 취소하시겠습니까?');
         if (!result) return;
         this.close();
     }
 
-    onSendOtp() {
+    protected onSendOtp(): void {
         this.otpSendState.sendOtp(this.profile()!.email).subscribe();
     }
 
-    onReceiveOtp(otp: string) {
+    protected onReceiveOtp(otp: string): void {
 
+    }
+
+    private handleOtpSendSuccess(): void {
+        const isCompleted: boolean = this.otpSendState.isCompleted();
+        if (!isCompleted) return;
+        // OTP 전송 완료시 폼 화면으로 전환
+        this.step = 'form';
     }
 }

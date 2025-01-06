@@ -22,27 +22,32 @@ export class RegisterPage {
     private readonly registerState: RegisterState = inject(RegisterState);
 
     constructor() {
-        effect(() => {
-            const isRegistered: boolean = this.registerState.isRegistered();
-            const tempEmail: string | null = this.registerState.tempEmail();
-            if (isRegistered && tempEmail) {
-                this.router.navigateByUrl('/verify-otp', {
-                    state: {
-                        email: tempEmail
-                    }
-                });
+        effect(() => this.handleRegisterSuccess());
+        effect(() => this.handleRegisterError());
+    }
+
+    private handleRegisterSuccess(): void {
+        const isRegistered: boolean = this.registerState.isRegistered();
+        const tempEmail: string | null = this.registerState.tempEmail();
+
+        // 회원가입이 완료되지 않았거나 임시 이메일이 없으면 처리하지 않음
+        if (!isRegistered || !tempEmail) return;
+
+        this.router.navigateByUrl('/verify-otp', {
+            state: {
+                email: tempEmail
             }
         });
+    }
 
-        effect(() => {
-            const error: CustomError | null = this.registerState.error();
-            if (error) {
-                const notify = new Notyf();
-                notify.error({
-                    message: error.message,
-                    dismissible: true
-                });
-            }
+    private handleRegisterError(): void {
+        const error: CustomError | null = this.registerState.error();
+        if (!error) return;
+
+        const notify = new Notyf();
+        notify.error({
+            message: error.message,
+            dismissible: true
         });
     }
 }

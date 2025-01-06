@@ -30,25 +30,27 @@ export class OtpVerifyPage {
             this.router.navigateByUrl('/');
             return;
         }
-
         this.email.set(state['email']);
 
-        effect(() => {
-            const isCompleted: boolean = this.otpVerifyState.isCompleted();
-            if (isCompleted) {
-                this.router.navigateByUrl('/users/me');
-            }
-        });
+        effect(() => this.handleOtpVerifySuccess());
+        effect(() => this.handleOtpVerifyError());
+    }
 
-        effect(() => {
-            const error: CustomError | null = this.otpVerifyState.error();
-            if (error) {
-                const notify = new Notyf();
-                notify.error({
-                    message: error.message,
-                    dismissible: true
-                });
-            }
+    private handleOtpVerifySuccess(): void {
+        const isCompleted: boolean = this.otpVerifyState.isCompleted();
+        if (!isCompleted) return;
+
+        this.router.navigateByUrl('/users/me');
+    }
+
+    private handleOtpVerifyError(): void {
+        const error: CustomError | null = this.otpVerifyState.error();
+        if (!error) return;
+
+        const notify = new Notyf();
+        notify.error({
+            message: error.message,
+            dismissible: true
         });
     }
 }

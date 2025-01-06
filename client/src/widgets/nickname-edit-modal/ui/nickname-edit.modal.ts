@@ -26,29 +26,39 @@ export class NicknameEditModal extends BaseModal {
     constructor() {
         super();
 
-        effect(() => {
-            const data: ProfileResultDTO | null = this.nicknameEditState.data();
-            if (data) {
-                this.profileState.setData(data);
-                this.close();
-            }
-        });
-
-        effect(() => {
-            const error: CustomError | null = this.nicknameEditState.error();
-            if (error) {
-                const notyf = new Notyf();
-                notyf.error({
-                    message: error.message,
-                    dismissible: true
-                });
-            }
-        });
+        effect(() => this.handleNicknameUpdateSuccess());
+        effect(() => this.handleNicknameUpdateError());
     }
 
-    onCancel() {
+    protected onCancel(): void {
         const result = window.confirm('정말 취소하시겠습니까?');
         if (!result) return;
         this.close();
+    }
+
+    private handleNicknameUpdateSuccess(): void {
+        const data: ProfileResultDTO | null = this.nicknameEditState.data();
+        if (!data) return;
+
+        this.profileState.setData(data);
+
+        const notyf = new Notyf();
+        notyf.success({
+            message: '닉네임이 변경되었습니다.',
+            dismissible: true
+        });
+
+        this.close();
+    }
+
+    private handleNicknameUpdateError(): void {
+        const error: CustomError | null = this.nicknameEditState.error();
+        if (!error) return;
+
+        const notyf = new Notyf();
+        notyf.error({
+            message: error.message,
+            dismissible: true
+        });
     }
 }

@@ -1,5 +1,6 @@
 import { Component, ComponentRef, effect, inject, Signal } from "@angular/core";
 import { Router } from "@angular/router";
+import { Notyf } from "notyf";
 
 import { ProfileResultDTO } from "domain-shared/user";
 import { ProfileCard, ProfileState } from "src/entities/user";
@@ -35,12 +36,8 @@ export class ProfilePage {
     constructor() {
         this.profileState.initialize().subscribe();
 
-        effect(() => {
-            const isCompleted: boolean = this.logoutState.isCompleted();
-            if (isCompleted) {
-                this.router.navigateByUrl('/');
-            }
-        });
+        effect(() => this.handleLogoutSuccess());
+        effect(() => this.handleLogoutError());
     }
 
     protected onEditNavigate(target: 'nickname' | 'email' | 'password'): void {
@@ -57,5 +54,23 @@ export class ProfilePage {
         instance.afterClosed = (result: any) => {
             console.log('Modal closed with result:', result);
         };
+    }
+
+    private handleLogoutSuccess(): void {
+        const isCompleted: boolean = this.logoutState.isCompleted();
+        if (!isCompleted) return;
+
+        this.router.navigateByUrl('/');
+    }
+
+    private handleLogoutError(): void {
+        const error: CustomError | null = this.logoutState.error();
+        if (!error) return;
+
+        const notyf = new Notyf();
+        notyf.error({
+            message: error.message,
+            dismissible: true
+        });
     }
 }
