@@ -1,9 +1,11 @@
-import { Component, inject, input, InputSignal, output, OutputEmitterRef } from "@angular/core";
+import { Component, inject } from "@angular/core";
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from "@angular/forms";
 
 import { USER_RULES } from "domain-shared/user";
 import { FormHelper } from "src/shared/services";
 import { ToFormGroup } from "src/shared/types";
+
+import { StepControl } from "../../states/step.control";
 
 /**
  * @description
@@ -20,12 +22,10 @@ import { ToFormGroup } from "src/shared/types";
 export class OtpForm extends FormHelper {
 
     private readonly fb: FormBuilder = inject(FormBuilder);
-    
+    private readonly stepControl: StepControl = inject(StepControl);
+
     protected readonly userRules = USER_RULES;
     protected override formGroup: FormGroup<ToFormGroup<{ otp: string }>>;
-
-    readonly email: InputSignal<string> = input.required();
-    readonly submit: OutputEmitterRef<string> = output();
 
     constructor() {
         super();
@@ -39,12 +39,17 @@ export class OtpForm extends FormHelper {
         });
     }
 
-    protected onSubmit(): void {
+    onSubmit(): void {
         if (!this.formGroup.valid) {
             this.formGroup.markAllAsTouched();
             return;
         }
         const { otp } = this.formGroup.getRawValue();
-        this.submit.emit(otp);
+        const data: any = this.stepControl.data();
+
+        this.stepControl.next({
+            otp,
+            email: data?.email
+        });
     }
 }
