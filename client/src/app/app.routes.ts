@@ -22,4 +22,12 @@ export const routes: Routes = [
         path: 'users/me',
         loadComponent: () => import('../pages/profile').then(m => m.ProfilePage)
     },
+    {
+        path: 'errors',
+        loadComponent: () => import('../pages/errors').then(m => m.Error50XPage)
+    },
+    {
+        path: '**',
+        loadComponent: () => import('../pages/errors').then(m => m.Error404Page)
+    },
 ];

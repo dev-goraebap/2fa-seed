@@ -6,6 +6,7 @@ import { provideRouter } from '@angular/router';
 
 import { jwtInterceptor } from 'src/shared/libs/jwt';
 
+import { httpErrorInterceptor } from 'src/pages/errors';
 import { routes } from './app.routes';
 
 export const appConfig: ApplicationConfig = {
@@ -16,7 +17,8 @@ export const appConfig: ApplicationConfig = {
     provideAnimationsAsync(),
     provideHttpClient(
       withInterceptors([
-        jwtInterceptor
+        jwtInterceptor,
+        httpErrorInterceptor
       ])
     )
   ]
