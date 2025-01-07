@@ -4,7 +4,7 @@ import { catchError, delay, EMPTY, finalize, Observable, tap } from "rxjs";
 
 import { UpdatePasswordDTO } from "domain-shared/user";
 import { UserService } from "src/entities/user";
-import { BaseState } from "src/shared/libs/base-state";
+import { BaseState } from "src/shared/foundations";
 
 @Injectable()
 export class PasswordEditState extends BaseState<void> {

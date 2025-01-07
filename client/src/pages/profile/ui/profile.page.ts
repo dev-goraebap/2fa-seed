@@ -5,7 +5,7 @@ import { Notyf } from "notyf";
 import { ProfileResultDTO } from "domain-shared/user";
 import { ProfileCard, ProfileState } from "src/entities/user";
 import { LogoutButton, LogoutState } from "src/features/logout";
-import { CustomError } from "src/shared/libs/base-state";
+import { CustomError } from "src/shared/foundations";
 import { ModalControl, PendingScreen } from "src/shared/ui";
 import { NicknameEditModal } from "src/widgets/nickname-edit-modal";
 import { PasswordEditModal } from "src/widgets/password-edit-modal";

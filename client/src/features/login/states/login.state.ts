@@ -5,7 +5,7 @@ import { catchError, delay, EMPTY, finalize, map, Observable, tap } from "rxjs";
 import { AuthResultDTO, LoginDTO } from "domain-shared/user";
 import { AuthService } from "src/entities/user";
 import { TokenStorage } from "src/shared/libs/jwt";
-import { BaseState } from "src/shared/libs/base-state";
+import { BaseState } from "src/shared/foundations";
 
 @Injectable()
 export class LoginState extends BaseState<AuthResultDTO> {

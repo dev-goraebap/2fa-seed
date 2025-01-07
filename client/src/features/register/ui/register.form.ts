@@ -1,10 +1,10 @@
 import { Component, inject, Signal } from "@angular/core";
-import { AbstractControl, AsyncValidatorFn, FormBuilder, FormGroup, ReactiveFormsModule, ValidationErrors, ValidatorFn, Validators } from "@angular/forms";
+import { AbstractControl, AsyncValidatorFn, FormBuilder, FormGroup, ReactiveFormsModule, ValidationErrors, Validators } from "@angular/forms";
 import { catchError, debounceTime, delay, distinctUntilChanged, map, Observable, of } from "rxjs";
 
 import { USER_RULES } from "domain-shared/user";
 import { UserService } from "src/entities/user";
-import { BaseForm } from "src/shared/libs/base-form";
+import { BaseForm, CustomValidators } from "src/shared/foundations/form";
 import { ToFormGroup } from "src/shared/types";
 
 import { RegisterState } from "../states/register.state";
@@ -46,7 +46,7 @@ export class RegisterForm extends BaseForm {
             ]),
             confirmPassword: this.fb.nonNullable.control('', [
                 Validators.required,
-                this.confirmPasswordValidator()
+                CustomValidators.confirmPasswordValidator()
             ]),
         });
     }
@@ -71,25 +71,6 @@ export class RegisterForm extends BaseForm {
                 map(res => res.isDuplicate ? { isDuplicate: true } : null),
                 catchError(() => of(null))
             );
-        };
-    }
-
-    private confirmPasswordValidator(): ValidatorFn {
-        return (control: AbstractControl): ValidationErrors | null => {
-            if (!control.parent) {
-                return null;
-            }
-
-            const password = control.parent.get('password');
-            if (!password) {
-                return null;
-            }
-
-            if (control.value !== password.value) {
-                return { passwordMismatch: true };
-            }
-
-            return null;
         };
     }
 }

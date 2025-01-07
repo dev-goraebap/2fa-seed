@@ -1,6 +1,6 @@
 import { Component, inject } from "@angular/core";
 import { Router } from "@angular/router";
-import { CustomError } from "src/shared/libs/base-state";
+import { CustomError } from "src/shared/foundations";
 
 @Component({
     selector: 'error-50X-page',

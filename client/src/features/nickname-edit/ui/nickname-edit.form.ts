@@ -2,7 +2,7 @@ import { Component, inject, Signal } from "@angular/core";
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from "@angular/forms";
 
 import { USER_RULES } from "domain-shared/user";
-import { BaseForm } from "src/shared/libs/base-form";
+import { BaseForm } from "src/shared/foundations/form";
 import { ToFormGroup } from "src/shared/types";
 
 import { NicknameEditState } from "../states/nickname-edit.state";

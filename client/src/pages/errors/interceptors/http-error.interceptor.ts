@@ -2,7 +2,7 @@ import { HttpErrorResponse, HttpEvent, HttpHandlerFn, HttpRequest } from "@angul
 import { inject } from "@angular/core";
 import { Router } from "@angular/router";
 import { catchError, EMPTY, Observable, throwError } from "rxjs";
-import { CustomError } from "src/shared/libs/base-state";
+import { CustomError } from "src/shared/foundations";
 
 export function httpErrorInterceptor(req: HttpRequest<unknown>, next: HttpHandlerFn): Observable<HttpEvent<unknown>> {
     const router: Router = inject(Router);

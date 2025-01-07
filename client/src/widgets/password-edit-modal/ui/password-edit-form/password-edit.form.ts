@@ -6,7 +6,7 @@ import { catchError, finalize, tap } from "rxjs";
 
 import { UpdatePasswordDTO, USER_RULES } from "domain-shared/user";
 import { UserService } from "src/entities/user";
-import { BaseForm } from "src/shared/libs/base-form";
+import { BaseForm } from "src/shared/foundations/form";
 import { ModalControl } from "src/shared/ui";
 
 import { StepControl } from "../../states/step.control";

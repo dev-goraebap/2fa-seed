@@ -4,7 +4,7 @@ import { catchError, delay, EMPTY, finalize, Observable, tap } from "rxjs";
 
 import { DeviceService } from "src/entities/user";
 import { TokenStorage } from "src/shared/libs/jwt";
-import { BaseState } from "src/shared/libs/base-state";
+import { BaseState } from "src/shared/foundations";
 
 @Injectable()
 export class LogoutState extends BaseState<void> {

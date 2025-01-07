@@ -4,7 +4,7 @@ import { catchError, delay, EMPTY, finalize, map, Observable, tap } from "rxjs";
 
 import { ProfileResultDTO } from "domain-shared/user";
 
-import { BaseState } from "src/shared/libs/base-state";
+import { BaseState } from "src/shared/foundations";
 import { UserService } from "../services/user.service";
 
 @Injectable({

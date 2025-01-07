@@ -3,7 +3,7 @@ import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from "@angula
 
 import { CreateDeviceDTO, USER_RULES } from "domain-shared/user";
 import { Browser } from "src/shared/libs/browser";
-import { BaseForm } from "src/shared/libs/base-form";
+import { BaseForm } from "src/shared/foundations/form";
 import { ToFormGroup } from "src/shared/types";
 import { OtpVerifyState } from "../states/otp-verify.state";
 
