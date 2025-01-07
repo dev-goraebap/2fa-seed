@@ -31,13 +31,7 @@ export class NicknameEditModal extends BaseModal {
         effect(() => this.handleNicknameUpdateSuccess());
         effect(() => this.handleNicknameUpdateError());
     }
-
-    protected onCancel(): void {
-        const result = window.confirm('정말 취소하시겠습니까?');
-        if (!result) return;
-        this.close();
-    }
-
+    
     private handleNicknameUpdateSuccess(): void {
         const data: ProfileResultDTO | null = this.nicknameEditState.data();
         if (!data) return;
