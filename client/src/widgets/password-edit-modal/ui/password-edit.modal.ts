@@ -34,6 +34,5 @@ export class PasswordEditModal extends BaseModal {
             this.stepControl.addComponent(PasswordEditForm);
             this.stepControl.create();
         });
-
     }
 }
