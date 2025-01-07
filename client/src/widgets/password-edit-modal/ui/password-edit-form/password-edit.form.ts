@@ -60,9 +60,16 @@ export class PasswordEditForm extends BaseForm {
             otp: data?.otp,
             password: formData.password,
         }
-        
+
         this.userService.updatePassword(dto).pipe(
-            tap(() => this.modalControl.closeLatest()),
+            tap(() => {
+                const notyf = new Notyf();
+                notyf.success({
+                    message: '비밀번호가 변경되었어요.',
+                    dismissible: true
+                });
+                this.modalControl.closeLatest();
+            }),
             catchError((res: HttpErrorResponse) => {
                 const notyf = new Notyf();
                 notyf.error({
