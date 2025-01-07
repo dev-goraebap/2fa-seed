@@ -1,12 +1,10 @@
 import { FormGroup } from "@angular/forms";
 
 /**
- * @todo
+ * @description
  * FormFactory 서비스들이 공용으로 사용하는 기능을 제공
- * - 에러 채크 함수
- * - 요청중 상태, 상태 제어 메서드 제공
  */
-export abstract class FormHelper {
+export abstract class BaseForm {
 
     protected abstract readonly formGroup: FormGroup;
 

@@ -3,7 +3,7 @@ import { Component, effect, inject, input, InputSignal, Signal } from "@angular/
 import { Notyf } from "notyf";
 import { interval, tap } from "rxjs";
 
-import { CustomError } from "src/shared/services";
+import { CustomError } from "src/shared/libs/base-state";
 import { OtpSendState } from "../states/otp-send.state";
 
 @Component({

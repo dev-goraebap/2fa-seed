@@ -4,7 +4,7 @@ import { Notyf } from "notyf";
 import { ProfileResultDTO } from "domain-shared/user";
 import { ProfileState } from "src/entities/user";
 import { NicknameEditForm, NicknameEditState } from "src/features/nickname-edit";
-import { CustomError } from "src/shared/services";
+import { CustomError } from "src/shared/libs/base-state";
 import { BaseModal, ModalOverlay } from "src/shared/ui";
 
 @Component({

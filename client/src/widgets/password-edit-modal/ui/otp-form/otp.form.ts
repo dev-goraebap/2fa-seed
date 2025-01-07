@@ -2,7 +2,7 @@ import { Component, inject } from "@angular/core";
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from "@angular/forms";
 
 import { USER_RULES } from "domain-shared/user";
-import { FormHelper } from "src/shared/services";
+import { BaseForm } from "src/shared/libs/base-form";
 import { ToFormGroup } from "src/shared/types";
 
 import { StepControl } from "../../states/step.control";
@@ -19,7 +19,7 @@ import { StepControl } from "../../states/step.control";
         ReactiveFormsModule
     ]
 })
-export class OtpForm extends FormHelper {
+export class OtpForm extends BaseForm {
 
     private readonly fb: FormBuilder = inject(FormBuilder);
     private readonly stepControl: StepControl = inject(StepControl);

@@ -3,7 +3,7 @@ import { Router } from "@angular/router";
 import { Notyf } from "notyf";
 
 import { OtpRetryTimer, OtpVerifyForm, OtpVerifyState } from "src/features/otp";
-import { CustomError } from "src/shared/services";
+import { CustomError } from "src/shared/libs/base-state";
 
 @Component({
     selector: 'otp-verify-page',

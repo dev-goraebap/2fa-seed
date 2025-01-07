@@ -3,7 +3,7 @@ import { Router, RouterLink } from "@angular/router";
 import { Notyf } from "notyf";
 
 import { RegisterForm, RegisterState } from "src/features/register";
-import { CustomError } from "src/shared/services";
+import { CustomError } from "src/shared/libs/base-state";
 
 @Component({
     selector: 'register-page',

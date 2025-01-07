@@ -2,7 +2,7 @@ import { Component, inject, input, InputSignal, Signal } from "@angular/core";
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from "@angular/forms";
 
 import { UpdatePasswordDTO, USER_RULES } from "domain-shared/user";
-import { FormHelper } from "src/shared/services";
+import { BaseForm } from "src/shared/libs/base-form";
 import { ToFormGroup } from "src/shared/types";
 
 import { PasswordEditState } from "../states/password-edit.state";
@@ -14,7 +14,7 @@ import { PasswordEditState } from "../states/password-edit.state";
         ReactiveFormsModule,
     ]
 })
-export class NicknameEditForm extends FormHelper {
+export class NicknameEditForm extends BaseForm {
 
     private readonly fb: FormBuilder = inject(FormBuilder);
     private readonly passwordEditState: PasswordEditState = inject(PasswordEditState);

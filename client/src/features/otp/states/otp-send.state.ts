@@ -3,7 +3,7 @@ import { inject, Injectable, signal, WritableSignal } from "@angular/core";
 import { catchError, EMPTY, finalize, Observable, tap } from "rxjs";
 
 import { AuthService } from "src/entities/user";
-import { BaseState } from "src/shared/services";
+import { BaseState } from "src/shared/libs/base-state";
 
 @Injectable()
 export class OtpSendState extends BaseState<void> {

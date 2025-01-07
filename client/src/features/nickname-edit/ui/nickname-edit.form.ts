@@ -2,7 +2,7 @@ import { Component, inject, Signal } from "@angular/core";
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from "@angular/forms";
 
 import { USER_RULES } from "domain-shared/user";
-import { FormHelper } from "src/shared/services";
+import { BaseForm } from "src/shared/libs/base-form";
 import { ToFormGroup } from "src/shared/types";
 
 import { NicknameEditState } from "../states/nickname-edit.state";
@@ -14,7 +14,7 @@ import { NicknameEditState } from "../states/nickname-edit.state";
     ReactiveFormsModule,
     ]
 })
-export class NicknameEditForm extends FormHelper {
+export class NicknameEditForm extends BaseForm {
 
     private readonly fb: FormBuilder = inject(FormBuilder);
     private readonly nicknameEditState: NicknameEditState = inject(NicknameEditState);

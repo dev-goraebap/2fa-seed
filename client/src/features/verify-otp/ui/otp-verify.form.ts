@@ -3,7 +3,7 @@ import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from "@angula
 
 import { CreateDeviceDTO, USER_RULES } from "domain-shared/user";
 import { Browser } from "src/shared/libs/browser";
-import { FormHelper } from "src/shared/services";
+import { BaseForm } from "src/shared/libs/base-form";
 import { ToFormGroup } from "src/shared/types";
 import { OtpVerifyState } from "../states/otp-verify.state";
 
@@ -14,7 +14,7 @@ import { OtpVerifyState } from "../states/otp-verify.state";
         ReactiveFormsModule
     ]
 })
-export class OtpVerifyForm extends FormHelper {
+export class OtpVerifyForm extends BaseForm {
 
     private readonly fb: FormBuilder = inject(FormBuilder);
     private readonly otpVerifyState: OtpVerifyState = inject(OtpVerifyState);

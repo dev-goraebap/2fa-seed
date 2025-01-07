@@ -3,7 +3,7 @@ import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from "@angula
 
 import { LoginDTO, USER_RULES } from "domain-shared/user";
 import { Browser } from "src/shared/libs/browser";
-import { FormHelper } from "src/shared/services";
+import { BaseForm } from "src/shared/libs/base-form";
 import { ToFormGroup } from "src/shared/types";
 
 import { LoginState } from "../states/login.state";
@@ -16,7 +16,7 @@ import { LoginFormDTO } from "../types/login-form.dto";
         ReactiveFormsModule
     ]
 })
-export class LoginForm extends FormHelper {
+export class LoginForm extends BaseForm {
 
     private readonly fb: FormBuilder = inject(FormBuilder);
     private readonly loginState: LoginState = inject(LoginState);

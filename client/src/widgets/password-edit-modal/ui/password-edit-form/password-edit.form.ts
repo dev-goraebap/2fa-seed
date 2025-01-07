@@ -1,14 +1,14 @@
+import { HttpErrorResponse } from "@angular/common/http";
 import { Component, inject } from "@angular/core";
 import { AbstractControl, FormBuilder, FormGroup, ReactiveFormsModule, ValidationErrors, ValidatorFn, Validators } from "@angular/forms";
+import { Notyf } from "notyf";
+import { catchError, finalize, tap } from "rxjs";
 
 import { UpdatePasswordDTO, USER_RULES } from "domain-shared/user";
 import { UserService } from "src/entities/user";
-import { FormHelper } from "src/shared/services";
-
-import { HttpErrorResponse } from "@angular/common/http";
-import { Notyf } from "notyf";
-import { catchError, finalize, tap } from "rxjs";
+import { BaseForm } from "src/shared/libs/base-form";
 import { ModalControl } from "src/shared/ui";
+
 import { StepControl } from "../../states/step.control";
 
 @Component({
@@ -18,7 +18,7 @@ import { StepControl } from "../../states/step.control";
         ReactiveFormsModule
     ]
 })
-export class PasswordEditForm extends FormHelper {
+export class PasswordEditForm extends BaseForm {
 
     private readonly fb: FormBuilder = inject(FormBuilder);
     private readonly userService: UserService = inject(UserService);

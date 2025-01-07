@@ -4,7 +4,7 @@ import { catchError, delay, EMPTY, finalize, map, Observable, tap } from "rxjs";
 
 import { ProfileResultDTO } from "domain-shared/user";
 import { UserService } from "src/entities/user";
-import { BaseState } from "src/shared/services";
+import { BaseState } from "src/shared/libs/base-state";
 
 @Injectable()
 export class NicknameEditState extends BaseState<ProfileResultDTO> {

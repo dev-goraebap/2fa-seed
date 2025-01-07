@@ -4,7 +4,7 @@ import { catchError, debounceTime, delay, distinctUntilChanged, map, Observable,
 
 import { USER_RULES } from "domain-shared/user";
 import { UserService } from "src/entities/user";
-import { FormHelper } from "src/shared/services";
+import { BaseForm } from "src/shared/libs/base-form";
 import { ToFormGroup } from "src/shared/types";
 
 import { RegisterState } from "../states/register.state";
@@ -15,7 +15,7 @@ import { RegisterFormDTO } from "../types/register-form.dto";
     templateUrl: './register.form.html',
     imports: [ReactiveFormsModule]
 })
-export class RegisterForm extends FormHelper {
+export class RegisterForm extends BaseForm {
 
     private readonly fb: FormBuilder = inject(FormBuilder);
     private readonly userService: UserService = inject(UserService);

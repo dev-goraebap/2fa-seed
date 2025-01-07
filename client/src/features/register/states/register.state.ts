@@ -4,7 +4,7 @@ import { catchError, delay, EMPTY, finalize, Observable, tap } from "rxjs";
 
 import { RegisterDTO } from "domain-shared/user";
 import { AuthService } from "src/entities/user";
-import { BaseState } from "src/shared/services";
+import { BaseState } from "src/shared/libs/base-state";
 
 @Injectable()
 export class RegisterState extends BaseState<void> {

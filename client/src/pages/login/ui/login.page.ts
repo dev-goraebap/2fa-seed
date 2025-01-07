@@ -4,7 +4,7 @@ import { Notyf } from "notyf";
 
 import { AuthResultDTO, AuthStatus } from "domain-shared/user";
 import { LoginForm, LoginState } from "src/features/login";
-import { CustomError } from "src/shared/services";
+import { CustomError } from "src/shared/libs/base-state";
 
 @Component({
     selector: 'login-page',
