@@ -1,6 +1,6 @@
 import { Component, inject, Signal } from "@angular/core";
-import { LogoutState } from "../states/logout.state";
 
+import { LogoutState } from "../../states/logout.state";
 
 @Component({
     selector: 'logout-button',

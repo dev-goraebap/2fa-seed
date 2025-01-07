@@ -2,15 +2,18 @@ import { Component, effect, inject, signal, WritableSignal } from "@angular/core
 import { Router } from "@angular/router";
 import { Notyf } from "notyf";
 
-import { OtpRetryTimer, OtpVerifyForm, OtpVerifyState } from "src/features/otp";
+import { OtpRetryTimer } from "src/features/send-otp";
 import { CustomError } from "src/shared/foundations";
+
+import { OtpVerifyState } from "../states/otp-verify.state";
+import { OtpVerifyForm } from "./otp-verify-form/otp-verify.form";
 
 @Component({
     selector: 'otp-verify-page',
     templateUrl: './otp-verify.page.html',
     imports: [
+        OtpRetryTimer,
         OtpVerifyForm,
-        OtpRetryTimer
     ],
     providers: [
         OtpVerifyState

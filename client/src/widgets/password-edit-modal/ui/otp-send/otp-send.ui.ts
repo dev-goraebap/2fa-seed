@@ -3,7 +3,7 @@ import { Notyf } from "notyf";
 
 import { ProfileResultDTO } from "domain-shared/user";
 import { ProfileState } from "src/entities/user";
-import { OtpSendState } from "src/features/otp";
+import { OtpSendState } from "src/features/send-otp";
 import { ModalControl } from "src/shared/ui";
 
 import { StepControl } from "../../states/step.control";

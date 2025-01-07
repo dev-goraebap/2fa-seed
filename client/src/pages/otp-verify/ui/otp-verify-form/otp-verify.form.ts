@@ -2,10 +2,11 @@ import { Component, inject, input, InputSignal, Signal } from "@angular/core";
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from "@angular/forms";
 
 import { CreateDeviceDTO, USER_RULES } from "domain-shared/user";
-import { Browser } from "src/shared/libs/browser";
 import { BaseForm } from "src/shared/foundations/form";
+import { Browser } from "src/shared/libs/browser";
 import { ToFormGroup } from "src/shared/types";
-import { OtpVerifyState } from "../states/otp-verify.state";
+
+import { OtpVerifyState } from "../../states/otp-verify.state";
 
 @Component({
     selector: 'otp-verify-form',
@@ -37,7 +38,7 @@ export class OtpVerifyForm extends BaseForm {
         });
     }
 
-    protected onVerifyOtp(): void {
+    onSubmit(): void {
         if (!this.formGroup.valid) {
             this.formGroup.markAllAsTouched();
             return;

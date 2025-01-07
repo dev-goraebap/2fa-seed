@@ -3,8 +3,10 @@ import { Router, RouterLink } from "@angular/router";
 import { Notyf } from "notyf";
 
 import { AuthResultDTO, AuthStatus } from "domain-shared/user";
-import { LoginForm, LoginState } from "src/features/login";
 import { CustomError } from "src/shared/foundations";
+
+import { LoginState } from "../states/login.state";
+import { LoginForm } from "./login-form/login.form";
 
 @Component({
     selector: 'login-page',

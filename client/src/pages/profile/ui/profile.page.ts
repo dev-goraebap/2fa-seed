@@ -3,20 +3,23 @@ import { Router } from "@angular/router";
 import { Notyf } from "notyf";
 
 import { ProfileResultDTO } from "domain-shared/user";
-import { ProfileCard, ProfileState } from "src/entities/user";
-import { LogoutButton, LogoutState } from "src/features/logout";
+import { ProfileState } from "src/entities/user";
 import { CustomError } from "src/shared/foundations";
 import { ModalControl, PendingScreen } from "src/shared/ui";
 import { NicknameEditModal } from "src/widgets/nickname-edit-modal";
 import { PasswordEditModal } from "src/widgets/password-edit-modal";
 
+import { LogoutState } from "../states/logout.state";
+import { LogoutButton } from "./logout-button/logout.button";
+import { ProfileCard } from "./profile-card/profile.card";
+
 @Component({
     selector: 'profile-page',
     templateUrl: './profile.page.html',
     imports: [
-        LogoutButton,
-        ProfileCard,
         PendingScreen,
+        ProfileCard,
+        LogoutButton,
     ],
     providers: [
         LogoutState

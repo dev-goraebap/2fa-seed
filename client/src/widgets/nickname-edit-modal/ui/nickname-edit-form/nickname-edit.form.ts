@@ -5,7 +5,7 @@ import { USER_RULES } from "domain-shared/user";
 import { BaseForm } from "src/shared/foundations/form";
 import { ToFormGroup } from "src/shared/types";
 
-import { NicknameEditState } from "../states/nickname-edit.state";
+import { NicknameEditState } from "../../states/nickname-edit.state";
 
 @Component({
     selector: 'nickname-edit-form',

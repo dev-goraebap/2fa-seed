@@ -3,9 +3,11 @@ import { Notyf } from "notyf";
 
 import { ProfileResultDTO } from "domain-shared/user";
 import { ProfileState } from "src/entities/user";
-import { NicknameEditForm, NicknameEditState } from "src/features/nickname-edit";
 import { CustomError } from "src/shared/foundations";
 import { BaseModal, ModalOverlay } from "src/shared/ui";
+
+import { NicknameEditState } from "../states/nickname-edit.state";
+import { NicknameEditForm } from "./nickname-edit-form/nickname-edit.form";
 
 @Component({
     selector: 'nickname-edit-modal',

@@ -2,12 +2,12 @@ import { Component, inject, Signal } from "@angular/core";
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from "@angular/forms";
 
 import { LoginDTO, USER_RULES } from "domain-shared/user";
-import { Browser } from "src/shared/libs/browser";
 import { BaseForm } from "src/shared/foundations/form";
+import { Browser } from "src/shared/libs/browser";
 import { ToFormGroup } from "src/shared/types";
 
-import { LoginState } from "../states/login.state";
-import { LoginFormDTO } from "../types/login-form.dto";
+import { LoginState } from "../../states/login.state";
+import { LoginFormDTO } from "../../types/login-form.dto";
 
 @Component({
     selector: "login-form",
