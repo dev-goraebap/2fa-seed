@@ -21,7 +21,7 @@ export class PasswordEditModal extends BaseModal {
 
     private readonly stepContainer: Signal<ViewContainerRef> = viewChild.required('stepContainer', {
         read: ViewContainerRef
-      });
+    });
     private readonly stepControl: StepControl = inject(StepControl);
 
     constructor() {
