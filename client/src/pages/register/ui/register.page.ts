@@ -2,8 +2,10 @@ import { Component, effect, inject } from "@angular/core";
 import { Router, RouterLink } from "@angular/router";
 import { Notyf } from "notyf";
 
-import { RegisterForm, RegisterState } from "src/features/register";
 import { CustomError } from "src/shared/foundations";
+
+import { RegisterState } from "../states/register.state";
+import { RegisterForm } from "./register-form/register.form";
 
 @Component({
     selector: 'register-page',

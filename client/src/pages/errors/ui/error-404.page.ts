@@ -4,7 +4,7 @@ import { Router } from "@angular/router";
 @Component({
     selector: 'error-50X-page',
     template: `
-    <div class="p-4 motion-opacity-in-[0] motion-translate-y-in-[5%] motion-duration-[0.7s] motion-ease-in-out sm:mt-10">
+    <div data-motion="slideUp" class="p-4 sm:mt-10">
         <div class="flex flex-col gap-1 items-center">
             <div class="w-full">
                 <img src="/imgs/404-error.svg" class="w-full"/>

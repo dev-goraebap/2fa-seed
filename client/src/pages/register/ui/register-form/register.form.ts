@@ -7,8 +7,8 @@ import { UserService } from "src/entities/user";
 import { BaseForm, CustomValidators } from "src/shared/foundations/form";
 import { ToFormGroup } from "src/shared/types";
 
-import { RegisterState } from "../states/register.state";
-import { RegisterFormDTO } from "../types/register-form.dto";
+import { RegisterState } from "../../states/register.state";
+import { RegisterFormDTO } from "../../types/register-form.dto";
 
 @Component({
     selector: 'register-form',
