@@ -32,7 +32,7 @@ export class OtpSendUI {
     }
 
     protected onClose(): void {
-        this.modalControl.closeLatest();
+        this.modalControl.close();
     }
 
     protected onSendOtp(): void {

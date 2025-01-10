@@ -68,7 +68,7 @@ export class PasswordEditForm extends BaseForm {
                     message: '비밀번호가 변경되었어요.',
                     dismissible: true
                 });
-                this.modalControl.closeLatest();
+                this.modalControl.close();
             }),
             catchError((res: HttpErrorResponse) => {
                 const notyf = new Notyf();

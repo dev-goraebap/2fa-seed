@@ -1,6 +1,6 @@
 import { afterNextRender, Component, inject, Signal, viewChild, ViewContainerRef } from "@angular/core";
 
-import { BaseModal, ModalOverlay } from "src/shared/ui";
+import { ModalOverlay } from "src/shared/ui";
 import { OtpForm } from "./otp-form/otp.form";
 import { OtpSendUI } from "./otp-send/otp-send.ui";
 
@@ -17,7 +17,7 @@ import { PasswordEditForm } from "./password-edit-form/password-edit.form";
         StepControl
     ]
 })
-export class PasswordEditModal extends BaseModal {
+export class PasswordEditModal {
 
     private readonly stepContainer: Signal<ViewContainerRef> = viewChild.required('stepContainer', {
         read: ViewContainerRef
@@ -25,7 +25,6 @@ export class PasswordEditModal extends BaseModal {
     private readonly stepControl: StepControl = inject(StepControl);
 
     constructor() {
-        super();
         afterNextRender(() => {
             console.log(this.stepContainer());
             this.stepControl.setContainerRef(this.stepContainer());
