@@ -1,0 +1,15 @@
+<div #backdrop (click)="onBackdropClose()"
+    class="fixed inset-0 z-40 flex items-center justify-center bg-black/50 motion-preset-fade"
+    [ngClass]="{ 'cursor-pointer': canBackdropClose() }">
+    <div #modal (click)="$event.stopPropagation()" class="z-50 w-full h-full p-4 rounded-none cursor-default bg-base-100 sm:rounded-md sm:max-w-md sm:h-auto motion-preset-expand motion-duration-200 motion-delay-200">
+
+        <div class="relative items-center justify-center hidden sm:flex">
+            <img src="/imgs/email-send.svg" class="absolute bottom-[-3rem] w-40" />
+        </div>
+        <button (click)="onClose()">
+            <span class="icon-[material-symbols--close-small-outline-rounded] size-10"></span>
+        </button>
+
+        <ng-container #contentContainer></ng-container>
+    </div>
+</div>
