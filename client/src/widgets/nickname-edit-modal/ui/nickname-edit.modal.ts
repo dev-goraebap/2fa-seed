@@ -3,8 +3,7 @@ import { Notyf } from "notyf";
 
 import { ProfileResultDTO } from "domain-shared/user";
 import { ProfileState } from "src/entities/user";
-import { CustomError } from "src/shared/foundations";
-import { ModalControl, ModalOverlay } from "src/shared/ui";
+import { CustomError, DynamicDialogControl } from "src/shared/foundations";
 
 import { NicknameEditState } from "../states/nickname-edit.state";
 import { NicknameEditForm } from "./nickname-edit-form/nickname-edit.form";
@@ -13,7 +12,6 @@ import { NicknameEditForm } from "./nickname-edit-form/nickname-edit.form";
     selector: 'nickname-edit-modal',
     templateUrl: './nickname-edit.modal.html',
     imports: [
-        ModalOverlay,
         NicknameEditForm
     ],
     providers: [
@@ -22,7 +20,7 @@ import { NicknameEditForm } from "./nickname-edit-form/nickname-edit.form";
 })
 export class NicknameEditModal {
 
-    private readonly modalControl: ModalControl = inject(ModalControl);
+    private readonly ddc: DynamicDialogControl = inject(DynamicDialogControl);
     private readonly nicknameEditState: NicknameEditState = inject(NicknameEditState);
     private readonly profileState: ProfileState = inject(ProfileState);
 
@@ -56,6 +54,6 @@ export class NicknameEditModal {
     }
 
     onModalClose() {
-        this.modalControl.close();
+        this.ddc.close();
     }
 }

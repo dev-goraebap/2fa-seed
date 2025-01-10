@@ -4,8 +4,9 @@ import { Notyf } from "notyf";
 
 import { ProfileResultDTO } from "domain-shared/user";
 import { ProfileState } from "src/entities/user";
-import { CustomError } from "src/shared/foundations";
-import { ModalControl, PendingScreen } from "src/shared/ui";
+import { CustomError, DynamicDialogControl } from "src/shared/foundations";
+import { PendingScreen } from "src/shared/ui";
+import { EmailEditModal } from "src/widgets/email-edit-modal";
 import { NicknameEditModal } from "src/widgets/nickname-edit-modal";
 import { PasswordEditModal } from "src/widgets/password-edit-modal";
 
@@ -28,7 +29,7 @@ import { ProfileCard } from "./profile-card/profile.card";
 export class ProfilePage {
 
     private readonly router: Router = inject(Router);
-    private readonly modalControl: ModalControl = inject(ModalControl);
+    private readonly ddc: DynamicDialogControl = inject(DynamicDialogControl);
     private readonly profileState: ProfileState = inject(ProfileState);
     private readonly logoutState: LogoutState = inject(LogoutState);
 
@@ -46,11 +47,11 @@ export class ProfilePage {
     protected onEditNavigate(target: 'nickname' | 'email' | 'password'): void {
         let modalRef: ComponentRef<any>;
         if (target === 'nickname') {
-            modalRef = this.modalControl.open(NicknameEditModal);
+            modalRef = this.ddc.open(NicknameEditModal);
         } else if (target === 'email') {
-            // TODO: 이메일 수정 모달 연결
+            modalRef = this.ddc.open(EmailEditModal);
         } else if (target === 'password') {
-            modalRef = this.modalControl.open(PasswordEditModal);
+            modalRef = this.ddc.open(PasswordEditModal);
         }
 
         const instance = modalRef!.instance;

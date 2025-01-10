@@ -1,9 +1,9 @@
-import { Component, inject, ViewContainerRef } from '@angular/core';
+import { afterNextRender, Component, inject, Signal, viewChild, ViewContainerRef } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 
 import { environment } from 'src/shared/environments';
+import { DynamicDialogControl } from 'src/shared/foundations';
 import { TokenRefreshService } from 'src/shared/libs/jwt';
-import { ModalControl } from 'src/shared/ui';
 
 @Component({
   selector: 'app-root',
@@ -13,13 +13,17 @@ import { ModalControl } from 'src/shared/ui';
 })
 export class AppComponent {
 
-  private readonly viewContainer: ViewContainerRef = inject(ViewContainerRef);
-  private readonly modalControl: ModalControl = inject(ModalControl);
+  private readonly modalContainer: Signal<ViewContainerRef> = viewChild.required('modalContainer', {
+    read: ViewContainerRef
+  });
+  private readonly ddc: DynamicDialogControl = inject(DynamicDialogControl);
 
   constructor() {
     const tokenRefreshService = TokenRefreshService.getInstance();
     tokenRefreshService.initRefreshApiUrl(`${environment.apiUrl}/v1/auth/refresh`);
 
-    this.modalControl.setViewContainerRef(this.viewContainer);
+    afterNextRender(() => {
+      this.ddc.initialize(this.modalContainer());
+    });
   }
 }

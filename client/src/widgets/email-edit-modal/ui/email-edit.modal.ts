@@ -1,18 +1,16 @@
 import { Component, inject } from "@angular/core";
-import { ModalControl, ModalOverlay } from "src/shared/ui";
+
+import { DynamicDialogControl } from "src/shared/foundations";
 
 @Component({
     selector: 'email-edit-modal',
     templateUrl: './email-edit.modal.html',
-    imports: [
-        ModalOverlay
-    ],
 })
 export class EmailEditModal {
 
-    private readonly modalControl: ModalControl = inject(ModalControl);
+    private readonly ddc: DynamicDialogControl = inject(DynamicDialogControl);
 
     protected onClick(): void {
-        this.modalControl.open(EmailEditModal);
+        this.ddc.open(EmailEditModal);
     }
 }

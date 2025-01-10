@@ -6,8 +6,8 @@ import { catchError, finalize, tap } from "rxjs";
 
 import { UpdatePasswordDTO, USER_RULES } from "domain-shared/user";
 import { UserService } from "src/entities/user";
+import { DynamicDialogControl } from "src/shared/foundations";
 import { BaseForm } from "src/shared/foundations/form";
-import { ModalControl } from "src/shared/ui";
 
 import { StepControl } from "../../states/step.control";
 
@@ -23,11 +23,11 @@ export class PasswordEditForm extends BaseForm {
     private readonly fb: FormBuilder = inject(FormBuilder);
     private readonly userService: UserService = inject(UserService);
     private readonly stepControl: StepControl = inject(StepControl);
-    private readonly modalControl: ModalControl = inject(ModalControl);
+    private readonly ddc: DynamicDialogControl = inject(DynamicDialogControl);
 
     protected override readonly formGroup: FormGroup<any>;
-    protected isPending: boolean = false;
     protected readonly userRules = USER_RULES;
+    protected isPending: boolean = false;
 
     constructor() {
         super();
@@ -68,7 +68,7 @@ export class PasswordEditForm extends BaseForm {
                     message: '비밀번호가 변경되었어요.',
                     dismissible: true
                 });
-                this.modalControl.close();
+                this.ddc.close();
             }),
             catchError((res: HttpErrorResponse) => {
                 const notyf = new Notyf();

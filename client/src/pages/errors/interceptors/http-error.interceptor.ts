@@ -37,5 +37,5 @@ export function httpErrorInterceptor(req: HttpRequest<unknown>, next: HttpHandle
 
             return throwError(() => res);
         })
-    );
+    )
 }

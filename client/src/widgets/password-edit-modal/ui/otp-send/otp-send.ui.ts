@@ -1,11 +1,11 @@
-import { Component, DestroyRef, effect, inject, Signal } from "@angular/core";
+import { Component, effect, inject, Signal } from "@angular/core";
 import { Notyf } from "notyf";
 
 import { ProfileResultDTO } from "domain-shared/user";
 import { ProfileState } from "src/entities/user";
 import { OtpSendState } from "src/features/send-otp";
-import { ModalControl } from "src/shared/ui";
 
+import { DynamicDialogControl } from "src/shared/foundations";
 import { StepControl } from "../../states/step.control";
 
 @Component({
@@ -17,8 +17,7 @@ import { StepControl } from "../../states/step.control";
 })
 export class OtpSendUI {
 
-    private readonly destroyRef: DestroyRef = inject(DestroyRef);
-    private readonly modalControl: ModalControl = inject(ModalControl);
+    private readonly ddc: DynamicDialogControl = inject(DynamicDialogControl);
     private readonly profileState: ProfileState = inject(ProfileState);
     private readonly otpSendState: OtpSendState = inject(OtpSendState);
     private readonly stepControl: StepControl = inject(StepControl);
@@ -32,7 +31,7 @@ export class OtpSendUI {
     }
 
     protected onClose(): void {
-        this.modalControl.close();
+        this.ddc.close();
     }
 
     protected onSendOtp(): void {

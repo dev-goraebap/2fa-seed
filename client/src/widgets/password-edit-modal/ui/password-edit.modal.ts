@@ -1,6 +1,5 @@
 import { afterNextRender, Component, inject, Signal, viewChild, ViewContainerRef } from "@angular/core";
 
-import { ModalOverlay } from "src/shared/ui";
 import { OtpForm } from "./otp-form/otp.form";
 import { OtpSendUI } from "./otp-send/otp-send.ui";
 
@@ -10,9 +9,6 @@ import { PasswordEditForm } from "./password-edit-form/password-edit.form";
 @Component({
     selector: 'password-edit-modal',
     templateUrl: './password-edit.modal.html',
-    imports: [
-        ModalOverlay
-    ],
     providers: [
         StepControl
     ]
