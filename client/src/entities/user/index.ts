@@ -1,5 +1,5 @@
-export * from './services/auth.service';
-export * from './services/device.service';
-export * from './services/user.service';
+export * from './api/auth.api';
+export * from './api/device.api';
+export * from './api/user.api';
 export * from './states/profile.state';
 

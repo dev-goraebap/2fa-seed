@@ -5,7 +5,7 @@ import { Notyf } from "notyf";
 import { catchError, finalize, tap } from "rxjs";
 
 import { UpdatePasswordDTO, USER_RULES } from "domain-shared/user";
-import { UserService } from "src/entities/user";
+import { UserApi } from "src/entities/user";
 import { DynamicDialogControl } from "src/shared/foundations";
 import { BaseForm } from "src/shared/foundations/form";
 
@@ -21,7 +21,7 @@ import { StepControl } from "../../states/step.control";
 export class PasswordEditForm extends BaseForm {
 
     private readonly fb: FormBuilder = inject(FormBuilder);
-    private readonly userService: UserService = inject(UserService);
+    private readonly userService: UserApi = inject(UserApi);
     private readonly stepControl: StepControl = inject(StepControl);
     private readonly ddc: DynamicDialogControl = inject(DynamicDialogControl);
 

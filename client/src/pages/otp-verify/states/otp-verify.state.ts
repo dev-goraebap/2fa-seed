@@ -3,14 +3,14 @@ import { inject, Injectable, Signal, signal, WritableSignal } from "@angular/cor
 import { catchError, delay, EMPTY, finalize, map, Observable, tap } from "rxjs";
 
 import { AuthResultDTO, CreateDeviceDTO } from "domain-shared/user";
-import { DeviceService } from "src/entities/user";
+import { DeviceApi } from "src/entities/user";
 import { TokenStorage } from "src/shared/libs/jwt";
 import { BaseState } from "src/shared/foundations";
 
 @Injectable()
 export class OtpVerifyState extends BaseState<void> {
 
-    private readonly deviceService: DeviceService = inject(DeviceService);
+    private readonly deviceService: DeviceApi = inject(DeviceApi);
     private readonly _isCompleted: WritableSignal<boolean> = signal(false);
 
     readonly isCompleted: Signal<boolean> = this._isCompleted.asReadonly();

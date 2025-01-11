@@ -9,7 +9,7 @@ import { skipAuth } from "src/shared/libs/jwt";
 @Injectable({
     providedIn: 'root'
 })
-export class AuthService {
+export class AuthApi {
 
     private readonly httpClient: HttpClient = inject(HttpClient);
     private readonly apiUrl: string = `${environment.apiUrl}/v1/auth`;

@@ -3,14 +3,14 @@ import { inject, Injectable, Signal, signal, WritableSignal } from "@angular/cor
 import { catchError, delay, EMPTY, finalize, map, Observable, tap } from "rxjs";
 
 import { AuthResultDTO, LoginDTO } from "domain-shared/user";
-import { AuthService } from "src/entities/user";
+import { AuthApi } from "src/entities/user";
 import { TokenStorage } from "src/shared/libs/jwt";
 import { BaseState } from "src/shared/foundations";
 
 @Injectable()
 export class LoginState extends BaseState<AuthResultDTO> {
 
-    private readonly authService: AuthService = inject(AuthService);
+    private readonly authService: AuthApi = inject(AuthApi);
     private readonly _tempEmail: WritableSignal<string | null> = signal(null);
 
     readonly tempEmail: Signal<string | null> = this._tempEmail.asReadonly();

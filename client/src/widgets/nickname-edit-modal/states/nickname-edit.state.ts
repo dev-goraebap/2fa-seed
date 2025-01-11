@@ -3,13 +3,13 @@ import { inject, Injectable } from "@angular/core";
 import { catchError, delay, EMPTY, finalize, map, Observable, tap } from "rxjs";
 
 import { ProfileResultDTO } from "domain-shared/user";
-import { UserService } from "src/entities/user";
+import { UserApi } from "src/entities/user";
 import { BaseState } from "src/shared/foundations";
 
 @Injectable()
 export class NicknameEditState extends BaseState<ProfileResultDTO> {
 
-    private readonly userService: UserService = inject(UserService);
+    private readonly userService: UserApi = inject(UserApi);
 
     updateNickname(nickname: string): Observable<void> {
         this.setPending();

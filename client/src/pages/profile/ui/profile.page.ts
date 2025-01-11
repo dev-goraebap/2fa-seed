@@ -11,6 +11,7 @@ import { NicknameEditModal } from "src/widgets/nickname-edit-modal";
 import { PasswordEditModal } from "src/widgets/password-edit-modal";
 
 import { LogoutState } from "../states/logout.state";
+import { DevicesContainer } from "./devices/devices.container";
 import { LogoutButton } from "./logout-button/logout.button";
 import { ProfileCard } from "./profile-card/profile.card";
 
@@ -20,6 +21,7 @@ import { ProfileCard } from "./profile-card/profile.card";
     imports: [
         PendingScreen,
         ProfileCard,
+        DevicesContainer,
         LogoutButton,
     ],
     providers: [

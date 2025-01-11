@@ -3,7 +3,7 @@ import { AbstractControl, AsyncValidatorFn, FormBuilder, FormGroup, ReactiveForm
 import { catchError, debounceTime, delay, distinctUntilChanged, map, Observable, of } from "rxjs";
 
 import { USER_RULES } from "domain-shared/user";
-import { UserService } from "src/entities/user";
+import { UserApi } from "src/entities/user";
 import { BaseForm, CustomValidators } from "src/shared/foundations/form";
 import { ToFormGroup } from "src/shared/types";
 
@@ -18,7 +18,7 @@ import { RegisterFormDTO } from "../../types/register-form.dto";
 export class RegisterForm extends BaseForm {
 
     private readonly fb: FormBuilder = inject(FormBuilder);
-    private readonly userService: UserService = inject(UserService);
+    private readonly userService: UserApi = inject(UserApi);
     private readonly registerState: RegisterState = inject(RegisterState);
 
     protected override readonly formGroup: FormGroup<ToFormGroup<RegisterFormDTO>>;

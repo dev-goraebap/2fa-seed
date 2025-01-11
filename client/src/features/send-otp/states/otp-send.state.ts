@@ -2,13 +2,13 @@ import { HttpErrorResponse } from "@angular/common/http";
 import { inject, Injectable, signal, WritableSignal } from "@angular/core";
 import { catchError, EMPTY, finalize, Observable, tap } from "rxjs";
 
-import { AuthService } from "src/entities/user";
+import { AuthApi } from "src/entities/user";
 import { BaseState } from "src/shared/foundations";
 
 @Injectable()
 export class OtpSendState extends BaseState<void> {
 
-    private readonly authService: AuthService = inject(AuthService);
+    private readonly authService: AuthApi = inject(AuthApi);
     private readonly _isCompleted: WritableSignal<boolean> = signal(false);
 
     readonly isCompleted = this._isCompleted.asReadonly();
