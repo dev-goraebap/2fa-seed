@@ -3,6 +3,7 @@ import { CollectionReference } from "firebase-admin/firestore";
 
 import { OnlyProps } from "domain-shared/base";
 import { FirebaseRepository, FirebaseService } from "src/shared/third-party";
+
 import { UserSessionModel } from "../../models/user-session.model";
 
 @Injectable()
@@ -20,6 +21,7 @@ export class UserSessionRepository implements FirebaseRepository<UserSessionMode
         const snapshot = await this.ref
             .where('userId', '==', id)
             .where('deletedAt', '==', null)
+            .orderBy('lastRefreshingDate', 'desc')
             .get();
 
         if (snapshot.empty) {

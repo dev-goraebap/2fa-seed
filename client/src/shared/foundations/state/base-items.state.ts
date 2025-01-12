@@ -16,6 +16,9 @@ export abstract class BaseItemsState<T> {
     }
 
     setPending() {
+        if (this._data().length > 0) {
+            return;
+        }
         this._isPending.set(true);
     }
 

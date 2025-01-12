@@ -1,12 +1,16 @@
 import { HttpErrorResponse } from "@angular/common/http";
 import { inject, Injectable, Signal, signal, WritableSignal } from "@angular/core";
-import { RemoveOtherDeviceDTO } from "domain-shared/user";
 import { catchError, EMPTY, finalize, Observable, switchMap, tap } from "rxjs";
+
+import { RemoveOtherDeviceDTO } from "domain-shared/user";
 import { DeviceApi } from "src/entities/user";
 import { BaseState } from "src/shared/foundations";
+
 import { DevicesState } from "./devices.state";
 
-@Injectable()
+@Injectable({
+    providedIn: 'root'
+})
 export class DeviceRemoveState extends BaseState<void> {
 
     private readonly deviceApi: DeviceApi = inject(DeviceApi);

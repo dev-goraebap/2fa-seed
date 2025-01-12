@@ -2,27 +2,15 @@
     <div data-motion="slideUp" class="p-4 sm:mt-10">
         <div class="text-3xl font-bold">내 계정</div>
         <br />
-        <profile-card [profile]="profile()" (onEditNavigate)="onEditNavigate($event)"></profile-card>
+        <profile-card [profile]="profile()"></profile-card>
 
-        <!-- <div>
-            <div class="flex items-center justify-start">
-                <div class="w-[100px] h-full">
-                    구글
-                </div>
-                <div class="w-full">
-                </div>
-            </div>
-        </div> -->
         <br />
         
-        <div class="text-xl font-bold">액세스 및 디바이스</div>
-        <br />
-        <devices-container></devices-container>
+        <a class="" routerLink="/users/me/devices">액세스 및 디바이스</a>
 
         <br />
         <div class="flex justify-center w-full mt-10">
             <logout-button></logout-button>
         </div>
-
     </div>
 </pending-screen>

@@ -81,5 +81,9 @@ export function jwtInterceptor(req: HttpRequest<unknown>, next: HttpHandlerFn): 
     const updatedReq = req.clone({
         headers: req.headers.set('Authorization', `Bearer ${accessToken}`)
     });
-    return next(updatedReq);
+
+
+    return next(updatedReq).pipe(
+        // 401 에러 또는 백엔드와 약속된 코드(NEED_REFRESH) 넘어왔을 때 처리해줘야함 ㅠㅠ 
+    )
 }

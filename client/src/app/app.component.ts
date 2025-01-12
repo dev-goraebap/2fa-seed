@@ -7,9 +7,10 @@ import { TokenRefreshService } from 'src/shared/libs/jwt';
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet],
-  templateUrl: './app.component.html',
-  styleUrl: './app.component.scss'
+  imports: [
+    RouterOutlet
+  ],
+  templateUrl: './app.component.html'
 })
 export class AppComponent {
 

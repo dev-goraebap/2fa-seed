@@ -23,13 +23,17 @@ export class LocalAuthService {
 
     async getCredentialOrThrow(accessToken: string): Promise<[UserModel, UserSessionModel]> {
         const payload: JwtPayload = this.secureTokenService.verifyJwtToken(accessToken);
+        console.log(payload);
+
         const user: UserModel = await this.userRepository.findUserById(payload.sub);
+        console.log(user);
         if (!user) {
             throw new UnauthorizedException('사용자를 찾을 수 없습니다.');
         }
 
         const errMsg: string = '인증세션이 유효하지 않습니다.';
         const userSession: UserSessionModel = await this.userSessionRepository.findSessionByUserIdWithDeviceId(user.id, payload.deviceId);
+        console.log(userSession);
         if (!userSession) {
             throw new UnauthorizedException(errMsg);
         }

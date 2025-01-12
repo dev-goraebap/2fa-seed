@@ -1,32 +1,32 @@
 import { Component, effect, inject, Signal } from "@angular/core";
 import { Notyf } from "notyf";
 
-import { ProfileResultDTO } from "domain-shared/user";
-import { ProfileState } from "src/entities/user";
 import { OtpSendState } from "src/features/send-otp";
-import { DynamicDialogControl } from "src/shared/foundations";
+import { CustomError, DynamicDialogControl } from "src/shared/foundations";
 import { StepControl } from "src/shared/foundations/stepper";
 
 @Component({
-    selector: 'otp-send',
-    templateUrl: './otp-send.ui.html',
+    selector: 'step-01',
+    templateUrl: './step01.ui.html',
     providers: [
         OtpSendState
     ]
 })
-export class OtpSendUI {
+export class Step01UI {
+
+    protected readonly isPending: Signal<boolean>;
+    protected readonly email: string;
 
     private readonly ddc: DynamicDialogControl = inject(DynamicDialogControl);
-    private readonly profileState: ProfileState = inject(ProfileState);
     private readonly otpSendState: OtpSendState = inject(OtpSendState);
     private readonly stepControl: StepControl = inject(StepControl);
-    private tempEmail!: string;
-
-    protected readonly profile: Signal<ProfileResultDTO | null> = this.profileState.data;
-    protected readonly isPending: Signal<boolean> = this.otpSendState.isPending;
 
     constructor() {
-        effect(() => this.handleOtpSent());
+        this.isPending = this.otpSendState.isPending;
+        this.email = this.ddc.getData<{ email: string }>().email;
+
+        effect(() => this.handleOtpSentSuccess());
+        effect(() => this.handleOtpSentError());
     }
 
     protected onClose(): void {
@@ -34,23 +34,12 @@ export class OtpSendUI {
     }
 
     protected onSendOtp(): void {
-        const profile: ProfileResultDTO | null = this.profile();
-        if (!profile || !profile?.email) {
-            const notyf = new Notyf();
-            notyf.error({
-                message: '뭔가 잘못되었어요.',
-                dismissible: true
-            });
-            return;
-        }
-        this.tempEmail = profile.email;
-        this.otpSendState.sendOtp(profile.email).subscribe();
+        this.otpSendState.sendOtp(this.email).subscribe();
     }
 
     /** @description 인증번호 전송 완료 후 다음 단계로 이동 */
-    private handleOtpSent(): void {
+    private handleOtpSentSuccess(): void {
         const isCompleted: boolean = this.otpSendState.isCompleted();
-        console.log(isCompleted);
         if (!isCompleted) return;
 
         /**
@@ -63,9 +52,17 @@ export class OtpSendUI {
          * setTimeout으로 비동기 처리해주니 일단 해결됨
          */
         setTimeout(() => {
-            this.stepControl.next({
-                email: this.tempEmail
-            });
+            this.stepControl.next();
+        });
+    }
+
+    private handleOtpSentError(): void {
+        const error: CustomError | null = this.otpSendState.error();
+        if (!error) return;
+
+        new Notyf().error({
+            message: error.message,
+            dismissible: true
         });
     }
 }

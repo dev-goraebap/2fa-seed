@@ -1,4 +1,8 @@
-import { Component, inject, Signal } from "@angular/core";
+import { Component, effect, inject, Signal } from "@angular/core";
+import { Router } from "@angular/router";
+import { Notyf } from "notyf";
+
+import { CustomError } from "src/shared/foundations";
 
 import { LogoutState } from "../../states/logout.state";
 
@@ -9,20 +13,45 @@ import { LogoutState } from "../../states/logout.state";
         @if (isPending()) {
         <span class="loading loading-spinner motion-preset-focus"></span>
         } @else {
-        로그아웃
+        <span>로그아웃</span>
         }
     </button>
     `
 })
 export class LogoutButton {
+    
+    protected isPending: Signal<boolean>;
 
     private readonly logoutState: LogoutState = inject(LogoutState);
+    private readonly router: Router = inject(Router);
 
-    protected isPending: Signal<boolean> = this.logoutState.isPending;
+    constructor() {
+        this.isPending = this.logoutState.isPending;
+
+        effect(() => this.handleLogoutSuccess());
+        effect(() => this.handleLogoutError());
+    }
 
     protected onLogout(): void {
         const result = window.confirm('로그아웃 하시겠습니까?');
         if (!result) return;
         this.logoutState.logout().subscribe();
+    }
+
+    private handleLogoutSuccess(): void {
+        const isCompleted: boolean = this.logoutState.isCompleted();
+        if (!isCompleted) return;
+
+        this.router.navigateByUrl('/');
+    }
+
+    private handleLogoutError(): void {
+        const error: CustomError | null = this.logoutState.error();
+        if (!error) return;
+
+        new Notyf().error({
+            message: error.message,
+            dismissible: true
+        });
     }
 }

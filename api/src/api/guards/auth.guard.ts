@@ -1,8 +1,9 @@
-import { CanActivate, ExecutionContext, Injectable, UnauthorizedException } from "@nestjs/common";
+import { CanActivate, ExecutionContext, HttpStatus, Injectable } from "@nestjs/common";
 import { Reflector } from "@nestjs/core";
 import { Request } from "express";
 
 import { LocalAuthService } from "src/app/user";
+import { CustomException, CustomExceptions } from "../errors";
 
 /**
  * @description
@@ -43,20 +44,12 @@ export class AuthGuard implements CanActivate {
         return isPublic ? true : false;
     }
 
-    private isRefresh(context: ExecutionContext): boolean {
-        const isRefresh = this.reflector.getAllAndOverride<boolean>('refresh', [
-            context.getHandler(),
-            context.getClass(),
-        ]);
-        return isRefresh ? true : false;
-    }
-
     private getBearerTokenOrThrow(context: ExecutionContext, errMsg: string): string | undefined {
         const request = context.switchToHttp().getRequest();
         const token = request.headers.authorization?.split(' ')[1];
 
         if (!token) {
-            throw new UnauthorizedException(errMsg);
+            throw new CustomException(CustomExceptions.NEED_REFRESH, errMsg, HttpStatus.UNAUTHORIZED);
         }
 
         return token;

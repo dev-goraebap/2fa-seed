@@ -21,6 +21,9 @@ export abstract class BaseState<T> {
     }
 
     setPending() {
+        if (this.data() !== null) {
+            return;
+        }
         this._isPending.set(true);
     }
 

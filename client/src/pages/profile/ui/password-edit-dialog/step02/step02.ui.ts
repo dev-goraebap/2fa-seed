@@ -2,32 +2,31 @@ import { Component, inject } from "@angular/core";
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from "@angular/forms";
 
 import { USER_RULES } from "domain-shared/user";
+import { DynamicDialogControl } from "src/shared/foundations";
 import { BaseForm } from "src/shared/foundations/form";
 import { StepControl } from "src/shared/foundations/stepper";
 import { ToFormGroup } from "src/shared/types";
 
-/**
- * @description
- * OTP Verify Form 과 동일하지만, 요구사항이 다르기 때문에 임시로 분리된 폼.
- * 이후에 더 나은 방법으로 리팩토링 필요.
- */
 @Component({
-    selector: 'otp-form',
-    templateUrl: './otp.form.html',
+    selector: 'step-02',
+    templateUrl: './step02.ui.html',
     imports: [
         ReactiveFormsModule
     ]
 })
-export class OtpForm extends BaseForm {
-
-    private readonly fb: FormBuilder = inject(FormBuilder);
-    private readonly stepControl: StepControl = inject(StepControl);
+export class Step02UI extends BaseForm {
 
     protected readonly userRules = USER_RULES;
     protected override formGroup: FormGroup<ToFormGroup<{ otp: string }>>;
 
+    private readonly fb: FormBuilder = inject(FormBuilder);
+    private readonly stepControl: StepControl = inject(StepControl);
+    private readonly ddc: DynamicDialogControl = inject(DynamicDialogControl);
+    private readonly email: string;
+
     constructor() {
         super();
+        this.email = this.ddc.getData<{ email: string }>().email;
         this.formGroup = this.fb.group({
             otp: this.fb.nonNullable.control('', [
                 Validators.required,
@@ -44,11 +43,10 @@ export class OtpForm extends BaseForm {
             return;
         }
         const { otp } = this.formGroup.getRawValue();
-        const data: any = this.stepControl.data();
 
         this.stepControl.next({
             otp,
-            email: data?.email
+            email: this.email
         });
     }
 }

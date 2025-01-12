@@ -30,7 +30,6 @@ export class DeviceApi {
 
     remove(dto: RemoveOtherDeviceDTO) {
         return this.httpClient.delete<void>(`${this.apiUrl}/other`, {
-            context: skipAuth(),
             body: dto
         });
     }

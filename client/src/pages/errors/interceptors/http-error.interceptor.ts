@@ -8,6 +8,7 @@ export function httpErrorInterceptor(req: HttpRequest<unknown>, next: HttpHandle
     const router: Router = inject(Router);
     return next(req).pipe(
         catchError((res: HttpErrorResponse) => {
+
             console.log(res);
             if (res.status === 0) {
                 router.navigateByUrl('/errors', {
@@ -22,7 +23,7 @@ export function httpErrorInterceptor(req: HttpRequest<unknown>, next: HttpHandle
                 return EMPTY;
             }
 
-            if (res.status > 500) {
+            if (res.status >= 500) {
                 router.navigateByUrl('/errors', {
                     state: {
                         error: {

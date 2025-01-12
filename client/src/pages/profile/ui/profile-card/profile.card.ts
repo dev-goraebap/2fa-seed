@@ -1,6 +1,11 @@
 import { DatePipe } from "@angular/common";
-import { Component, input, InputSignal, output, OutputEmitterRef } from "@angular/core";
+import { Component, inject, input, InputSignal, output, OutputEmitterRef } from "@angular/core";
+
 import { ProfileResultDTO } from "domain-shared/user";
+import { DynamicDialogControl } from "src/shared/foundations";
+
+import { NicknameEditDialogUI } from "../nickname-edit-dialog/nickname-edit-dialog.ui";
+import { PasswordEditDialogUI } from "../password-edit-dialog/password-edit-dialog.ui";
 
 @Component({
     selector: 'profile-card',
@@ -9,12 +14,22 @@ import { ProfileResultDTO } from "domain-shared/user";
         DatePipe
     ]
 })
-export class ProfileCard {
+export class ProfileCardUI {
 
     readonly profile: InputSignal<ProfileResultDTO | null> = input.required();
     readonly onEditNavigate: OutputEmitterRef<'nickname' | 'email' | 'password'> = output();
 
-    protected onClick(type: 'nickname' | 'email' | 'password') {
-        this.onEditNavigate.emit(type);
+    private readonly ddc: DynamicDialogControl = inject(DynamicDialogControl);
+
+    protected onClick(type: 'nickname' | 'password') {
+        if (type === 'nickname') {
+            this.ddc.open(NicknameEditDialogUI);
+        } else if (type === 'password') {
+            this.ddc.open(PasswordEditDialogUI, {
+                data: {
+                    email: this.profile()?.email
+                }
+            });
+        }
     }
 }

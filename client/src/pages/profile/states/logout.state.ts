@@ -6,7 +6,9 @@ import { DeviceApi } from "src/entities/user";
 import { TokenStorage } from "src/shared/libs/jwt";
 import { BaseState } from "src/shared/foundations";
 
-@Injectable()
+@Injectable({
+    providedIn: 'root'
+})
 export class LogoutState extends BaseState<void> {
 
     private readonly deviceService: DeviceApi = inject(DeviceApi);

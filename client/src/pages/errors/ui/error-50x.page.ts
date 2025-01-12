@@ -1,3 +1,4 @@
+import { Location } from "@angular/common";
 import { Component, inject } from "@angular/core";
 import { Router } from "@angular/router";
 import { CustomError } from "src/shared/foundations";
@@ -28,6 +29,7 @@ import { CustomError } from "src/shared/foundations";
 export class Error50XPage {
 
     private readonly router: Router = inject(Router);
+    private readonly location: Location = inject(Location);
 
     protected readonly error!: CustomError;
 
@@ -42,6 +44,6 @@ export class Error50XPage {
     }
 
     onBack() {
-        this.router.navigateByUrl('/');
+        this.location.back();
     }
 }
