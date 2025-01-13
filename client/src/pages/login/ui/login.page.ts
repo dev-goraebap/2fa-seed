@@ -5,6 +5,7 @@ import { Notyf } from "notyf";
 import { AuthResultDTO, AuthStatus } from "domain-shared/user";
 import { CustomError, DynamicDialogControl } from "src/shared/foundations";
 
+import { SocialApi } from "src/entities/user";
 import { LoginState } from "../states/login.state";
 import { PasswordFindDialogUI } from "./find-password-dialog/password-find-dialog.ui";
 import { LoginForm } from "./login-form/login.form";
@@ -27,6 +28,7 @@ export class LoginPage {
     private readonly router: Router = inject(Router);
     private readonly ddc: DynamicDialogControl = inject(DynamicDialogControl);
     private readonly loginState: LoginState = inject(LoginState);
+    private readonly socialApi: SocialApi = inject(SocialApi);
 
     constructor() {
         effect(() => this.handleLoginSuccess());
@@ -35,6 +37,14 @@ export class LoginPage {
 
     onOpenPasswordEditDialog(): void {
         this.ddc.open(PasswordFindDialogUI);
+    }
+
+    onKakaoLogin() {
+        window.open(this.socialApi.getKakaoLoginUrl(), '_blank', 'width=500, height=600');
+
+        window.addEventListener('message', (event) => {
+            console.log(event.data.accessToken);
+        }, { once: true });
     }
 
     private handleLoginSuccess(): void {

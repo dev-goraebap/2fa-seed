@@ -7,7 +7,8 @@
     <div class="flex justify-between px-4 my-6">
         <div>
             @if (showPasswordFindButton) {
-            <button (click)="onOpenPasswordEditDialog()" class="mr-1 text-secondary motion-preset-focus-lg">비밀번호 찾기</button>
+            <button (click)="onOpenPasswordEditDialog()" class="mr-1 text-secondary motion-preset-focus-lg">비밀번호
+                찾기</button>
             }
         </div>
         <div>
@@ -17,16 +18,9 @@
 
     <div class="my-10 divider">다른 방법으로 로그인</div>
 
-    <div class="flex justify-center w-full">
-        <div class="flex flex-wrap gap-4">
-            <button class="btn btn-square btn-outline text-[#1877F2] hover:border-[#1877F2] hover:bg-[#1877F2]/10"
-                aria-label="Facebook Outline Icon Button">
-                <span class="icon-[tabler--brand-facebook]"></span>
-            </button>
-            <button class="btn btn-circle btn-outline text-[#2b3137] hover:border-[#2b3137] hover:bg-[#2b3137]/10"
-                aria-label="Github Outline Icon Button">
-                <span class="icon-[tabler--brand-github]"></span>
-            </button>
-        </div>
+    <div class="flex flex-col items-center">
+        <button (click)="onKakaoLogin()">
+            <img src="/imgs/kakao-login.png" />
+        </button>
     </div>
 </div>
