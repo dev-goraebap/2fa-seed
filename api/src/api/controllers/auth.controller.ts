@@ -1,7 +1,7 @@
 import { Body, Controller, HttpStatus, Post } from "@nestjs/common";
 import { ApiOperation, ApiResponse, ApiTags } from "@nestjs/swagger";
 
-import { AuthResultDTO, LocalAuthService, LoginDTO, RegisterDTO, RetryOtpDTO } from "src/app/user";
+import { AuthResultDTO, LocalAuthService, LoginDTO, RegisterDTO, RetryOtpDTO, VerifyEmailDTO } from "src/app/user";
 
 import { ApiRefreshTokenHeader, Public, RefreshToken } from "../decorators";
 
@@ -44,6 +44,14 @@ export class AuthController {
     @ApiResponse({ status: HttpStatus.OK })
     async retryOtp(@Body() dto: RetryOtpDTO): Promise<void> {
         return await this.authService.generateOtp(dto);
+    }
+
+    @Public()
+    @Post('verify-email')
+    @ApiOperation({ summary: '이메일 인증' })
+    @ApiResponse({ status: HttpStatus.OK })
+    async verifyEmail(@Body() dto: VerifyEmailDTO): Promise<void> {
+        return await this.authService.verifyEmail(dto);
     }
 
     @Public()

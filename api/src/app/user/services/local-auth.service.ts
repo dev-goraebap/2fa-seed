@@ -4,7 +4,7 @@ import { JwtPayload } from "jsonwebtoken";
 import { SecureTokenService } from "src/shared/security";
 import { MailService } from "src/shared/third-party";
 
-import { AuthResultDTO, LoginDTO, RegisterDTO, RetryOtpDTO } from "../dto";
+import { AuthResultDTO, LoginDTO, RegisterDTO, RetryOtpDTO, VerifyEmailDTO } from "../dto";
 import { UserSessionRepository } from "../infra/repositories/user-session.repository";
 import { UserRepository } from "../infra/repositories/user.repository";
 import { UserSessionModel } from "../models/user-session.model";
@@ -109,6 +109,23 @@ export class LocalAuthService {
 
         // 3. 이메일로 OTP 발송
         await this.mailService.send(dto.email, user.otp);
+    }
+
+    async verifyEmail(dto: VerifyEmailDTO): Promise<void> {
+        // 1. 이메일이 존재하는지 채크
+        let user: UserModel = await this.userRepository.findUserByEmail(dto.email);
+        if (!user) {
+            throw new BadRequestException('이메일을 찾을 수 없습니다.');
+        }
+
+        // 2. OTP 검증
+        if (!user.verifyOtp(dto.otp)) {
+            throw new BadRequestException('인증번호가 일치하지 않습니다.');
+        }
+
+        // 3. 이메일 인증 여부 업데이트
+        user = user.withUpdateEmailVerified();
+        await this.userRepository.save(user);
     }
 
     async refresh(refreshToken: string): Promise<AuthResultDTO> {
