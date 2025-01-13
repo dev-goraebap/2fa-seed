@@ -1,3 +1,6 @@
+<div class="text-2xl font-bold text-center">닉네임 변경하기</div>
+<br />
+
 <form class="w-full" [formGroup]="formGroup" (ngSubmit)="onSubmit()">
     <div class="relative">
         <input type="text" placeholder="nickname" class="input input-filled peer" id="nicknameInput"
@@ -19,7 +22,8 @@
     <br />
     <div class="flex items-center justify-around w-full gap-4">
         <div class="flex-1">
-            <ng-content></ng-content>
+            <button class="w-full btn btn-outline btn-primary h-[3rem]" type="button"
+                (click)="onModalClose()">취소</button>
         </div>
         <button class="flex-1 btn btn-soft btn-primary h-[3rem] text-xl" [disabled]="isPending() || !formGroup.valid">
             @if (isPending()) {

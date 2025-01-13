@@ -6,7 +6,9 @@ import { ProfileResultDTO } from "domain-shared/user";
 import { UserApi } from "src/entities/user";
 import { BaseState } from "src/shared/foundations";
 
-@Injectable()
+@Injectable({
+    providedIn: 'root'
+})
 export class NicknameEditState extends BaseState<ProfileResultDTO> {
 
     private readonly userService: UserApi = inject(UserApi);
