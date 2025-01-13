@@ -23,7 +23,11 @@ export class ProfileCardUI {
 
     protected onClick(type: 'nickname' | 'password'): void {
         if (type === 'nickname') {
-            this.ddc.open(NicknameEditDialogUI);
+            this.ddc.open(NicknameEditDialogUI, {
+                data: {
+                    nickname: this.profile()?.nickname
+                }
+            });
         } else if (type === 'password') {
             this.ddc.open(PasswordEditDialogUI, {
                 data: {

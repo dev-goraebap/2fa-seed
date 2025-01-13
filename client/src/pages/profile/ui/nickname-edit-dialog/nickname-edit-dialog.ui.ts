@@ -32,8 +32,10 @@ export class NicknameEditDialogUI extends BaseForm {
 
         this.isPending = this.nicknameEditState.isPending;
 
+        const currentNickname: string = this.ddc.getData<{ nickname: string }>().nickname;
+
         this.formGroup = this.fb.group({
-            nickname: this.fb.nonNullable.control('', [
+            nickname: this.fb.nonNullable.control(currentNickname, [
                 Validators.required,
                 Validators.minLength(USER_RULES.nickname.min),
                 Validators.maxLength(USER_RULES.nickname.max),
