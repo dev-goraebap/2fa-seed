@@ -8,19 +8,24 @@ export interface StepComponent {
 @Injectable()
 export class StepControl {
 
+    readonly step: Signal<number>;
+    readonly data: Signal<any>;
+
     private viewContainerRef: ViewContainerRef | null = null;
     private currentComponentRef?: ComponentRef<any>;
     private readonly _step: WritableSignal<number> = signal(1);
     private readonly _data: WritableSignal<any> = signal(null);
     private readonly components: Map<number, Type<any>> = new Map();
 
-    readonly step: Signal<number> = this._step.asReadonly();
-    readonly data: Signal<any> = this._data.asReadonly();
+    constructor() {
+        this.step = this._step.asReadonly();
+        this.data = this._data.asReadonly();
+    }
 
     /**
      * @description viewContainer 영역을 설정합니다.
      */
-    setContainerRef(stepContainer: ViewContainerRef) {
+    setContainerRef(stepContainer: ViewContainerRef): void {
         this.viewContainerRef = stepContainer;
     }
 
@@ -29,11 +34,11 @@ export class StepControl {
      * 컴포넌트를 Index와 1:1로 매핑하여 저장합니다.
      * - 호출된 순서대로 컴포넌트의 단계가 정해집니다.
      */
-    addComponent<T>(component: Type<T>) {
+    addComponent<T>(component: Type<T>): void {
         this.components.set(this.components.size + 1, component);
     }
 
-    create() {
+    create(): void {
         if (!this.viewContainerRef) {
             throw new Error('ViewContainerRef is not set');
         }
@@ -43,7 +48,7 @@ export class StepControl {
     /**
      * @description 다음 단계로 이동합니다.
      */
-    next(data?: any) {
+    next(data?: any): void {
         if (this.step() >= this.components.size) return;
 
         if (data) {
@@ -57,7 +62,7 @@ export class StepControl {
     /**
      * @description 이전 단계로 이동합니다.
      */
-    prev() {
+    prev(): void {
         if (this.step() <= 1) return;
 
         this._step.update(prev => prev - 1);
@@ -67,7 +72,7 @@ export class StepControl {
     /**
      * @description 특정 단계의 컴포넌트를 로드합니다.
      */
-    private loadComponent(step: number) {
+    private loadComponent(step: number): void {
         if (!this.viewContainerRef) {
             throw new Error('ViewContainerRef is not set');
         }

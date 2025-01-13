@@ -18,9 +18,9 @@ import { NicknameEditState } from "../../states/nickname-edit.state";
 })
 export class NicknameEditDialogUI extends BaseForm {
 
-    protected override readonly formGroup: FormGroup<ToFormGroup<{ nickname: string }>>;
-    protected readonly isPending: Signal<boolean>;
-    protected readonly userRules = USER_RULES;
+    override readonly formGroup: FormGroup<ToFormGroup<{ nickname: string }>>;
+    readonly isPending: Signal<boolean>;
+    readonly userRules = USER_RULES;
 
     private readonly fb: FormBuilder = inject(FormBuilder);
     private readonly ddc: DynamicDialogControl = inject(DynamicDialogControl);
@@ -56,12 +56,13 @@ export class NicknameEditDialogUI extends BaseForm {
     }
 
 
-    onModalClose() {
+    onModalClose(): void {
         this.ddc.close();
     }
 
     private handleNicknameUpdateSuccess(): void {
         const data: ProfileResultDTO | null = this.nicknameEditState.data();
+        console.log(data);
         if (!data) return;
 
         this.profileState.setData(data);
@@ -72,6 +73,7 @@ export class NicknameEditDialogUI extends BaseForm {
         });
 
         this.ddc.close();
+        this.nicknameEditState.setData(null);
     }
 
     private handleNicknameUpdateError(): void {

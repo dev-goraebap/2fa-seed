@@ -3,9 +3,10 @@ import { Router, RouterLink } from "@angular/router";
 import { Notyf } from "notyf";
 
 import { AuthResultDTO, AuthStatus } from "domain-shared/user";
-import { CustomError } from "src/shared/foundations";
+import { CustomError, DynamicDialogControl } from "src/shared/foundations";
 
 import { LoginState } from "../states/login.state";
+import { PasswordFindDialogUI } from "./find-password-dialog/password-find-dialog.ui";
 import { LoginForm } from "./login-form/login.form";
 
 @Component({
@@ -21,14 +22,19 @@ import { LoginForm } from "./login-form/login.form";
 })
 export class LoginPage {
 
-    private readonly router: Router = inject(Router);
-    private readonly loginState: LoginState = inject(LoginState);
+    showPasswordFindButton: boolean = false;
 
-    protected showPasswordFindButton: boolean = false;
+    private readonly router: Router = inject(Router);
+    private readonly ddc: DynamicDialogControl = inject(DynamicDialogControl);
+    private readonly loginState: LoginState = inject(LoginState);
 
     constructor() {
         effect(() => this.handleLoginSuccess());
         effect(() => this.handleLoginError());
+    }
+
+    onOpenPasswordEditDialog(): void {
+        this.ddc.open(PasswordFindDialogUI);
     }
 
     private handleLoginSuccess(): void {

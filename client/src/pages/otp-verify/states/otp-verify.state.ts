@@ -4,16 +4,21 @@ import { catchError, delay, EMPTY, finalize, map, Observable, tap } from "rxjs";
 
 import { AuthResultDTO, CreateDeviceDTO } from "domain-shared/user";
 import { DeviceApi } from "src/entities/user";
-import { TokenStorage } from "src/shared/libs/jwt";
 import { BaseState } from "src/shared/foundations";
+import { TokenStorage } from "src/shared/libs/jwt";
 
 @Injectable()
 export class OtpVerifyState extends BaseState<void> {
 
+    readonly isCompleted: Signal<boolean>;
+
     private readonly deviceService: DeviceApi = inject(DeviceApi);
     private readonly _isCompleted: WritableSignal<boolean> = signal(false);
 
-    readonly isCompleted: Signal<boolean> = this._isCompleted.asReadonly();
+    constructor() {
+        super();
+        this.isCompleted = this._isCompleted.asReadonly();
+    }
 
     verifyOtp(dto: CreateDeviceDTO): Observable<void> {
         this.setPending();

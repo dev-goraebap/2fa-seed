@@ -3,7 +3,6 @@ import { RouterLink } from "@angular/router";
 
 import { ProfileResultDTO } from "domain-shared/user";
 import { ProfileState } from "src/entities/user";
-import { CustomError, DynamicDialogControl } from "src/shared/foundations";
 import { PendingScreen } from "src/shared/ui";
 
 import { LogoutState } from "../states/logout.state";
@@ -25,10 +24,13 @@ import { ProfileCardUI } from "./profile-card/profile.card";
 })
 export class ProfilePage {
 
-    private readonly ddc: DynamicDialogControl = inject(DynamicDialogControl);
+    readonly profile: Signal<ProfileResultDTO | null>;
+    readonly isPending: Signal<boolean>;
+
     private readonly profileState: ProfileState = inject(ProfileState);
 
-    protected readonly profile: Signal<ProfileResultDTO | null> = this.profileState.data;
-    protected readonly isPending: Signal<boolean> = this.profileState.isPending;
-    protected readonly error: Signal<CustomError | null> = this.profileState.error;
+    constructor() {
+        this.profile = this.profileState.data;
+        this.isPending = this.profileState.isPending;
+    }
 }

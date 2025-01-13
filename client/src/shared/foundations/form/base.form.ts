@@ -8,6 +8,8 @@ export abstract class BaseForm {
 
     protected abstract readonly formGroup: FormGroup;
 
+    abstract onSubmit(): void;
+
     protected hasError(formControlName: string, errorName: 'required' | 'minlength' | 'maxlength' | 'pattern' | string): boolean {
         if (!this.formGroup) {
             throw new Error('formGroup 없음');
@@ -37,6 +39,4 @@ export abstract class BaseForm {
         if (!control.pending) return false;
         return true;
     }
-
-    abstract onSubmit(): void;
 }

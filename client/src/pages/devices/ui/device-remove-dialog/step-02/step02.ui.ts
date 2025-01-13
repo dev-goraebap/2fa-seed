@@ -24,9 +24,9 @@ import { DeviceRemoveState } from "../../../states/device-remove.state";
 })
 export class Step02UI extends BaseForm {
 
-    protected readonly userRules = USER_RULES;
-    protected override formGroup: FormGroup<ToFormGroup<{ otp: string }>>;
-    protected readonly deviceId: string;
+    readonly userRules = USER_RULES;
+    override formGroup: FormGroup<ToFormGroup<{ otp: string }>>;
+    readonly deviceId: string;
 
     private readonly fb: FormBuilder = inject(FormBuilder);
     private readonly ddc: DynamicDialogControl = inject(DynamicDialogControl);
@@ -35,8 +35,6 @@ export class Step02UI extends BaseForm {
 
     constructor() {
         super();
-        effect(() => this.handleRemoveSuccess());
-        effect(() => this.handleRemoveError());
 
         this.deviceId = this.ddc.getData<{ deviceId: string }>().deviceId;
 
@@ -48,6 +46,9 @@ export class Step02UI extends BaseForm {
                 Validators.pattern(USER_RULES.otp.regex)
             ])
         });
+
+        effect(() => this.handleRemoveSuccess());
+        effect(() => this.handleRemoveError());
     }
 
     onSubmit(): void {

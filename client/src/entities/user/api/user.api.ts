@@ -30,6 +30,8 @@ export class UserApi {
     }
 
     updatePassword(dto: UpdatePasswordDTO): Observable<void> {
-        return this.httpClient.patch<void>(`${this.apiUrl}/password`, dto);
+        return this.httpClient.patch<void>(`${this.apiUrl}/password`, dto, {
+            context: skipAuth()
+        });
     }
 }

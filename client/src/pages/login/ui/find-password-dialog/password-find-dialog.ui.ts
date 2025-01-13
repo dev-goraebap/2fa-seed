@@ -7,11 +7,11 @@ import { Step02UI } from "./step02/step02.ui";
 import { Step03UI } from "./step03/step03.ui";
 
 @Component({
-    selector: 'password-edit-dialog',
+    selector: 'password-find-dialog',
     template: `<ng-container #stepContainer></ng-container>`,
     providers: [StepControl]
 })
-export class PasswordEditDialogUI {
+export class PasswordFindDialogUI {
 
     private readonly stepControl: StepControl = inject(StepControl);
     private readonly stepContainerRef: Signal<ViewContainerRef> = viewChild.required('stepContainer', {

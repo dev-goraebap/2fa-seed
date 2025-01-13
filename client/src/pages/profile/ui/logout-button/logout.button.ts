@@ -20,7 +20,7 @@ import { LogoutState } from "../../states/logout.state";
 })
 export class LogoutButton {
     
-    protected isPending: Signal<boolean>;
+    readonly isPending: Signal<boolean>;
 
     private readonly logoutState: LogoutState = inject(LogoutState);
     private readonly router: Router = inject(Router);
@@ -32,7 +32,7 @@ export class LogoutButton {
         effect(() => this.handleLogoutError());
     }
 
-    protected onLogout(): void {
+    onLogout(): void {
         const result = window.confirm('로그아웃 하시겠습니까?');
         if (!result) return;
         this.logoutState.logout().subscribe();

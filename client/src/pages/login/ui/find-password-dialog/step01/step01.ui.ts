@@ -1,40 +1,56 @@
 import { Component, effect, inject, Signal } from "@angular/core";
-import { Notyf } from "notyf";
+import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from "@angular/forms";
 
+import { USER_RULES } from "domain-shared/user";
+import { Notyf } from "notyf";
 import { OtpSendState } from "src/features/send-otp";
-import { CustomError, DynamicDialogControl } from "src/shared/foundations";
+import { BaseForm, CustomError, DynamicDialogControl } from "src/shared/foundations";
 import { StepControl } from "src/shared/foundations/stepper";
+import { ToFormGroup } from "src/shared/types";
 
 @Component({
     selector: 'step-01',
     templateUrl: './step01.ui.html',
-    providers: [
-        OtpSendState
+    imports: [
+        ReactiveFormsModule
     ]
 })
-export class Step01UI {
+export class Step01UI extends BaseForm {
 
+    override formGroup: FormGroup<ToFormGroup<{ email: string }>>;
     readonly isPending: Signal<boolean>;
-    readonly email: string;
 
+    private readonly fb: FormBuilder = inject(FormBuilder);
     private readonly ddc: DynamicDialogControl = inject(DynamicDialogControl);
     private readonly otpSendState: OtpSendState = inject(OtpSendState);
     private readonly stepControl: StepControl = inject(StepControl);
 
     constructor() {
+        super();
         this.isPending = this.otpSendState.isPending;
-        this.email = this.ddc.getData<{ email: string }>().email;
+
+        this.formGroup = this.fb.group({
+            email: this.fb.nonNullable.control('', [
+                Validators.required,
+                Validators.pattern(USER_RULES.email.regex)
+            ])
+        });
 
         effect(() => this.handleOtpSentSuccess());
         effect(() => this.handleOtpSentError());
     }
 
-    onClose(): void {
-        this.ddc.close();
+    override onSubmit(): void {
+        if (!this.formGroup.valid) {
+            this.formGroup.markAllAsTouched();
+            return;
+        }
+        const { email } = this.formGroup.getRawValue();
+        this.otpSendState.sendOtp(email).subscribe();
     }
 
-    onSendOtp(): void {
-        this.otpSendState.sendOtp(this.email).subscribe();
+    onClose(): void {
+        this.ddc.close();
     }
 
     /** @description 인증번호 전송 완료 후 다음 단계로 이동 */
@@ -52,7 +68,10 @@ export class Step01UI {
          * setTimeout으로 비동기 처리해주니 일단 해결됨
          */
         setTimeout(() => {
-            this.stepControl.next();
+            const { email } = this.formGroup.getRawValue();
+            this.stepControl.next({
+                email
+            });
         });
     }
 

@@ -7,7 +7,7 @@
     <div class="flex justify-between px-4 my-6">
         <div>
             @if (showPasswordFindButton) {
-            <a routerLink="/find-password" class="mr-1 text-secondary motion-preset-focus-lg">비밀번호 찾기</a>
+            <button (click)="onOpenPasswordEditDialog()" class="mr-1 text-secondary motion-preset-focus-lg">비밀번호 찾기</button>
             }
         </div>
         <div>

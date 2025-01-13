@@ -17,16 +17,19 @@ import { RegisterFormDTO } from "../../types/register-form.dto";
 })
 export class RegisterForm extends BaseForm {
 
+    override readonly formGroup: FormGroup<ToFormGroup<RegisterFormDTO>>;
+    readonly isPending: Signal<boolean>;
+    readonly userRules = USER_RULES;
+
     private readonly fb: FormBuilder = inject(FormBuilder);
     private readonly userService: UserApi = inject(UserApi);
     private readonly registerState: RegisterState = inject(RegisterState);
 
-    protected override readonly formGroup: FormGroup<ToFormGroup<RegisterFormDTO>>;
-    protected readonly isPending: Signal<boolean> = this.registerState.isPending;
-    protected readonly userRules = USER_RULES;
-
     constructor() {
         super();
+        
+        this.isPending = this.registerState.isPending;
+
         this.formGroup = this.fb.group({
             email: this.fb.nonNullable.control('', {
                 validators: [

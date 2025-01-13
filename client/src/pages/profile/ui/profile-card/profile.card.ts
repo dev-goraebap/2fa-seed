@@ -21,7 +21,7 @@ export class ProfileCardUI {
 
     private readonly ddc: DynamicDialogControl = inject(DynamicDialogControl);
 
-    protected onClick(type: 'nickname' | 'password') {
+    protected onClick(type: 'nickname' | 'password'): void {
         if (type === 'nickname') {
             this.ddc.open(NicknameEditDialogUI);
         } else if (type === 'password') {

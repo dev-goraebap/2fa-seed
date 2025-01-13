@@ -29,7 +29,7 @@ export class RegisterPage {
     }
 
     private handleRegisterSuccess(): void {
-        const isRegistered: boolean = this.registerState.isRegistered();
+        const isRegistered: boolean = this.registerState.isCompleted();
         const tempEmail: string | null = this.registerState.tempEmail();
 
         // 회원가입이 완료되지 않았거나 임시 이메일이 없으면 처리하지 않음

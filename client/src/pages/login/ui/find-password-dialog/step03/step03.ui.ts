@@ -52,7 +52,6 @@ export class Step03UI extends BaseForm {
             this.formGroup.markAllAsTouched();
             return;
         }
-
         const formData: any = this.formGroup.value;
         const data: any = this.stepControl.data();
         const dto: UpdatePasswordDTO = {
@@ -64,10 +63,10 @@ export class Step03UI extends BaseForm {
         this.passwordEditState.editPassword(dto).subscribe();
     }
 
-    private handlePasswordEditSuccess(): void {
+    private handlePasswordEditSuccess() {
         const isCompleted: boolean = this.passwordEditState.isCompleted();
         if (!isCompleted) return;
-
+        
         new Notyf().success({
             message: '비밀번호가 변경되었어요.',
             dismissible: true,
@@ -75,7 +74,7 @@ export class Step03UI extends BaseForm {
         this.ddc.close();
     }
 
-    private handlePasswordEditError(): void {
+    private handlePasswordEditError() {
         const error: CustomError | null = this.passwordEditState.error();
         if (!error) return;
 

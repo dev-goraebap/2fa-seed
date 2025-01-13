@@ -2,7 +2,6 @@ import { Component, inject } from "@angular/core";
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from "@angular/forms";
 
 import { USER_RULES } from "domain-shared/user";
-import { DynamicDialogControl } from "src/shared/foundations";
 import { BaseForm } from "src/shared/foundations/form";
 import { StepControl } from "src/shared/foundations/stepper";
 import { ToFormGroup } from "src/shared/types";
@@ -21,14 +20,12 @@ export class Step02UI extends BaseForm {
 
     private readonly fb: FormBuilder = inject(FormBuilder);
     private readonly stepControl: StepControl = inject(StepControl);
-    private readonly ddc: DynamicDialogControl = inject(DynamicDialogControl);
     private readonly email: string;
 
     constructor() {
         super();
-        
-        this.email = this.ddc.getData<{ email: string }>().email;
-
+        this.email = this.stepControl.data()?.email;
+        console.log(this.email);
         this.formGroup = this.fb.group({
             otp: this.fb.nonNullable.control('', [
                 Validators.required,

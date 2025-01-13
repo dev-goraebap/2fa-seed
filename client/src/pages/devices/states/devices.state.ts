@@ -1,8 +1,8 @@
 import { HttpErrorResponse } from "@angular/common/http";
 import { inject, Injectable } from "@angular/core";
+import { catchError, delay, EMPTY, finalize, map, Observable, tap } from "rxjs";
 
 import { DeviceResultDTO } from "domain-shared/user";
-import { catchError, delay, EMPTY, finalize, map, Observable, tap } from "rxjs";
 import { DeviceApi } from "src/entities/user";
 import { BaseItemsState } from "src/shared/foundations";
 

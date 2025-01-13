@@ -18,19 +18,19 @@ import { OtpSendState } from "../states/otp-send.state";
 })
 export class OtpRetryTimer {
 
+    readonly email: InputSignal<string> = input.required();
+    readonly isPending: Signal<boolean>;
+    canRetryTime: number = 30;
+
     private readonly otpSendState: OtpSendState = inject(OtpSendState);
 
-    protected canRetryTime: number = 30;
-    protected isPending: Signal<boolean> = this.otpSendState.isPending;
-
-    readonly email: InputSignal<string> = input.required();
-
     constructor() {
+        this.isPending = this.otpSendState.isPending;
+
         effect(() => {
             const isCompleted: boolean = this.otpSendState.isCompleted();
             if (isCompleted) {
-                const notify = new Notyf();
-                notify.success({
+                new Notyf().success({
                     message: '인증번호를 재전송하였습니다.',
                     dismissible: true
                 });
@@ -41,8 +41,7 @@ export class OtpRetryTimer {
         effect(() => {
             const error: CustomError | null = this.otpSendState.error();
             if (error) {
-                const notify = new Notyf();
-                notify.error({
+                new Notyf().error({
                     message: error.message,
                     dismissible: true
                 });
@@ -59,7 +58,7 @@ export class OtpRetryTimer {
         ).subscribe();
     }
 
-    protected onResendOtp(): void {
+    onResendOtp(): void {
         this.otpSendState.sendOtp(this.email()).subscribe();
     }
 }

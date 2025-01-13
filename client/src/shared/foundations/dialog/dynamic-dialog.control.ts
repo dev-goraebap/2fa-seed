@@ -19,12 +19,9 @@ export type ModalItem = {
 export class DynamicDialogControl {
 
     private containerRef?: ViewContainerRef;
-    // private modalMap: Map<number, ComponentRef<DynamicDialogOverlay>> = new Map();
-    // private dataMap: Map<number, any> = new Map();
+    private readonly modals: ModalItem[] = [];
 
-    private modals: ModalItem[] = [];
-
-    initialize(containerRef: ViewContainerRef) {
+    initialize(containerRef: ViewContainerRef): void {
         this.containerRef = containerRef;
     }
 
@@ -73,7 +70,7 @@ export class DynamicDialogControl {
         }
     }
 
-    private getContainerRefOrThrow() {
+    private getContainerRefOrThrow(): ViewContainerRef {
         if (!this.containerRef) {
             throw new Error('모달 컨테이너 레퍼런스가 없습니다.');
         }

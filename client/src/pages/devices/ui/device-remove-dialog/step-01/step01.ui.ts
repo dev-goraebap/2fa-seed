@@ -14,8 +14,8 @@ import { StepControl } from "src/shared/foundations/stepper";
 })
 export class Step01UI {
 
-    protected readonly isPending: Signal<boolean>;
-    protected data!: { email: string, deviceId: string };
+    readonly isPending: Signal<boolean>;
+    data!: { email: string, deviceId: string };
 
     private readonly ddc: DynamicDialogControl = inject(DynamicDialogControl);
     private readonly otpSendState: OtpSendState = inject(OtpSendState);
@@ -30,11 +30,11 @@ export class Step01UI {
         effect(() => this.handleOtpSentError());
     }
 
-    protected onClose(): void {
+    onClose(): void {
         this.ddc.close();
     }
 
-    protected onSendOtp(): void {
+    onSendOtp(): void {
 
         this.otpSendState.sendOtp(this.data.email).subscribe();
     }

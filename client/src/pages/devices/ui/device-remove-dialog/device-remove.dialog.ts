@@ -1,6 +1,7 @@
 import { afterNextRender, Component, inject, Signal, viewChild, ViewContainerRef } from "@angular/core";
 
 import { StepControl } from "src/shared/foundations/stepper";
+
 import { Step01UI } from "./step-01/step01.ui";
 import { Step02UI } from "./step-02/step02.ui";
 
@@ -12,10 +13,12 @@ import { Step02UI } from "./step-02/step02.ui";
     ]
 })
 export class DeviceRemoveDialog {
+
+    private readonly stepControl: StepControl = inject(StepControl);
+
     private readonly stepContainer: Signal<ViewContainerRef> = viewChild.required('stepContainer', {
         read: ViewContainerRef
     });
-    private readonly stepControl: StepControl = inject(StepControl);
 
     constructor() {
         afterNextRender(() => {

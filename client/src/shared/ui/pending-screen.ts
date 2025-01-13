@@ -13,5 +13,6 @@ import { Component, input, InputSignal } from "@angular/core";
     `
 })
 export class PendingScreen {
+    
     readonly isPending: InputSignal<boolean> = input.required();
 }

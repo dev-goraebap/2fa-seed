@@ -1,9 +1,10 @@
 export class Browser {
+
     private static readonly browserIdKey: string = 'browserId';
 
     private constructor() { }
 
-    static getId() {
+    static getId(): string {
         let browserId = window.localStorage.getItem(this.browserIdKey);
         if (!browserId) {
             const newId = crypto.randomUUID();

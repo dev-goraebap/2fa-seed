@@ -21,10 +21,10 @@ import { OtpVerifyForm } from "./otp-verify-form/otp-verify.form";
 })
 export class OtpVerifyPage {
 
+    protected readonly email: WritableSignal<string | null> = signal(null);
+
     private readonly router: Router = inject(Router);
     private readonly otpVerifyState: OtpVerifyState = inject(OtpVerifyState);
-
-    protected readonly email: WritableSignal<string | null> = signal(null);
 
     constructor() {
         const state = this.router.getCurrentNavigation()?.extras.state;

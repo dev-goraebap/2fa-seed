@@ -16,18 +16,19 @@ import { OtpVerifyState } from "../../states/otp-verify.state";
     ]
 })
 export class OtpVerifyForm extends BaseForm {
+    
+    readonly email: InputSignal<string> = input.required();
+    
+    override formGroup: FormGroup<ToFormGroup<{ otp: string }>>;
+    readonly isPending: Signal<boolean>;
+    readonly userRules = USER_RULES;
 
     private readonly fb: FormBuilder = inject(FormBuilder);
     private readonly otpVerifyState: OtpVerifyState = inject(OtpVerifyState);
-    
-    protected readonly userRules = USER_RULES;
-    protected readonly isPending: Signal<boolean> = this.otpVerifyState.isPending;
-    protected override formGroup: FormGroup<ToFormGroup<{ otp: string }>>;
-
-    readonly email: InputSignal<string> = input.required();
 
     constructor() {
         super();
+        this.isPending = this.otpVerifyState.isPending;
         this.formGroup = this.fb.group({
             otp: this.fb.nonNullable.control('', [
                 Validators.required,

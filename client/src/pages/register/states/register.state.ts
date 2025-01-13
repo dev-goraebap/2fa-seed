@@ -9,12 +9,18 @@ import { BaseState } from "src/shared/foundations";
 @Injectable()
 export class RegisterState extends BaseState<void> {
 
-    private readonly authService: AuthApi = inject(AuthApi);
-    private readonly _isRegistered: WritableSignal<boolean> = signal(false);
-    private readonly _tempEmail: WritableSignal<string | null> = signal(null);
+    readonly tempEmail: Signal<string | null>;
+    readonly isCompleted: Signal<boolean>;
 
-    readonly tempEmail: Signal<string | null> = this._tempEmail.asReadonly();
-    readonly isRegistered: Signal<boolean> = this._isRegistered.asReadonly();
+    private readonly authService: AuthApi = inject(AuthApi);
+    private readonly _isCompleted: WritableSignal<boolean> = signal(false);
+    private readonly _tempEmail: WritableSignal<string | null> = signal(null);
+    
+    constructor() {
+        super();
+        this.tempEmail = this._tempEmail.asReadonly();
+        this.isCompleted = this._isCompleted.asReadonly();
+    }
 
     register(dto: RegisterDTO): Observable<void> {
         this.setPending();
@@ -22,7 +28,7 @@ export class RegisterState extends BaseState<void> {
 
         return this.authService.register(dto).pipe(
             delay(500),
-            tap(() => this._isRegistered.set(true)),
+            tap(() => this._isCompleted.set(true)),
             catchError((res: HttpErrorResponse) => {
                 this.setError(res.error);
                 return EMPTY;

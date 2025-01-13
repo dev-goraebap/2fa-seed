@@ -18,14 +18,20 @@ import { LoginFormDTO } from "../../types/login-form.dto";
 })
 export class LoginForm extends BaseForm {
 
+    protected readonly isPending: Signal<boolean>;
+    protected readonly formGroup: FormGroup<ToFormGroup<LoginFormDTO>>;
+
     private readonly fb: FormBuilder = inject(FormBuilder);
     private readonly loginState: LoginState = inject(LoginState);
 
-    protected readonly isPending: Signal<boolean> = this.loginState.isPending;
-    protected readonly formGroup: FormGroup<ToFormGroup<LoginFormDTO>> = this.fb.group({
-        email: this.fb.nonNullable.control('', [Validators.required, Validators.pattern(USER_RULES.email.regex)]),
-        password: this.fb.nonNullable.control('', [Validators.required])
-    });
+    constructor() {
+        super();
+        this.isPending = this.loginState.isPending;
+        this.formGroup = this.fb.group({
+            email: this.fb.nonNullable.control('', [Validators.required, Validators.pattern(USER_RULES.email.regex)]),
+            password: this.fb.nonNullable.control('', [Validators.required])
+        });
+    }
 
     override onSubmit(): void {
         if (!this.formGroup.valid) {

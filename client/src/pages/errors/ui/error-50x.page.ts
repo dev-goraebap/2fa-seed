@@ -28,10 +28,10 @@ import { CustomError } from "src/shared/foundations";
 })
 export class Error50XPage {
 
+    readonly error!: CustomError;
+
     private readonly router: Router = inject(Router);
     private readonly location: Location = inject(Location);
-
-    protected readonly error!: CustomError;
 
     constructor() {
         const state = this.router.getCurrentNavigation()?.extras.state;

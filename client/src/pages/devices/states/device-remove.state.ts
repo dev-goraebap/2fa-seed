@@ -13,11 +13,16 @@ import { DevicesState } from "./devices.state";
 })
 export class DeviceRemoveState extends BaseState<void> {
 
+    readonly isCompleted: Signal<boolean>;
+
     private readonly deviceApi: DeviceApi = inject(DeviceApi);
     private readonly devicesState: DevicesState = inject(DevicesState);
     private readonly _isCompleted: WritableSignal<boolean> = signal(false);
 
-    readonly isCompleted: Signal<boolean> = this._isCompleted.asReadonly();
+    constructor() {
+        super();
+        this.isCompleted = this._isCompleted.asReadonly();
+    }
 
     remove(dto: RemoveOtherDeviceDTO): Observable<void> {
         this.setPending();

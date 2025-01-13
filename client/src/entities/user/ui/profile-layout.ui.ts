@@ -1,8 +1,10 @@
 import { Component, effect, inject } from "@angular/core";
 import { RouterOutlet } from "@angular/router";
-import { ProfileResultDTO } from "domain-shared/user";
 import { Notyf } from "notyf";
+
+import { ProfileResultDTO } from "domain-shared/user";
 import { CustomError } from "src/shared/foundations";
+
 import { ProfileState } from "../states/profile.state";
 
 /**
@@ -21,13 +23,13 @@ export class ProfileLayoutUI {
 
     constructor() {
         this.profileState.initialize().subscribe();
+
         effect(() => this.handleInitProfileData());
         effect(() => this.handleInitProfileError());
     }
 
     private handleInitProfileData(): void {
         const profile: ProfileResultDTO | null = this.profileState.data();
-        console.log(profile);
     }
 
     private handleInitProfileError(): void {
