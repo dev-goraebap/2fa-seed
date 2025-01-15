@@ -9,8 +9,8 @@
     "build": "nest build",
     "start:dev": "cross-env NODE_ENV=development nest start --watch",
     "start:prod": "cross-env NODE_ENV=production node dist/api/src/main",
-    "db:generate": "drizzle-kit generate",
-    "db:migrate": "drizzle-kit migrate",
+    "db:generate": "drizzle-kit generate --config=./drizzle/drizzle-dev.config.ts",
+    "db:migrate": "drizzle-kit migrate --config=./drizzle/drizzle-dev.config.ts",
     "db:studio": "drizzle-kit studio"
   },
   "dependencies": {
