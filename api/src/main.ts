@@ -9,6 +9,16 @@ import { validationExceptionFactory } from './api';
 import { MainModule } from './main.module';
 import { EnvConfig } from './shared/config';
 
+import { drizzle } from "drizzle-orm/libsql";
+import { createClient } from "@libsql/client";
+
+// const turso = createClient({
+//   url: 'libsql://test-dev-goraebap.turso.io',
+//   authToken: 'eyJhbGciOiJFZERTQSIsInR5cCI6IkpXVCJ9.eyJhIjoicnciLCJpYXQiOjE3MzY5MzQ0NzAsImlkIjoiMjk2NDM4NTYtMzE5OC00OGVjLWExZmEtNTgyMzY1MGE4NWZkIn0.WyMDTBp7pLzOsgruXqsNE8CVg1JtQXZH75WEkWN-9Tqc6MbCh_Qe0Vtp6VkhsTFNeV6ONL7X8Or-qaJZ3qdCAw',
+// });
+//
+// export const drizzle = drizzle(turso);
+
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(MainModule);
 

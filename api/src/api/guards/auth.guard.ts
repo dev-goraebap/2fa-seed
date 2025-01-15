@@ -1,9 +1,11 @@
-import { CanActivate, ExecutionContext, HttpStatus, Injectable } from "@nestjs/common";
+import { CanActivate, ExecutionContext, Injectable, UnauthorizedException } from "@nestjs/common";
 import { Reflector } from "@nestjs/core";
 import { Request } from "express";
 
-import { LocalAuthService } from "src/app/user";
-import { CustomException, CustomExceptions } from "../errors";
+import { JwtPayload } from "jsonwebtoken";
+import { UserService } from "src/app/userv2";
+import { UserModel } from "src/app/userv2/user.model";
+import { SecureTokenService } from "src/shared/security";
 
 /**
  * @description
@@ -18,7 +20,8 @@ export class AuthGuard implements CanActivate {
 
     constructor(
         private readonly reflector: Reflector,
-        private readonly authService: LocalAuthService,
+        private readonly secureTokenService: SecureTokenService,
+        private readonly userService: UserService
     ) { }
 
     async canActivate(context: ExecutionContext): Promise<boolean> {
@@ -30,9 +33,9 @@ export class AuthGuard implements CanActivate {
 
         const errMsg: string = '액세스토큰이 유효하지 않습니다.';
         const token = this.getBearerTokenOrThrow(context, errMsg);
-        const [user, userSession] = await this.authService.getCredentialOrThrow(token);
+        const tokenPayload: JwtPayload = this.secureTokenService.verifyJwtToken(token);
+        const user: UserModel = await this.userService.getUserByIdOrUnauthorize(tokenPayload.sub);
         req['user'] = user;
-        req['userSession'] = userSession;
         return true;
     }
 
@@ -49,7 +52,7 @@ export class AuthGuard implements CanActivate {
         const token = request.headers.authorization?.split(' ')[1];
 
         if (!token) {
-            throw new CustomException(CustomExceptions.NEED_REFRESH, errMsg, HttpStatus.UNAUTHORIZED);
+            throw new UnauthorizedException(errMsg);
         }
 
         return token;

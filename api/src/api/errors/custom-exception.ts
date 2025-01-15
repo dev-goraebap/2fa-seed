@@ -1,9 +1,5 @@
 import { HttpException, HttpExceptionOptions } from "@nestjs/common";
-
-export enum CustomExceptions {
-    SESSION_EXPIRES = 'SESSION_EXPIRES',
-    NEED_REFRESH = 'NEED_REFRESH',
-}
+import { CustomExceptions } from "src/shared/errors";
 
 /**
  * @description

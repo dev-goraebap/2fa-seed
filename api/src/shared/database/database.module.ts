@@ -1,3 +1,4 @@
+import { createClient } from "@libsql/client";
 import { Module } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
 import { TypeOrmModule } from "@nestjs/typeorm";
@@ -9,15 +10,19 @@ import { EnvConfig } from "../config";
         TypeOrmModule.forRootAsync({
             useFactory: (configService: ConfigService<EnvConfig>) => {
                 return {
-                    type: 'postgres',
-                    host: configService.get('DB_HOST'),
-                    port: configService.get('DB_PORT'),
-                    database: configService.get('DB_NAME'),
-                    username: configService.get('DB_USERNAME'),
-                    password: configService.get('DB_PASSWORD'),
-                    logging: configService.get('DB_LOGGING') === 'true' ? true : false,
+                    type: 'sqlite',
+                    driver: {
+                      // Turso 커스텀 드라이버 설정
+                      async create(): Promise<any> {
+                        return createClient({
+                          url: 'libsql://test-dev-goraebap.turso.io',
+                          authToken: 'eyJhbGciOiJFZERTQSIsInR5cCI6IkpXVCJ9.eyJhIjoicnciLCJpYXQiOjE3MzY5MzQ0NzAsImlkIjoiMjk2NDM4NTYtMzE5OC00OGVjLWExZmEtNTgyMzY1MGE4NWZkIn0.WyMDTBp7pLzOsgruXqsNE8CVg1JtQXZH75WEkWN-9Tqc6MbCh_Qe0Vtp6VkhsTFNeV6ONL7X8Or-qaJZ3qdCAw',
+                        });
+                      },
+                    },
+                    entities: [/* your entities */],
+                    synchronize: true, // 개발 환경에서만 true로 설정
                     autoLoadEntities: true,
-                    synchronize: true,
                     namingStrategy: new SnakeNamingStrategy()
                 }
             },

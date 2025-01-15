@@ -1,7 +1,9 @@
 import { Body, Controller, Delete, Get, HttpCode, HttpStatus, Param, Patch, UnauthorizedException } from "@nestjs/common";
 import { ApiBearerAuth, ApiOperation, ApiResponse, ApiTags } from "@nestjs/swagger";
 
-import { EmailDuplicateCheckResultDTO, ProfileResultDTO, UpdateNicknameDTO, UpdatePasswordDTO, UserModel, UserService, UserSessionModel, UserSessionService, WithdrawDTO } from "src/app/user";
+import { UserSessionService } from "src/app/user-session";
+import { EmailDuplicateCheckResultDTO, ProfileResultDTO, UpdateNicknameDTO, UpdatePasswordDTO, UserModel, UserService, WithdrawDTO } from "src/app/userv2";
+import { FirebaseService } from "src/shared/third-party";
 
 import { Credential, Public } from "../decorators";
 import { EmailValidationPipe } from "../pipes";
@@ -12,7 +14,8 @@ export class UserController {
 
     constructor(
         private readonly userService: UserService,
-        private readonly userSessionService: UserSessionService
+        private readonly userSessionService: UserSessionService,
+        private readonly firebaseService: FirebaseService,
     ) { }
 
     @Public()
@@ -20,8 +23,8 @@ export class UserController {
     @ApiOperation({ summary: '이메일 중복 검증' })
     @ApiResponse({ status: HttpStatus.OK, type: EmailDuplicateCheckResultDTO, description: '이메일 중복 여부' })
     async checkEmailDuplicate(@Param('email', EmailValidationPipe) email: string): Promise<EmailDuplicateCheckResultDTO> {
-        const isDuplicate = await this.userService.checkEmailDuplicate(email);
-        return EmailDuplicateCheckResultDTO.from(isDuplicate);
+        await this.userService.checkEmailDuplicateOrThrow(email);
+        return EmailDuplicateCheckResultDTO.from(true);
     }
 
     @Get('me')
@@ -47,10 +50,7 @@ export class UserController {
     @ApiOperation({ summary: '비밀번호 변경 <OTP 연계>' })
     @ApiResponse({ status: HttpStatus.NO_CONTENT })
     async updatePassword(@Body() dto: UpdatePasswordDTO): Promise<void> {
-        const user = await this.userService.getUserByEmailOrThrow(dto.email);
-        if (!user.verifyOtp(dto.otp)) {
-            throw new UnauthorizedException('OTP 코드가 유효하지 않습니다.');
-        }
+        const user = await this.userService.getUserByEmailWithOtpOrThrow(dto.email, dto.otp);
         await this.userService.updatePassword(user, dto.password);
     }
 
@@ -63,9 +63,10 @@ export class UserController {
         if (!user.verifyOtp(dto.otp)) {
             throw new UnauthorizedException('OTP 코드가 유효하지 않습니다.');
         }
-        await this.userService.withdraw(user, async () => {
-            const userSessions: UserSessionModel[] = await this.userSessionService.getUserSessions(user.id);
-            await this.userSessionService.removes(userSessions);
+
+        await this.firebaseService.runInTransaction(async () => {
+            await this.userSessionService.remove(user.id);
+            await this.userService.withdraw(user);
         });
     }
 }

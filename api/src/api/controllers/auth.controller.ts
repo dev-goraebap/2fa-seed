@@ -1,9 +1,12 @@
-import { Body, Controller, HttpStatus, Post } from "@nestjs/common";
+import { Body, Controller, Delete, HttpCode, HttpStatus, Post } from "@nestjs/common";
 import { ApiOperation, ApiResponse, ApiTags } from "@nestjs/swagger";
 
-import { AuthResultDTO, LocalAuthService, LoginDTO, RegisterDTO, RetryOtpDTO, VerifyEmailDTO } from "src/app/user";
+import { UserSessionModel, UserSessionService } from "src/app/user-session";
+import { LoginDTO, RegisterDTO, SendOtpDTO, UserModel, UserService, VerifyEmailDTO } from "src/app/userv2";
+import { AuthTokens, SecureTokenService } from "src/shared/security";
+import { FirebaseService, MailService } from "src/shared/third-party";
 
-import { ApiRefreshTokenHeader, Public, RefreshToken } from "../decorators";
+import { ApiRefreshTokenHeader, Credential, Public, RefreshToken } from "../decorators";
 
 /**
  * @description 
@@ -14,53 +17,76 @@ import { ApiRefreshTokenHeader, Public, RefreshToken } from "../decorators";
 export class AuthController {
 
     constructor(
-        private readonly authService: LocalAuthService
+        private readonly secureTokenService: SecureTokenService,
+        private readonly mailService: MailService,
+        private readonly firebaseService: FirebaseService,
+        private readonly userService: UserService,
+        private readonly userSessionService: UserSessionService,
     ) { }
 
     @Public()
     @Post('login')
-    @ApiOperation({ summary: '로그인', description: '새로운 디바이스에서 로그인시 `새로운 디바이스 액세스 API` 연계 필요' })
-    @ApiResponse({ status: HttpStatus.OK, type: AuthResultDTO, description: '로그인 성공 (새로운 디바이스 로그인 시 이메일로 OTP 자동 발송)' })
-    async login(@Body() dto: LoginDTO): Promise<AuthResultDTO> {
-        return await this.authService.login(dto);
+    @ApiOperation({ summary: '로그인' })
+    @ApiResponse({ status: HttpStatus.OK, type: AuthTokens })
+    async login(@Body() dto: LoginDTO): Promise<AuthTokens> {
+        const user: UserModel = await this.userService.getCredentials(dto.email, dto.password);
+        const authTokens: AuthTokens = this.secureTokenService.getAuthTokens(user.id);
+        await this.userSessionService.createOrUpdate(user.id, authTokens.refreshToken);
+        return authTokens;
     }
 
     @Public()
+    @HttpCode(HttpStatus.CREATED)
     @Post('register')
-    @ApiOperation({ summary: '회원가입', description: '회원가입 성공 시 `새로운 디바이스 액세스 API` 연계 필요' })
-    @ApiResponse({ status: HttpStatus.CREATED, description: '회원가입 성공 (이메일로 OTP 자동 발송)' })
+    @ApiOperation({ summary: '회원가입' })
+    @ApiResponse({ status: HttpStatus.CREATED, description: '회원가입 성공' })
     async register(@Body() dto: RegisterDTO): Promise<void> {
-        return await this.authService.register(dto);
+        await this.userService.checkEmailDuplicateOrThrow(dto.email);
+        await this.userService.create(dto);
     }
 
     @Public()
     @Post('otp')
-    @ApiOperation({
-        summary: '이메일로 OTP 발송', description: `
-    일부 OTP 코드를 필요로한 API 호출과 연계 시 사용
-    - OTP 재발급이 필요한 경우
-    - OTP 인증을 필요로 하는 API 사용 전 호출
-    `})
+    @ApiOperation({ summary: '이메일로 OTP 발송' })
     @ApiResponse({ status: HttpStatus.OK })
-    async retryOtp(@Body() dto: RetryOtpDTO): Promise<void> {
-        return await this.authService.generateOtp(dto);
+    async sendOtp(@Body() dto: SendOtpDTO): Promise<void> {
+        const user: UserModel = await this.userService.getUserByEmailOrThrow(dto.email);
+        await this.userService.updateOtp(user);
+        await this.mailService.send(dto.email, user.otp);
     }
 
     @Public()
     @Post('verify-email')
     @ApiOperation({ summary: '이메일 인증' })
-    @ApiResponse({ status: HttpStatus.OK })
-    async verifyEmail(@Body() dto: VerifyEmailDTO): Promise<void> {
-        return await this.authService.verifyEmail(dto);
+    @ApiResponse({ status: HttpStatus.OK, type: AuthTokens })
+    async verifyEmail(@Body() dto: VerifyEmailDTO): Promise<AuthTokens> {
+        const user: UserModel = await this.userService.getUserByEmailWithOtpOrThrow(dto.email, dto.otp);
+        const authTokens: AuthTokens = this.secureTokenService.getAuthTokens(user.id);
+        
+        return await this.firebaseService.runInTransaction(async () => {
+            await this.userService.updateEmailVerified(user);
+            await this.userSessionService.createOrUpdate(user.id, authTokens.refreshToken);
+            return authTokens;
+        });
     }
 
     @Public()
     @Post('refresh')
     @ApiRefreshTokenHeader()
     @ApiOperation({ summary: '토큰 재발급' })
-    @ApiResponse({ status: HttpStatus.OK, type: AuthResultDTO, description: '토큰 재발급 성공' })
-    async refreshTokens(@RefreshToken() refreshToken: string): Promise<AuthResultDTO> {
-        console.log(refreshToken);
-        return await this.authService.refresh(refreshToken);
+    @ApiResponse({ status: HttpStatus.OK, type: AuthTokens })
+    async refreshTokens(@RefreshToken() refreshToken: string): Promise<AuthTokens> {
+        const session: UserSessionModel = await this.userSessionService.getSessionOrExpiresThrow(refreshToken);
+        const authTokens: AuthTokens = this.secureTokenService.getAuthTokens(session.userId);
+        await this.userSessionService.update(session, authTokens.refreshToken);
+        return authTokens;
+    }
+
+    @HttpCode(HttpStatus.NO_CONTENT)
+    @Delete('logout')
+    @ApiOperation({ summary: '로그아웃' })
+    @ApiResponse({ status: HttpStatus.OK, type: AuthTokens })
+    async logout(@Credential() user: UserModel): Promise<void> {
+        await this.userSessionService.remove(user.id);
     }
 }

@@ -1,7 +1,19 @@
 import { Injectable, UnauthorizedException } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
+import { ApiProperty } from "@nestjs/swagger";
 import * as jwt from 'jsonwebtoken';
 import { EnvConfig } from "src/shared/config";
+
+export class AuthTokens {
+    @ApiProperty()
+    readonly accessToken: string;
+
+    @ApiProperty()
+    readonly expiresIn: number;
+
+    @ApiProperty()
+    readonly refreshToken: string;
+}
 
 /**
  * @description
@@ -21,6 +33,13 @@ export class SecureTokenService {
     ) {
         this.secretKey = this.configService.get('ACCESS_TOKEN_SECRET');
         this.expiresIn = Number(this.configService.get('ACCESS_TOKEN_EXPIRES_IN'));
+    }
+
+    getAuthTokens(sub: string, payload?: Object): AuthTokens {
+        const accessToken: string = this.generateJwtToken(sub, payload);
+        const expiresIn: number = this.getJwtExpiresIn(accessToken);
+        const refreshToken: string = this.generateOpaqueToken();
+        return { accessToken, expiresIn, refreshToken };
     }
 
     generateOpaqueToken(): string {
