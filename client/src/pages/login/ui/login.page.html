@@ -1,26 +1,0 @@
-<div data-motion="slideUp" class="p-4 sm:mt-10">
-    <div class="text-3xl font-extrabold">JWT Auth Seed</div>
-    <div class="mt-1 text-xl">안녕하세요! JWT 인증 데모 앱입니다 👋</div>
-    <br />
-    <login-form></login-form>
-
-    <div class="flex justify-between px-4 my-6">
-        <div>
-            @if (showPasswordFindButton) {
-            <button (click)="onOpenPasswordEditDialog()" class="mr-1 text-secondary motion-preset-focus-lg">비밀번호
-                찾기</button>
-            }
-        </div>
-        <div>
-            <a routerLink="/register" class="mr-1 text-secondary">회원가입</a>
-        </div>
-    </div>
-
-    <div class="my-10 divider">다른 방법으로 로그인</div>
-
-    <div class="flex flex-col items-center">
-        <button (click)="onKakaoLogin()">
-            <img src="/imgs/kakao-login.png" />
-        </button>
-    </div>
-</div>

@@ -1,7 +1,0 @@
-<?xml version='1.0' encoding='utf-8'?>
-<resources>
-    <string name="app_name">2fa-seed.client</string>
-    <string name="title_activity_main">2fa-seed.client</string>
-    <string name="package_name">dev.goraebap.twofaseed</string>
-    <string name="custom_url_scheme">dev.goraebap.twofaseed</string>
-</resources>

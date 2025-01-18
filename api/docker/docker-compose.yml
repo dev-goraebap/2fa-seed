@@ -1,9 +1,0 @@
-version: '3.8'
-services:
-  2fa-seed-api:
-    image: '2fa-seed-api'
-    container_name: '2fa-seed-api'
-    ports:
-      - "8000:8000"
-networks:
-  default:

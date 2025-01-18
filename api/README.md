@@ -1,1 +1,0 @@
-# 2FA Seed API
