@@ -1,0 +1,18 @@
+<div class="flex justify-center w-full px-10 mt-6">
+    <div class="flex flex-col">
+        <span>OTP 코드가 오지 않았나요?</span>
+        <div class="flex items-center justify-center">
+            <div>
+                <span class="text-primary">{{canRetryTime}}</span>초 후
+                <button class="mr-2 transition-all" [disabled]="canRetryTime !== 0 || isPending" [ngClass]="{
+                    'text-primary': canRetryTime === 0,
+                }" (click)="onResendOtp()">재요청
+                </button>
+                <span>할 수 있어요.</span>
+            </div>
+            @if (isPending()) {
+            <div class="loading loading-spinner"></div>
+            }
+        </div>
+    </div>
+</div>

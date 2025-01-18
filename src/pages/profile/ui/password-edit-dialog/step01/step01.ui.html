@@ -1,0 +1,20 @@
+<div>
+    <div class="text-2xl font-bold text-center">이메일 주소를 인증하세요.</div>
+    <br />
+
+    <div class="flex flex-col items-center justify-center">
+        <p>비밀번호를 변경하려면 현재 이메일 주소</p>
+        <p>"{{ email }}" 부터 인증해야 해요.</p>
+    </div>
+    <br />
+    <div class="flex items-center justify-end gap-4">
+        <button class="btn btn-soft" (click)="onClose()">취소</button>
+        <button class="btn btn-soft btn-primary" [disabled]="isPending()" (click)="onSendOtp()">
+            @if (isPending()) {
+                <span class="loading loading-spinner"></span>
+            } @else {
+                인증하기
+            }
+        </button>
+    </div>
+</div>
