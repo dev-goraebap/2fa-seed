@@ -4,7 +4,7 @@ import { Component, inject, input, InputSignal, output, OutputEmitterRef } from 
 import { ProfileResultDTO } from 'src/entities/user';
 import { DynamicDialogControl } from 'src/shared/foundations';
 
-import { NicknameEditDialogUI } from '../nickname-edit-dialog/nickname-edit-dialog.ui';
+import { NicknameEditDialogUI } from './nickname-edit-dialog/nickname-edit-dialog.ui';
 import { PasswordEditDialogUI } from '../password-edit-dialog/password-edit-dialog.ui';
 
 @Component({
@@ -33,6 +33,7 @@ export class ProfileCardUI {
                 data: {
                     email: this.profile()?.email,
                 },
+                canBackdropClose: false,
             });
         }
     }

@@ -2,7 +2,7 @@ import { Component, effect, inject, signal, WritableSignal } from '@angular/core
 import { Router } from '@angular/router';
 import { Notyf } from 'notyf';
 
-import { OtpRetryTimer } from 'src/features/send-otp';
+import { OtpRetryTimer, OtpSendState } from 'src/features/send-otp';
 import { CustomError } from 'src/shared/foundations';
 
 import { OtpVerifyState } from '../states/otp-verify.state';
@@ -25,6 +25,7 @@ export class OtpVerifyPage {
 
     private readonly router = inject(Router);
     private readonly otpVerifyState = inject(OtpVerifyState);
+    private readonly otpSendState = inject(OtpSendState);
 
     constructor() {
         const state = this.router.getCurrentNavigation()?.extras.state;
@@ -33,8 +34,11 @@ export class OtpVerifyPage {
             this.router.navigateByUrl('/');
             return;
         }
+        const email = state['email'];
 
-        this.email.set(state['email']);
+        this.otpSendState.sendOtp(email).subscribe();
+
+        this.email.set(email);
 
         effect(() => this.handleOtpVerifySuccess());
         effect(() => this.handleOtpVerifyError());

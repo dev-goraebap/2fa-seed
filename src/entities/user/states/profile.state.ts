@@ -18,6 +18,7 @@ export class ProfileState extends BaseState<ProfileResultDTO> {
         this.setPending();
 
         return this.userApi.getProfile().pipe(
+            delay(500),
             tap((data: ProfileResultDTO) => this.setData(data)),
             map(() => void 0),
             catchError((res: HttpErrorResponse) => {

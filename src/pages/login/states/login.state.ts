@@ -1,5 +1,5 @@
 import { HttpErrorResponse } from '@angular/common/http';
-import { inject, Injectable, Signal, signal, WritableSignal } from '@angular/core';
+import { inject, Injectable, signal } from '@angular/core';
 import { catchError, delay, EMPTY, finalize, map, Observable, tap } from 'rxjs';
 
 import { AuthApi, AuthResultDTO, LoginDTO } from 'src/entities/auth';
@@ -23,14 +23,12 @@ export class LoginState extends BaseState<AuthResultDTO> {
             tap(data => this.setData(data)),
             tap(async (res: AuthResultDTO) => {
                 const { accessToken, refreshToken, expiresIn } = res;
-                if (accessToken && refreshToken && expiresIn) {
-                    const tokenStorage = TokenStorage.getInstance();
-                    await tokenStorage.store({
-                        accessToken,
-                        refreshToken,
-                        expiresIn,
-                    });
-                }
+                const tokenStorage = TokenStorage.getInstance();
+                await tokenStorage.store({
+                    accessToken,
+                    refreshToken,
+                    expiresIn,
+                });
             }),
             map(() => void 0),
             catchError((res: HttpErrorResponse) => {
@@ -39,9 +37,5 @@ export class LoginState extends BaseState<AuthResultDTO> {
             }),
             finalize(() => this.clearPending()),
         );
-    }
-
-    resetTempEmail(): void {
-        this._tempEmail.set(null);
     }
 }

@@ -1,5 +1,4 @@
 import { Component, inject, Signal } from '@angular/core';
-import { RouterLink } from '@angular/router';
 
 import { ProfileResultDTO, ProfileState } from 'src/entities/user';
 import { PendingScreen } from 'src/shared/ui';
@@ -12,7 +11,6 @@ import { ProfileCardUI } from './profile-card/profile.card';
     selector: 'profile-page',
     templateUrl: './profile.page.html',
     imports: [
-        RouterLink,
         PendingScreen,
         ProfileCardUI,
         LogoutButton,

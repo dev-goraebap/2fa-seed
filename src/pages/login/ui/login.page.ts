@@ -45,12 +45,18 @@ export class LoginPage {
     private handleLoginError() {
         const error: CustomError | null = this.loginState.error();
         if (!error) return;
-        // const tempEmail = this.loginState.tempEmail();
-        // this.router.navigateByUrl('/verify-otp', {
-        //     state: {
-        //         email: tempEmail
-        //     }
-        // });
+
+        // 에러코드 VERIFY_EMAIL는 인증은 성공했지만,
+        // 이메일 인증이 안된 상태로 OTP 인증 페이지로 이동시킵니다.
+        if (error.signature === 'VERIFY_EMAIL') {
+            const tempEmail = this.loginState.tempEmail();
+            this.router.navigateByUrl('/verify-otp', {
+                state: {
+                    email: tempEmail
+                }
+            });
+            return;
+        }
 
         // Easter Eggggggggggggggg :D
         this.showPasswordFindButton = true;

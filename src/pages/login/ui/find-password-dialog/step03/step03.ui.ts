@@ -12,7 +12,7 @@ import { Notyf } from 'notyf';
 
 import { UpdatePasswordDTO, USER_RULES } from 'src/entities/user';
 import { PasswordEditState } from 'src/features/edit-password';
-import { CustomError, DynamicDialogControl } from 'src/shared/foundations';
+import { DynamicDialogControl } from 'src/shared/foundations';
 import { BaseForm } from 'src/shared/foundations/form';
 import { StepControl } from 'src/shared/foundations/stepper';
 

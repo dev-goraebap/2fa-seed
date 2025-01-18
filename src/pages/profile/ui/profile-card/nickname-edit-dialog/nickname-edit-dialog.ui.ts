@@ -6,7 +6,7 @@ import { ProfileState, USER_RULES } from 'src/entities/user';
 import { BaseForm, DynamicDialogControl } from 'src/shared/foundations';
 import { ToFormGroup } from 'src/shared/types';
 
-import { NicknameEditState } from '../../states/nickname-edit.state';
+import { NicknameEditState } from '../../../states/nickname-edit.state';
 
 @Component({
     selector: 'nickname-edit-dialog',
